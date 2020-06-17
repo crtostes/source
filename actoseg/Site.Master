@@ -1,0 +1,362 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="actoseg.SiteMaster" %>
+
+<!DOCTYPE html>
+
+<html lang="pt">
+<%--<head runat="server">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%: Page.Title %> - Meu aplicativo ASP.NET</title>
+
+    <asp:PlaceHolder runat="server">
+        <%: Scripts.Render("~/bundles/modernizr") %>
+    </asp:PlaceHolder>
+
+    <webopt:bundlereference runat="server" path="~/Content/css" />
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+
+</head>--%>
+<body>
+    <%--<form runat="server">--%>
+        <%--<asp:ScriptManager runat="server">
+            <Scripts>
+                <%--To learn more about bundling scripts in ScriptManager see https://go.microsoft.com/fwlink/?LinkID=301884 --%>
+                <%--Framework Scripts--%>
+                <%--<asp:ScriptReference Name="MsAjaxBundle" />
+                <asp:ScriptReference Name="jquery" />
+                <asp:ScriptReference Name="bootstrap" />
+                <asp:ScriptReference Name="WebForms.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebForms.js" />
+                <asp:ScriptReference Name="WebUIValidation.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebUIValidation.js" />
+                <asp:ScriptReference Name="MenuStandards.js" Assembly="System.Web" Path="~/Scripts/WebForms/MenuStandards.js" />
+                <asp:ScriptReference Name="GridView.js" Assembly="System.Web" Path="~/Scripts/WebForms/GridView.js" />
+                <asp:ScriptReference Name="DetailsView.js" Assembly="System.Web" Path="~/Scripts/WebForms/DetailsView.js" />
+                <asp:ScriptReference Name="TreeView.js" Assembly="System.Web" Path="~/Scripts/WebForms/TreeView.js" />
+                <asp:ScriptReference Name="WebParts.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebParts.js" />
+                <asp:ScriptReference Name="Focus.js" Assembly="System.Web" Path="~/Scripts/WebForms/Focus.js" />
+                <asp:ScriptReference Name="WebFormsBundle" />--%>
+                <%--Site Scripts--%>
+           <%--</Scripts>--%>
+        <%--</asp:ScriptManager>--%>
+
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <%--<div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" runat="server" href="~/">Nome do aplicativo</a>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li><a runat="server" href="~/">Página inicial</a></li>
+                        <li><a runat="server" href="~/About">Sobre</a></li>
+                        <li><a runat="server" href="~/Contact">Contato</a></li>
+                    </ul>
+                </div>--%>
+                <head>
+		<!-- Required meta tags -->
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		<!-- Bootstrap Min CSS -->
+		<link rel="stylesheet" href="assets/css/bootstrap.min.css">
+		<!-- Animate Min CSS -->
+		<link rel="stylesheet" href="assets/css/animate.min.css">
+		<!-- FontAwesome Min CSS -->
+		<link rel="stylesheet" href="assets/css/fontawesome.min.css">
+		<!-- FlatIcon CSS -->
+		<link rel="stylesheet" href="assets/css/flaticon.css">
+		<!-- Owl Carousel Min CSS -->
+		<link rel="stylesheet" href="assets/css/owl.carousel.min.css">
+		<!-- Slick Min CSS -->
+		<link rel="stylesheet" href="assets/css/slick.min.css">
+		<!-- MeanMenu CSS -->
+		<link rel="stylesheet" href="assets/css/meanmenu.css">
+		<!-- Magnific Popup Min CSS -->
+		<link rel="stylesheet" href="assets/css/magnific-popup.min.css">
+		<!-- Odometer Min CSS -->
+		<link rel="stylesheet" href="assets/css/odometer.min.css">
+		<!-- Nice Select Min CSS -->
+		<link rel="stylesheet" href="assets/css/nice-select.min.css">
+		<!-- Style CSS -->
+		<link rel="stylesheet" href="assets/css/style.css">
+		<!-- Responsive CSS -->
+		<link rel="stylesheet" href="assets/css/responsive.css">
+
+		<title>ACTOSEG CORRETORA</title>
+
+		<link rel="icon" type="image/png" href="assets/img/favicon.png">
+	</head>
+<body>
+
+		<!-- Preloader -->
+		<div class="preloader">
+			<div class="loader">
+				<div class="shadow"></div>
+				<div class="box"></div>
+			</div>
+		</div>
+		<!-- End Preloader -->
+
+		<!-- Start Header Area -->
+		<header class="header-area">
+
+			<!-- Start Top Header -->
+			<div class="top-header">
+				<div class="container">
+					<div class="row align-items-center">
+						<div class="col-lg-5 col-md-12">
+							<ul class="top-header-nav">
+								<li><a href="#">Parceiros</a></li>
+								<li><a href="#">Nossas Soluções</a></li>
+								<li><a href="#">Pedidos</a></li>
+							</ul>
+						</div>
+
+						<div class="col-lg-7 col-md-12">
+							<div class="top-header-right-side">
+								<ul>
+									<li>
+										<div class="icon">
+											<i class="flaticon-email"></i>
+										</div>
+										<span>E-mail :</span>
+										<a href="#">acto.cotacao@gmail.com</a>
+									</li>
+
+									<li>
+										<div class="icon">
+											<i class="flaticon-call"></i>
+										</div>
+										<span>Ligue:</span>
+										<a href="#">11-9-3208-9366</a>
+									</li>
+
+									<li>
+										<a class="default-btn" cf-scroll-trigger="#envia_contato" href="#envia_contato">Cotação <span></span></a>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- End Top Header -->
+
+			<!-- Start Navbar Area -->
+			<div class="navbar-area">
+				<div class="pearo-responsive-nav">
+					<div class="container">
+						<div class="pearo-responsive-menu">
+							<div class="logo">
+								<a href="index.html">
+									<img src="assets/img/logo.png" alt="logo">
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="pearo-nav">
+					<div class="container">
+						<nav class="navbar navbar-expand-md navbar-light">
+							<a class="navbar-brand" href="index.html">
+								<img src="assets/img/logo.png" alt="logo">
+							</a>
+
+							<div class="collapse navbar-collapse mean-menu" id="navbarSupportedContent">
+								<ul class="navbar-nav">
+									<li class="nav-item">
+										<a href="Default" class="nav-link active">Inicio <i class="flaticon-down-arrow"></i></a>
+									</li>
+
+
+
+									<li class="nav-item">
+										<a href="#" class="nav-link">Seguros <i class="flaticon-down-arrow"></i></a>
+										<ul class="dropdown-menu">
+											<li class="nav-item"><a href="car-insurance" class="nav-link">Automóvel</a></li>
+
+											<li class="nav-item"><a href="life-insurance.html" class="nav-link">Vida</a></li>
+
+											<li class="nav-item"><a href="home-insurance.html" class="nav-link">Residencial</a></li>
+
+											<li class="nav-item"><a href="travel-insurance.html" class="nav-link">Viagem</a></li>
+
+										</ul>
+									</li>
+
+									<li class="nav-item"><a href="contact.html" class="nav-link">Contato</a></li>
+
+									<li class="nav-item"><a href="about.html" class="nav-link">Sobre</a></li>
+								</ul>
+
+								<div class="others-option">
+									<div class="option-item">
+										<i class="search-btn flaticon-search"></i>
+										<i class="close-btn flaticon-cross-out"></i>
+										
+										<div class="search-overlay search-popup">
+											<div class='search-box'>
+												<form class="search-form">
+													<input class="search-input" name="search" placeholder="Search" type="text">
+
+													<button class="search-button" type="submit"><i class="flaticon-search"></i></button>
+												</form>
+											</div>
+										</div>
+									</div>
+
+									<div class="burger-menu">
+										<i class="flaticon-menu"></i>
+									</div>
+								</div>
+							</div>
+						</nav>
+					</div>
+				</div>
+			</div>
+			<!-- End Navbar Area -->
+
+		</header>
+		<!-- End Header Area -->
+            </div>
+        </div>
+        
+        <%--<div class="container body-content">--%>
+            <asp:ContentPlaceHolder ID="MainContent" runat="server">
+            </asp:ContentPlaceHolder>
+           
+           
+
+				<!-- Start Footer Area -->
+		<footer class="footer-area">
+			<div class="container">
+				<div class="subscribe-area">
+					<div class="row align-items-center">
+						<div class="col-lg-5 col-md-12">
+							<div class="subscribe-content">
+								<h2>Receba um contato</h2>
+								<p>Caso queira receber informações ActoSeg cadastre um e-mail.</p>
+							</div>
+						</div>
+
+						<div class="col-lg-7 col-md-12">
+							<div class="subscribe-form">
+								<form class="newsletter-form" data-toggle="validator">
+									<input type="email" class="input-newsletter" placeholder="Digite seu e-mail" name="EMAIL" required autocomplete="off">
+	
+									<button type="submit">Enviar <i class="flaticon-right-chevron"></i></button>
+									<div id="validator-newsletter" class="form-result"></div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-lg-4 col-md-6 col-sm-6">
+						<div class="single-footer-widget">
+							<div class="single-footer-widget">
+								<h3>ACTOSEG CORRETORA DE SEGUROS</h3>
+								<a href="#">ACTOSEG CORRETORA DE SEGUROS LTDA.</a>
+
+								<p> A sua Plataforma de Seguros.</p>
+							</div>
+
+							<ul class="social">
+								<li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
+								<li><a href="#"><i class="fab fa-twitter"></i></a></li>
+								<li><a href="#"><i class="fab fa-linkedin-in"></i></a></li>
+								<li><a href="#"><i class="fab fa-instagram"></i></a></li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="col-lg-4 col-md-6 col-sm-6">
+						<div class="single-footer-widget">
+							<h3>opções</h3>
+
+							<ul class="footer-quick-links">
+								<li><a href="#">Inicio</a></li>
+								<li><a href="#">Sobre</a></li>
+								<li><a href="#">Seguros</a></li>
+								<li><a href="#">Parcerias</a></li>
+								<li><a href="#">Ganhe Dinheiro</a></li>
+								<li><a href="#">Contate</a></li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="col-lg-4 col-md-6 col-sm-6 offset-lg-0 offset-sm-3 offset-md-3">
+						<div class="single-footer-widget">
+							<h3>Informações</h3>
+
+							<ul class="footer-contact-info">
+								<li><span>Location:</span> São Paulo - SP</li>
+								<li><span>Email:</span> <a href="#">acto.cotacao@gmail.com</a></li>
+								<li><span>Ligue:</span> <a href="#">11-9-3208-9366</a></li>
+								<li><a href="https://www.google.com/maps/@-23.5060459,-46.6733118,3a,75y,108.32h,103.1t/data=!3m6!1e1!3m4!1sdicRHCl0UiYUWnd2ye4guw!2e0!7i16384!8i8192" target="_blank">Veja localização no GoogleMap</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+
+				<div class="copyright-area">
+					<div class="row align-items-center">
+						<div class="col-lg-6 col-sm-6 col-md-6">
+							<p><i class="far fa-copyright"></i>ActoSeg, todos os direitos reservdos<a href="http://www.actoseg.com.br/" target="_blank"></a></p>
+						</div>
+
+						<div class="col-lg-6 col-sm-6 col-md-6">
+							<ul>
+								<li><a href="#">Politica de Privacidade</a></li>
+								<li><a href="#">Termos e Condições</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="go-top"><i class="fas fa-chevron-up"></i><i class="fas fa-chevron-up"></i></div>
+		
+		<!-- jQuery Min JS -->
+		<script src="assets/js/jquery.min.js"></script>
+		<!-- Popper Min JS -->
+		<script src="assets/js/popper.min.js"></script>
+		<!-- Bootstrap Min JS -->
+		<script src="assets/js/bootstrap.min.js"></script>
+		<!-- Parallax Min JS -->
+		<script src="assets/js/parallax.min.js"></script>
+		<!-- Owl Carousel Min JS -->
+		<script src="assets/js/owl.carousel.min.js"></script>
+		<!-- Slick Min JS -->
+		<script src="assets/js/slick.min.js"></script>
+		<!-- MeanMenu JS -->
+		<script src="assets/js/jquery.meanmenu.js"></script>
+		<!-- Appear Min JS -->
+		<script src="assets/js/jquery.appear.min.js"></script>
+		<!-- Odometer Min JS -->
+		<script src="assets/js/odometer.min.js"></script>
+		<!-- Nice Select Min JS -->
+		<script src="assets/js/jquery.nice-select.min.js"></script>
+		<!-- Magnific Popup Min JS -->
+		<script src="assets/js/jquery.magnific-popup.min.js"></script>
+		<!-- WOW Min JS -->
+		<script src="assets/js/wow.min.js"></script>
+		<!-- AjaxChimp Min JS -->
+		<script src="assets/js/jquery.ajaxchimp.min.js"></script>
+		<!-- Form Validator Min JS -->
+		<script src="assets/js/form-validator.min.js"></script>
+		<!-- Contact Form Min JS -->
+		<script src="assets/js/contact-form-script.js"></script>
+		<!-- Main JS -->
+		<script src="assets/js/main.js"></script>
+		</footer>
+		<!-- End Footer Area -->
+
+    <!--</form> -->
+</body>
+</html>
