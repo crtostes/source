@@ -78,18 +78,18 @@ namespace actoseg
        
         public void EnvioEmail()
         {
-            var client = new SendGrid.SendGridClient(HttpClient, "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");
+            var client = new SendGrid.SendGridClient(HttpClient, "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");
 
            
 
             var msg = new SendGridMessage()
             {
-                From = new EmailAddress("acto.cotacao@gmail.com", "CONTATO ACTOSEG"),
+                From = new EmailAddress(txtEmailAuto.Text, "CONTATO ACTOSEG"),
                 Subject = "Cliente: " + txtNomeAuto.Text,
                 PlainTextContent = "CONTATO DO SITE www.actoseg.com.br",
                 HtmlContent = "<strong> Mensagem do site:<br/> Nome:  " + txtNomeAuto.Text + "<br/> Email : " + txtEmailAuto.Text + " <br/> Telefone: " + txtTelefoneAuto.Text + " <br/> Assunto: Seguro Auto - " + ddlAssuntoAuto.Text + "</strong>"
             };
-            msg.AddTo(new EmailAddress("acto.cotacao@gmail.com", "acto.cotacao@gmail.com"));
+            msg.AddTo(new EmailAddress("acto.cotacao@gmail.com"));
             var response = client.SendEmailAsync(msg);
         }
 

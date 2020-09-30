@@ -9,7 +9,7 @@ using Acto.Lead.Entity;
 
 namespace Acto.Lead.Data
 {
-    public class DaoLead
+    public class daoLead
     {
         public void InsereLead(entLead obj)
         {

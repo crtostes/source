@@ -12,7 +12,7 @@ namespace Acto.Lead.Busines
     {
         public void InsereLead(entLead obj)
         {
-            DaoLead objData = new DaoLead();
+            daoLead objData = new daoLead();
             objData.InsereLead(obj);
 
         }

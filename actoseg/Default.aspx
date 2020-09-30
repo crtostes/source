@@ -244,13 +244,13 @@
 			<div class="sidebar-modal-inner">
 				<div class="sidebar-about-area">
 					<div class="title">
-						<h2>About Us</h2>
-						<p>We believe brand interaction is key in communication. Real innovations and a positive customer experience are the heart of successful communication. No fake products and services. The customer is king, their lives and needs are the inspiration.</p>
+						<h2>ACTOSEG CORRETORA</h2>
+						<p>A Actoseg Corretora quer criar uma nova maneira de levar o produto seguro até você. Indique amigos e assim você poderá ter descontos de verdade em suas Apólices, consulte e entenda.</p>
 					</div>
 				</div>
 
 				<div class="sidebar-instagram-feed">
-					<h2>Instagram</h2>
+					<h2>INDIQUE E GANHE $$$</h2>
 
 					<ul>
 						<li><a href="#"><img src="assets/img/blog-image/1.jpg" alt="image"></a></li>
@@ -268,9 +268,10 @@
 					<div class="sidebar-contact-info">
 						<div class="contact-info-content">
 							<h2>
-								<a href="tel:+0881306298615">+088 130 629 8615</a>
-								<span>OR</span>
-								<a href="mailto:pearo@gmail.com">pearo@gmail.com</a>
+
+								<a href="tel:11932089366">11-9-3208-9366</a>
+								<span>OU</span>
+								<a href="mailto:acto.cotacao@gmail.com">acto.cotacao@gmail.com</a>
 							</h2>
 	
 							<ul class="social">
@@ -315,8 +316,8 @@
 					<div class="d-table-cell">
 						<div class="container">
 							<div class="main-banner-content">
-								<span class="sub-title">proteja suas conquistas</span>
-								<h1>vai viajar<br> viaje tranquilo</h1>
+								<span class="sub-title">faca uma consulta agora</span>
+								<h1>Indique amigos, ganhe $$$<br> obtenha altos descontos em sua apólice</h1>
 								<p>A ActoSeg tem o seguro sob medida para sua necessidade, proteja as suas conquistas, materiais e sentimentais</p>
 
 								<div class="btn-box">
@@ -334,8 +335,8 @@
 					<div class="d-table-cell">
 						<div class="container">
 							<div class="main-banner-content">
-								<span class="sub-title">proteja suas conquistas</span>
-								<h1>Então você está pensando em mudar, aproveite a oportunidade</h1>
+								<span class="sub-title">traquilidade e proteção para a família</span>
+								<h1>Então você está pensando em mudar, aproveite e consulte agora</h1>
 								<p>A ActoSeg tem o seguro sob medida para sua necessidade, proteja as suas conquistas, materiais e sentimentais</p>
 
 								<div class="btn-box">
@@ -349,6 +350,8 @@
 			</div>
 		</div>
 		<!-- End Main Banner Area -->
+
+
 
 		<!-- Start Services Boxes Area -->
 		<section class="services-boxes-area bg-f8f8f8">
@@ -597,48 +600,63 @@
 			</div>
 		</section>
 		<!-- End Services Area -->
-
 		<!-- Start Partner Area -->
 		<section class="partner-area">
 			<div class="container">
 				<div class="partner-title">
-					<h2>Our trusted partners</h2>
+					<h2>AS MELHORES SEGURADORAS</h2>
 				</div>
 
 				<div class="partner-slides owl-carousel owl-theme">
 					<div class="single-partner-item">
 						<a href="#">
-							<img src="assets/img/partner-image/1.png" alt="image">
+							<img src="assets/img/partner-image/aliro_seguro.jpg" alt="image">
 						</a>
 					</div>
 
 					<div class="single-partner-item">
 						<a href="#">
-							<img src="assets/img/partner-image/2.png" alt="image">
+							<img src="assets/img/partner-image/azul_seguros.jpg" alt="image">
 						</a>
 					</div>
 
 					<div class="single-partner-item">
 						<a href="#">
-							<img src="assets/img/partner-image/3.png" alt="image">
+							<img src="assets/img/partner-image/eagon_seguros.jpg" alt="image">
 						</a>
 					</div>
 
 					<div class="single-partner-item">
 						<a href="#">
-							<img src="assets/img/partner-image/4.png" alt="image">
+							<img src="assets/img/partner-image/itau_seguros.jpg" alt="image">
 						</a>
 					</div>
 
 					<div class="single-partner-item">
 						<a href="#">
-							<img src="assets/img/partner-image/5.png" alt="image">
+							<img src="assets/img/partner-image/liberty-seguros-logo.jpg" alt="image">
+						</a>
+					</div>
+					<div class="single-partner-item">
+						<a href="#">
+							<img src="assets/img/partner-image/porto_seguro.jpg" alt="image">
+						</a>
+					</div>
+					<div class="single-partner-item">
+						<a href="#">
+							<img src="assets/img/partner-image/suhai_logo.jpg" alt="image">
+						</a>
+					</div>
+					<div class="single-partner-item">
+						<a href="#">
+							<img src="assets/img/partner-image/sulamerica_logo.jpg" alt="image">
 						</a>
 					</div>
 				</div>
 			</div>
 		</section>
 		<!-- End Partner Area -->
+		
 
 		<!-- Start Why Choose Us Area -->
 		<section class="why-choose-us-area">

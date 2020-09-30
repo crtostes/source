@@ -5,14 +5,47 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title></title>
+    <%-- <script src="Scripts/jquery-3.4.1.min.js" type="text/javascript"></script>--%>
+    <script src ="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script>
+        function Buscar() {
+
+           // alert("teste");
+
+            $.ajax({
+                type: "POST",
+                url: "teste.aspx/BuscaCliente",
+                data: "{Codigo: '" + $("#txtCodigo").val() + "'}",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: OnSuccess,
+                error: function (request, status, error) {
+                    alert(request.responseText);
+                }
+            });
+
+            return false;
+        }
+
+        function OnSuccess(data, status) {
+            //alert(data.d);
+            $('#txtDescricao').val(data.d);
+        }
+
+     
+
+        $(document).ready(function () {
+            jQuery.support.cors = true;
+        });
+
+          
+    </script>
 </head>
 <body>
-    <form id="form1" runat="server">
-        <div>
-
-            <asp:Button ID="Button1" runat="server" OnClick="Button1_Click" Text="Button" />
-
-        </div>
-    </form>
+    <input id="txtCodigo" />
+    <input id="txtDescricao" readonly="true"/>
+    <input id="btnBuscar" type="button" value="buscar" onclick="Buscar()">
 </body>
 </html>
+
+
