@@ -11,7 +11,7 @@ namespace actoseg.main.pages
 {
 
 
-    public partial class IncluirEnderecoIndicado
+    public partial class IncluirCotacao
     {
     }
 }

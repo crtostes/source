@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 
 namespace actoseg.main.pages
 {
-    public partial class IncluirEnderecoIndicado : System.Web.UI.Page
+    public partial class IncluirCotacao : System.Web.UI.Page
     {
         protected void Page_Load(object sender, EventArgs e)
         {

@@ -11,7 +11,7 @@ namespace actoseg.bkoficce
 {
 
 
-    public partial class cotacao
+    public partial class Cotacao
     {
     }
 }

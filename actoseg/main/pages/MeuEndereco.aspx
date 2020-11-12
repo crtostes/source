@@ -2,6 +2,130 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+	<script>
+        function checkNumber(valor) {
+            var regra = /^[0-9]+$/;
+            if (valor.match(regra)) {
+				return true;
+            } else {
+                return false;
+            }
+        }; 
+        function Trim(strTexto) {
+            // Substitúi os espaços vazios no inicio e no fim da string por vazio.
+            return strTexto.replace(/^s+|s+$/g, '');
+        }
+        function IsCEP(strCEP, blnVazio) {
+            // Caso o CEP não esteja nesse formato ele é inválido!
+            var objER = /^[0-9]{5}-[0-9]{3}$/;
+
+            strCEP = Trim(strCEP)
+            if (strCEP.length > 0) {
+                if (objER.test(strCEP))
+                    return true;
+                else
+                    return false;
+            }
+            else
+                return blnVazio;
+        }
+        function Voltar() {
+            window.location.href = "Default.aspx";
+        }
+        function AtualizarEndereco() {
+            
+            //Verifica Tipo Endereço
+            if ($("#ContentPlaceHolder1_cboTipoEndereco").val() == '') {
+                alert("Informe o Tipo de Endereço.");
+                return false;
+            }
+
+            //Verifica CEP
+            if ($("#ContentPlaceHolder1_txtCep").val() == '') {
+                alert("Informe o CEP.");
+                return false;
+            }
+            if (IsCEP($("#ContentPlaceHolder1_txtCep").val()) == false) {
+                alert("Informe o CEP corretamente.");
+                return false;
+            }
+            // Verifica Endereço
+            if ($("#ContentPlaceHolder1_txtNumeroEndereco").val() == '') {
+                alert("Informe o número do endereço.");
+                return false;
+            }
+            if (checkNumber($("#ContentPlaceHolder1_txtNumeroEndereco").val()) == false) {
+                alert("Informe o número do endereço corretamente.");
+                return false;
+            }
+			
+
+            // Verifica Endereço
+            if ($("#ContentPlaceHolder1_txtEndereco").val() == '') {
+                alert("Informe o Endereço.");
+                return false;
+            }
+
+            // Verifica Complemento
+            if ($("#ContentPlaceHolder1_txtComplemento").val() == '') {
+                alert("Informe o Complemento.");
+                return false;
+			}
+            // Verifica Bairro
+            if ($("#ContentPlaceHolder1_txtBairro").val() == '') {
+                alert("Informe o Bairro.");
+                return false;
+			}
+            // Verifica Cidade
+            if ($("#ContentPlaceHolder1_txtCidade").val() == '') {
+                alert("Informe o Cidade.");
+                return false;
+			}
+            // Verifica Estado
+            if ($("#ContentPlaceHolder1_cboEstado").val() == '') {
+                alert("Informe o Estado.");
+                return false;
+            }
+            $.ajax({
+                type: "POST",
+                url: "MeuEndereco.aspx/wmAtualizarEndereco",
+                data: "{pid_tipo_endereco: '" + $("#ContentPlaceHolder1_cboTipoEndereco").val() +
+                    "', pds_cep: '" + $("#ContentPlaceHolder1_txtCep").val() + 
+                    "', pds_endereco: '" + $("#ContentPlaceHolder1_txtEndereco").val() +
+                    "', pds_numero: '" + $("#ContentPlaceHolder1_txtNumeroEndereco").val() +
+                    "', pds_complemento: '" + $("#ContentPlaceHolder1_txtComplemento").val() + 
+                    "', pds_bairro: '" + $("#ContentPlaceHolder1_txtBairro").val() +
+                    "', pds_cidade: '" + $("#ContentPlaceHolder1_txtCidade").val() +
+                    "', pds_estado: '" + $("#ContentPlaceHolder1_cboEstado").val() +
+                    "', pid_cliente: '" + 
+                    "'}",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: OnSuccess,
+                error: function (request, status, error) {
+                    alert(request.responseText);
+                }
+            });
+
+            return false;
+        }
+
+        function OnSuccess(data, status) {
+
+			if (data.d == "OK") {
+				alert("Endereço atualizado com sucesso!");				
+			}
+			else
+			{
+                alert("Endereço não foi atualizado, houve um problema sistêmico.");
+            }
+        }
+        $(document).ready(function () {
+            jQuery.support.cors = true;
+        });
+
+          
+    </script>
     <!-- Content Wrapper. Contains page content -->
   <%--<div class="content-wrapper">--%>
     <!-- Content Header (Page header) -->
@@ -29,96 +153,89 @@
 					<h4 class="mt-0 mb-20">1.Informações do Endereço:</h4>
 					<div class="form-group">
 						<label>Tipo Endereço:</label>		
-						<select class="form-control">
-								<option value="0">Selecione...</option>
-								<option value="1">Residencial</option>
-								<option value="2">Comercial</option>							
-						</select>					  
+						<asp:DropDownList id="cboTipoEndereco" AutoPostBack="False" runat="server" CssClass="form-control">
+							<asp:ListItem Selected="True" Value="">Selecione...</asp:ListItem>
+							<asp:ListItem Value="1">Residencial</asp:ListItem>
+							<asp:ListItem Value="2">Comercial</asp:ListItem>
+						</asp:DropDownList> 
 					</div>
 					<div class="form-group">
-					  <label>Logradouro:</label>		
-					  <select class="form-control">
-							<option>Sem logradouro</option>
-							<option>Rua</option>
-							<option>Avenida</option>
-							<option>Alameda</option>
-							<option>Estrada</option>
-							<option>Ladeira</option>
-							<option>Largo</option>
-							<option>Pátio</option>
-							<option>Praça</option>
-							<option>Rodovia</option>
-							<option>Sítio</option>
-							<option>Travessa</option>
-							<option>Trevo</option>
-							<option>Via</option>
-							<option>Viaduto</option>
-							<option>Viela</option>
-							<option>Vila</option>
-						</select>					  
+						<label>CEP:</label>
+						<%--<input id="txtCep" type="text" class="form-control" placeholder="Digite o Cep">--%>
+						<asp:TextBox name="txtCep" id="txtCep" type="text" class="form-control" CssClass="form-control" runat="server" placeholder="Digite o Cep" MaxLength ="9"></asp:TextBox>
 					</div>
 					
 					<div class="form-group">
 						<label>Endereço:</label>
-						<input id="txtEndereco" type="text" class="form-control" placeholder="Digite o Endereço">
+						<%--<input id="txtEndereco" type="text" class="form-control" placeholder="Digite o Endereço">--%>
+						<asp:TextBox name="txtEndereco" id="txtEndereco" type="text" class="form-control" CssClass="form-control" runat="server" placeholder="Digite o Endereço"></asp:TextBox>
 					</div>
 					<div class="form-group">
 						<label>Numero:</label>
-						<input id="txtNumeroEndereco" type="text" class="form-control" placeholder="Digite o Número">
+						<%--<input id="txtNumeroEndereco" type="text" class="form-control" placeholder="Digite o Número">--%>
+						<asp:TextBox name="txtNumeroEndereco" id="txtNumeroEndereco" type="text" class="form-control" CssClass="form-control" runat="server" placeholder="Digite o Número"  MaxLength ="6"></asp:TextBox>
 					</div>
 					<div class="form-group">
 						<label>Complemento:</label>							
-						<input id="txtComplemento" type="text" class="form-control" placeholder="Digite o complemento">
+						<%--<input id="txtComplemento" type="text" class="form-control" placeholder="Digite o complemento">--%>
+						<asp:TextBox name="txtComplemento" id="txtComplemento" type="text" class="form-control" CssClass="form-control" runat="server" placeholder="Digite o complemento"></asp:TextBox>
 					</div>
 
 					<div class="form-group">
 					  <label>Bairro:</label>		
-					  <input id="txtBairro" class="form-control" type="text"  placeholder="Digite o Bairro">					  
+					  <%--<input id="txtBairro" class="form-control" type="text"  placeholder="Digite o Bairro">					  --%>
+						<asp:TextBox name="txtBairro" id="txtBairro" type="text" class="form-control" CssClass="form-control" runat="server" placeholder="Digite o Bairro"></asp:TextBox>
 					</div>
 
 					<div class="form-group">
 					  <label>Cidade:</label>		
-					  <input id="txtCidade" class="form-control" type="text"  placeholder="Digite a Cidade">					  
+					  <%--<input id="txtCidade" class="form-control" type="text"  placeholder="Digite a Cidade">					  --%>
+						<asp:TextBox name="txtCidade" id="txtCidade" type="text" class="form-control" CssClass="form-control" runat="server" placeholder="Digite a Cidade"></asp:TextBox>
 					</div>
 
 				<div class="form-group">
 					  <label>Estado:</label>		
-					  <select class="form-control">
-						  <option>Selecione</option>
-						  <option>São Paulo (SP)</option>
-						  <option>Acre (AC)</option>
-						  <option>Alagoas (AL)</option>
-						  <option>Amapá (AP)</option>
-						  <option>Amazonas (AM)</option>
-						  <option>Bahia (BA)</option>
-						  <option>Ceará (CE)</option>
-						  <option>Distrito Federal (DF)</option>
-						  <option>Espírito Santo (ES)</option>
-						  <option>Goiás (GO)</option>
-						  <option>Maranhão (MA)</option>
-						  <option>Mato Grosso (MT)</option>
-						  <option>Mato Grosso do Sul (MS)</option>
-						  <option>Minas Gerais (MG)</option>
-						  <option>Pará (PA)</option>
-						  <option>Paraíba (PB)</option>
-						  <option>Paraná (PR)</option>
-						  <option>Pernambuco (PE)</option>
-						  <option>Piauí (PI)</option>
-						  <option>Rio de Janeiro (RJ)</option>
-						  <option>Rio Grande do Norte (RN)</option>
-						  <option>Rio Grande do Sul (RS)</option>
-						  <option>Rondônia (RO)</option>
-						  <option>Roraima (RR)</option>
-						  <option>Santa Catarina (SC)</option>
-						  <option>Sergipe (SE)</option>
-						  <option>Tocantins (TO)</option>
-						  </select>					  
+						<asp:DropDownList id="cboEstado" AutoPostBack="False" runat="server" CssClass="form-control">
+							<asp:ListItem Selected="True" Value="">Selecione...</asp:ListItem>
+							<asp:ListItem>SP</asp:ListItem>
+							<asp:ListItem>AC</asp:ListItem>
+							<asp:ListItem>AL</asp:ListItem>
+							<asp:ListItem>AP</asp:ListItem>
+							<asp:ListItem>AM</asp:ListItem>
+							<asp:ListItem>BA</asp:ListItem>
+							<asp:ListItem>CE</asp:ListItem>
+							<asp:ListItem>DF</asp:ListItem>
+							<asp:ListItem>ES</asp:ListItem>
+							<asp:ListItem>GO</asp:ListItem>
+							<asp:ListItem>MA</asp:ListItem>
+							<asp:ListItem>MT</asp:ListItem>
+							<asp:ListItem>MS</asp:ListItem>
+							<asp:ListItem>MG</asp:ListItem>
+							<asp:ListItem>PA</asp:ListItem>
+							<asp:ListItem>PB</asp:ListItem>
+							<asp:ListItem>PR</asp:ListItem>
+							<asp:ListItem>PE</asp:ListItem>
+							<asp:ListItem>PI</asp:ListItem>
+							<asp:ListItem>RJ</asp:ListItem>
+							<asp:ListItem>RN</asp:ListItem>
+							<asp:ListItem>RS</asp:ListItem>
+							<asp:ListItem>RO</asp:ListItem>
+							<asp:ListItem>RR</asp:ListItem>
+							<asp:ListItem>SC</asp:ListItem>
+							<asp:ListItem>SE</asp:ListItem>
+							<asp:ListItem>TO</asp:ListItem>
+						</asp:DropDownList>
 					</div>
-					
+					<div class="form-group">
+					  <label>Data da Atualização:</label>		
+					  <%--<input class="form-control" type="text" value="" id="txtDataInclusao" disabled="disabled" >			--%>
+                      <asp:TextBox id="txtDataAtualizacao" type="text" class="form-control" CssClass="form-control" runat="server" Enabled ="false"></asp:TextBox>
+					</div>
 				<!-- /.box-body -->
 				<div class="box-footer">
-					<button type="submit" class="btn btn-danger">Cancelar</button>
-					<button type="submit" class="btn btn-success pull-right">Gravar</button>
+					<button type="button" class="btn btn-danger" onclick="Voltar()">Voltar</button>
+					<button type="button" class="btn btn-success pull-right" onclick="AtualizarEndereco()">Gravar</button>					
+
 				</div>
 			</div>
 			</form>

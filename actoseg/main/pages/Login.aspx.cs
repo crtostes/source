@@ -6,6 +6,8 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Acto.Usuario.Busines;
 using Acto.Usuario.Entity;
+using Acto.Cliente.Busines;
+using Acto.Cliente.Entity;
 using Acto.Infra.Contexto;
 
 namespace actoseg.main
@@ -25,7 +27,7 @@ namespace actoseg.main
                 {
 
 
-                    
+                   
                     Response.Redirect("Default.aspx");
 
                     
@@ -72,7 +74,15 @@ namespace actoseg.main
 
             ActoContexto objContexto = new ActoContexto();
             objContexto.Usuario = objEntUsuario;
-            
+
+            busCliente objBusCliente = new busCliente();
+            entCliente objEntcliente = objBusCliente.ConsultarClienteEmail(objEntUsuario.Email);
+            if (objEntcliente != null)
+            {
+                objContexto.Cliente = objEntcliente;
+                
+            }
+
             HttpContext.Current.Session.Add("contexto", objContexto);
 
             if (objBusUsuario.ConsultarAcesso(objEntUsuario))

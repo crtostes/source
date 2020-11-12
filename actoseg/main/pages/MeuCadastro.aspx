@@ -2,7 +2,10 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
-	<script>
+
+    <script>
+       
+
         function validaTelefone($phone)
         {
             //^(\(11\) [9][0-9]{4}-[0-9]{4})|(\(1[2-9]\) [5-9][0-9]{3}-[0-9]{4})|(\([2-9][1-9]\) [5-9][0-9]{3}-[0-9]{4})$
@@ -121,10 +124,10 @@
                 return false;
             }
 
-            if (validaTelefone($("#ContentPlaceHolder1_txtTelefoneFixo").val()) == false) {
-                alert("Telefone Fixo Inválido!");
-                return false;
-            }
+            //if (validaTelefone($("#ContentPlaceHolder1_txtTelefoneFixo").val()) == false) {
+            //    alert("Telefone Fixo Inválido!");
+            //    return false;
+            //}
 
             // Validação dos Campos
             var Genero = "";
@@ -224,7 +227,7 @@
   <%--<div class="content-wrapper">--%>
     <!-- Content Header (Page header) -->
     <section class="content-header">
-     
+    
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="#"><i class="mdi mdi-home-outline"></i> Inicío</a></li>
         <li class="breadcrumb-item"><a href="#">Cadastro</a></li>
@@ -235,7 +238,8 @@
     <!-- Main content -->
     <section class="content">
      
-      <div class="row">		  
+      <div class="row">	
+         
         <div class="col-lg-6 col-12">
 		  <div class="box">
 			<div class="box-header with-border bg-light">
@@ -284,7 +288,7 @@
 					</div>
 
 					<div class="form-group">
-						<label>Telefone Fixo:</label>							
+						<label>Telefone Celular 2:</label>							
 						<%--<input type="text" class="form-control" id="txtTelefoneFixo">--%>
                         <asp:TextBox id="txtTelefoneFixo" type="text" class="form-control" CssClass="form-control" runat="server" ></asp:TextBox>
 					</div>
@@ -350,7 +354,7 @@
 				
 
                 <div class="form-group">
-						<label>Teste Radio:</label>
+						<label>Empresa aberta:</label>
 						<div class="c-inputs-stacked">
 							<asp:RadioButton id="rdoEmpresaSim" runat="server" GroupName="RadioGroupEmpresa" Text="Sim"></asp:RadioButton>
                             <asp:RadioButton id="rdoEmpresaNao" runat="server" GroupName="RadioGroupEmpresa" Text="Não"></asp:RadioButton>							
@@ -372,6 +376,7 @@
       <!-- /.row -->
       
     </section>
+    	
     <!-- /.content -->
   <%--</div>--%>
   <!-- /.content-wrapper -->

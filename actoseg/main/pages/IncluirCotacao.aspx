@@ -1,45 +1,277 @@
-﻿<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <link rel="icon" href="../../images/logoactopeq2.jpg">
+﻿<%@ Page Language="C#" MasterPageFile="~/main/pages/Principal.Master"  AutoEventWireup="true" CodeBehind="IncluirCotacao.aspx.cs" Inherits="actoseg.main.pages.IncluirCotacao" %>
 
-    <title>ACTOSEG - COTAÇÃO DE AUTOMÓVEL</title>
-  
-	<!-- Bootstrap 4.1-->
-	<link rel="stylesheet" href="../../assets/vendor_components/bootstrap/dist/css/bootstrap.min.css">
-	
-	<!-- Bootstrap extend-->
-	<link rel="stylesheet" href="../css/bootstrap-extend.css">	
-	
-	<!-- Theme style -->
-	<link rel="stylesheet" href="../css/master_style.css">
+<asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+	<script>
+        function checkNumber(valor) {
+            var regra = /^[0-9]+$/;
+            if (valor.match(regra)) {
+				return true;
+            } else {
+                return false;
+            }
+        }; 
+        function Trim(strTexto) {
+            // Substitúi os espaços vazios no inicio e no fim da string por vazio.
+            return strTexto.replace(/^s+|s+$/g, '');
+        }
+        function IsCEP(strCEP, blnVazio) {
+            // Caso o CEP não esteja nesse formato ele é inválido!
+            var objER = /^[0-9]{5}-[0-9]{3}$/;
+
+            strCEP = Trim(strCEP)
+            if (strCEP.length > 0) {
+                if (objER.test(strCEP))
+                    return true;
+                else
+                    return false;
+            }
+            else
+                return blnVazio;
+        }
+        function Voltar() {
+            window.location.href = "Default.aspx";
+        }
+        function AtualizarEndereco() {
+
+            if ($("#ContentPlaceHolder1_txtIdCliente").val() == '') {
+                alert("Localize o Indicado para atualizar seu Endereço.");
+                return false;
+            }
+
+            //Verifica Tipo Endereço
+            if ($("#ContentPlaceHolder1_cboTipoEndereco").val() == null) {
+                alert("Informe o Tipo de Endereço do Indicado.");
+                return false;
+            }
+            //Verifica Tipo Endereço
+            if ($("#ContentPlaceHolder1_cboTipoEndereco").val() == '') {
+                alert("Informe o Tipo de Endereço do Indicado.");
+                return false;
+            }
+
+            //Verifica CEP
+            if ($("#ContentPlaceHolder1_txtCep").val() == '') {
+                alert("Informe o CEP.");
+                return false;
+            }
+            if (IsCEP($("#ContentPlaceHolder1_txtCep").val()) == false) {
+                alert("Informe o CEP do Indicado corretamente .");
+                return false;
+            }
+
+            // Verifica Endereço
+            if ($("#ContentPlaceHolder1_txtEndereco").val() == '') {
+                alert("Informe o Endereço do Indicado.");
+                return false;
+            }
+
+            // Verifica Endereço
+            if ($("#ContentPlaceHolder1_txtNumeroEndereco").val() == '') {
+                alert("Informe o número do endereço do Indicado.");
+                return false;
+            }
+            if (checkNumber($("#ContentPlaceHolder1_txtNumeroEndereco").val()) == false) {
+                alert("Informe o número do Endereço do Indicado corretamente.");
+                return false;
+            }
+			
+           
+
+            // Verifica Complemento
+            if ($("#ContentPlaceHolder1_txtComplemento").val() == '') {
+                alert("Informe o Complemento do Endereço.");
+                return false;
+			}
+            // Verifica Bairro
+            if ($("#ContentPlaceHolder1_txtBairro").val() == '') {
+                alert("Informe o Bairro do Indicado.");
+                return false;
+			}
+            // Verifica Cidade
+            if ($("#ContentPlaceHolder1_txtCidade").val() == '') {
+                alert("Informe o Cidade do Indicado.");
+                return false;
+			}
+            // Verifica Estado
+            if ($("#ContentPlaceHolder1_cboEstado").val() == '') {
+                alert("Informe o Estado do Indicado.");
+                return false;
+            }
+            $.ajax({
+                type: "POST",
+                url: "MeuEndereco.aspx/wmAtualizarEndereco",
+                data: "{pid_tipo_endereco: '" + $("#ContentPlaceHolder1_cboTipoEndereco").val() +
+                    "', pds_cep: '" + $("#ContentPlaceHolder1_txtCep").val() + 
+                    "', pds_endereco: '" + $("#ContentPlaceHolder1_txtEndereco").val() +
+                    "', pds_numero: '" + $("#ContentPlaceHolder1_txtNumeroEndereco").val() +
+                    "', pds_complemento: '" + $("#ContentPlaceHolder1_txtComplemento").val() + 
+                    "', pds_bairro: '" + $("#ContentPlaceHolder1_txtBairro").val() +
+                    "', pds_cidade: '" + $("#ContentPlaceHolder1_txtCidade").val() +
+                    "', pds_estado: '" + $("#ContentPlaceHolder1_cboEstado").val() +
+                    "', pid_cliente: '" + $("#ContentPlaceHolder1_txtIdCliente").val() +
+                    "'}",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: OnSuccess,
+                error: function (request, status, error) {
+                    alert(request.responseText);
+                }
+            });
+
+            return false;
+        }
+
+        function OnSuccess(data, status) {
+
+			if (data.d == "OK") {
+				alert("Endereço do Indicado atualizado com sucesso!");				
+			}
+			else
+			{
+                alert("Endereço do Indicado não foi atualizado, houve um problema sistêmico.");
+            }
+		}
+
+        function CarregarListaIndicados() {
+           
+            $.ajax({
+                type: "POST",
+                url: "MeuIndicado.aspx/wmListarIndicados",
+                data: "{id_cliente: " + $("#ContentPlaceHolder1_txtIdClienteIndicador").val() + "}",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: OnSuccessCarregarListaIndicado,
+                error: function (request, status, error) {
+                    alert(request.responseText);
+                }
+            });
+        }
+        function OnSuccessCarregarListaIndicado(data, status) {
+            //$('p').html("Sobrenome:" + data.d._sobreNome + " idade:" + data.d._idade + "");
+            //$("#ContentPlaceHolder1_txtNome").val(data.d.ds_nome);
+
+            $('#ContentPlaceHolder1_ddlIndicados').find("option").remove();
+
+            //$.each(data, function (key, value) {
+            //    alert(key + ": " + value);
+            //});
+            $('#ContentPlaceHolder1_ddlIndicados').append('<option Value="">Selecione...</option>');
+            var obj = JSON.parse(data.d);
+
+            obj.forEach(function (o, index) {
+                //var option2 = document.createElement('option');
+                //option2.value = o.id_cliente;
+                //option2.text = o.ds_nome;
+                $('#ContentPlaceHolder1_ddlIndicados').append('<option Value="' + o.id_cliente + '">' + o.ds_nome + '</option>');
+                //$('#ContentPlaceHolder1_ddlIndicados').add(option2);
+                //alert(o.ds_nome);
+            });
+
+        }
+        function CarregarIndicadoLista() {
+
+            if ($('#ContentPlaceHolder1_ddlIndicados').val() == "") {
+                alert("Selecione o Indicado para Atualizar o Cadastro!");
+                return false;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "MeuIndicado.aspx/wmConsultarIndicado",
+                data: "{id_cliente: " + $('#ContentPlaceHolder1_ddlIndicados').val() + "}",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: OnSuccessConsultaIndicado,
+                error: function (request, status, error) {
+                    alert(request.responseText);
+                }
+            });
+        }
+        function CarregarIndicado() {
 
 
-	<!-- Bankio admin skins -->
-	<%--<link rel="stylesheet" href="../css/skins/_all-skins.css">--%>
+            $.ajax({
+                type: "POST",
+                url: "MeuIndicado.aspx/wmConsultarIndicado",
+                data: "{id_cliente: '" + $("#ContentPlaceHolder1_txtIdCliente").val() + "'}",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: OnSuccessConsultaIndicado,
+                error: function (request, status, error) {
+                    alert(request.responseText);
+                }
+            });
+        }
+        function OnSuccessConsultaIndicado(data, status) {
+           
+            //$('p').html("Sobrenome:" + data.d._sobreNome + " idade:" + data.d._idade + "");
+            $("#ContentPlaceHolder1_txtIdCliente").val(data.d.id_cliente);
+            $("#ContentPlaceHolder1_txtNome").val(data.d.ds_nome);
+            $("#ContentPlaceHolder1_txtEmail").val(data.d.ds_email);
+            $("#ContentPlaceHolder1_txtCPF").val(data.d.nr_cpf_cnpj);
 
-	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-	<!--[if lt IE 9]>
-	<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-	<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-	<![endif]-->
-	
-</head>
+            ConsultaEnderecoIndicado();
+            
 
-<body class="hold-transition skin-black sidebar-mini">
-<div class="wrapper">
+        }
+
+        function ConsultaEnderecoIndicado() {
+            $.ajax({
+                type: "POST",
+                url: "EnderecoIndicado.aspx/wmConsultarEnderecoIndicado",
+                data: "{id_cliente: '" + $("#ContentPlaceHolder1_txtIdCliente").val() + "'}",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: OnSuccessConsultaEnderecoIndicado,
+                error: function (request, status, error) {
+                    alert(request.responseText);
+                }
+            });
+        }
+
+        function OnSuccessConsultaEnderecoIndicado(data, status) {
+            
+            //$('p').html("Sobrenome:" + data.d._sobreNome + " idade:" + data.d._idade + "");
+            $("#ContentPlaceHolder1_cboTipoEndereco").val(data.d.id_tipo_endereco);
+            $("#ContentPlaceHolder1_txtCep").val(data.d.ds_cep);
+            $("#ContentPlaceHolder1_txtEndereco").val(data.d.ds_endereco);
+            $("#ContentPlaceHolder1_txtNumeroEndereco").val(data.d.ds_numero);
+            $("#ContentPlaceHolder1_txtComplemento").val(data.d.ds_complemento);
+            $("#ContentPlaceHolder1_txtBairro").val(data.d.ds_bairro);
+            $("#ContentPlaceHolder1_txtCidade").val(data.d.ds_cidade);
+            $("#ContentPlaceHolder1_cboEstado").val(data.d.ds_estado);
+            $("#ContentPlaceHolder1_txtDataAtualizacao").val(data.d.dt_atualizacao);
+
+            //cboTipoEndereco.SelectedValue = objEntEndereco.id_tipo_endereco.ToString();
+            //txtCep.Text = objEntEndereco.ds_cep;
+            //txtEndereco.Text = objEntEndereco.ds_endereco;
+            //txtNumeroEndereco.Text = objEntEndereco.ds_numero;
+            //txtComplemento.Text = objEntEndereco.ds_complemento;
+            //txtBairro.Text = objEntEndereco.ds_bairro;
+            //txtCidade.Text = objEntEndereco.ds_cidade;
+            //cboEstado.Text = objEntEndereco.ds_estado;
+            //txtDataAtualizacao.Text = objEntEndereco.dt_atualizacao.ToString(@"dd/MM/yyyy");
+
+        }
+        $(document).ready(function () {
+            jQuery.support.cors = true;
+        });
+
+          
+    </script>
+    <!-- Content Wrapper. Contains page content -->
+  <%--<div class="content-wrapper">--%>
+    <!-- Content Header (Page header) -->
+  <%-- <body class="hold-transition skin-black sidebar-mini">
+<div class="wrapper">--%>
 
   <header class="main-header">	  	
 	  <script>
           function submit() {
 
-			  alert("acto teste");
+              alert("acto teste");
 
           }
 
@@ -64,21 +296,18 @@
 
   </header>
   
-
+	 <section class="content-header">
+     
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#"><i class="mdi mdi-home-outline"></i> Inicío</a></li>
+        <li class="breadcrumb-item"><a href="#">Cotações</a></li>
+        <li class="breadcrumb-item active">Incluir</li>
+      </ol>
+    </section>
 
   <!-- Content Wrapper. Contains page content -->
   <div class="">
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-      <h1>
-        ACTOSEG CORRETORA DE SEGUROS
-      </h1>
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="#"><i class="mdi mdi-home-outline"></i> Inicio</a></li>
-        <li class="breadcrumb-item"><a href="#">Cotação</a></li>
-        <li class="breadcrumb-item active">Automovél</li>
-      </ol>
-    </section>
+ 
 
     <!-- Main content -->
     <section class="content">
@@ -597,229 +826,8 @@
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->
-  
-   <footer class="main-footer">
-    <div class="pull-right d-none d-sm-inline-block">
-        <ul class="nav nav-primary nav-dotted nav-dot-separated justify-content-center justify-content-md-end">
-		  <li class="nav-item">
-			<a class="nav-link" href="javascript:void(0)">COTE AGORA</a>
-		  </li>
-		  <li class="nav-item">
-			<a class="nav-link" href="#">SEGURO AUTOMÓVEL</a>
-		  </li>
-		</ul>
-    </div>
-	  &copy; 2020 <a href="http://www.actoseg.com.br/">ACTOSEG CORRETORA</a>. Todos os direitos reservados.
-  </footer>
-  <!-- Control Sidebar -->
-<%--  <aside class="control-sidebar control-sidebar-light">
-    <!-- Create the tabs -->
-    <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
-      <li class="nav-item"><a href="#control-sidebar-home-tab" data-toggle="tab" class="active"><i class="fa fa-home"></i></a></li>
-      <li class="nav-item"><a href="#control-sidebar-settings-tab" data-toggle="tab"><i class="fa fa-cog fa-spin"></i></a></li>
-    </ul>
-    <!-- Tab panes -->
-    <div class="tab-content">
-      <!-- Home tab content -->
-      <div class="tab-pane active" id="control-sidebar-home-tab">
-        <h3 class="control-sidebar-heading">Recent Activity</h3>
-        <ul class="control-sidebar-menu">
-          <li>
-            <a href="javascript:void(0)">
-              <i class="menu-icon fa fa-birthday-cake bg-danger"></i>
-
-              <div class="menu-info">
-                <h4 class="control-sidebar-subheading">Admin Birthday</h4>
-
-                <p>Will be July 24th</p>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)">
-              <i class="menu-icon fa fa-user bg-warning"></i>
-
-              <div class="menu-info">
-                <h4 class="control-sidebar-subheading">Jhone Updated His Profile</h4>
-
-                <p>New Email : jhone_doe@demo.com</p>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)">
-              <i class="menu-icon fa fa-envelope-o bg-info"></i>
-
-              <div class="menu-info">
-                <h4 class="control-sidebar-subheading">Disha Joined Mailing List</h4>
-
-                <p>disha@demo.com</p>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)">
-              <i class="menu-icon fa fa-file-code-o bg-success"></i>
-
-              <div class="menu-info">
-                <h4 class="control-sidebar-subheading">Code Change</h4>
-
-                <p>Execution time 15 Days</p>
-              </div>
-            </a>
-          </li>
-        </ul>
-        <!-- /.control-sidebar-menu -->
-
-        <h3 class="control-sidebar-heading">Tasks Progress</h3>
-        <ul class="control-sidebar-menu">
-          <li>
-            <a href="javascript:void(0)">
-              <h4 class="control-sidebar-subheading">
-                Web Design
-                <span class="label label-danger pull-right">40%</span>
-              </h4>
-
-              <div class="progress progress-xxs">
-                <div class="progress-bar progress-bar-danger" style="width: 40%"></div>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)">
-              <h4 class="control-sidebar-subheading">
-                Update Data
-                <span class="label label-success pull-right">75%</span>
-              </h4>
-
-              <div class="progress progress-xxs">
-                <div class="progress-bar progress-bar-success" style="width: 75%"></div>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)">
-              <h4 class="control-sidebar-subheading">
-                Order Process
-                <span class="label label-warning pull-right">89%</span>
-              </h4>
-
-              <div class="progress progress-xxs">
-                <div class="progress-bar progress-bar-warning" style="width: 89%"></div>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)">
-              <h4 class="control-sidebar-subheading">
-                Development 
-                <span class="label label-primary pull-right">72%</span>
-              </h4>
-
-              <div class="progress progress-xxs">
-                <div class="progress-bar progress-bar-primary" style="width: 72%"></div>
-              </div>
-            </a>
-          </li>
-        </ul>
-        <!-- /.control-sidebar-menu -->
-
-      </div>
-      <!-- /.tab-pane -->
-      <!-- Stats tab content -->
-      <div class="tab-pane" id="control-sidebar-stats-tab">Stats Tab Content</div>
-      <!-- /.tab-pane -->
-      <!-- Settings tab content -->
-      <div class="tab-pane" id="control-sidebar-settings-tab">
-        <form method="post">
-          <h3 class="control-sidebar-heading">General Settings</h3>
-
-          <div class="form-group">
-            <input type="checkbox" id="report_panel" class="chk-col-grey" >
-			<label for="report_panel" class="control-sidebar-subheading ">Report panel usage</label>
-
-            <p>
-              general settings information
-            </p>
-          </div>
-          <!-- /.form-group -->
-
-          <div class="form-group">
-            <input type="checkbox" id="allow_mail" class="chk-col-grey" >
-			<label for="allow_mail" class="control-sidebar-subheading ">Mail redirect</label>
-
-            <p>
-              Other sets of options are available
-            </p>
-          </div>
-          <!-- /.form-group -->
-
-          <div class="form-group">
-            <input type="checkbox" id="expose_author" class="chk-col-grey" >
-			<label for="expose_author" class="control-sidebar-subheading ">Expose author name</label>
-
-            <p>
-              Allow the user to show his name in blog posts
-            </p>
-          </div>
-          <!-- /.form-group -->
-
-          <h3 class="control-sidebar-heading">Chat Settings</h3>
-
-          <div class="form-group">
-            <input type="checkbox" id="show_me_online" class="chk-col-grey" >
-			<label for="show_me_online" class="control-sidebar-subheading ">Show me as online</label>
-          </div>
-          <!-- /.form-group -->
-
-          <div class="form-group">
-            <input type="checkbox" id="off_notifications" class="chk-col-grey" >
-			<label for="off_notifications" class="control-sidebar-subheading ">Turn off notifications</label>
-          </div>
-          <!-- /.form-group -->
-
-          <div class="form-group">
-            <label class="control-sidebar-subheading">              
-              <a href="javascript:void(0)" class="text-red margin-r-5"><i class="fa fa-trash-o"></i></a>
-              Delete chat history
-            </label>
-          </div>
-          <!-- /.form-group -->
-        </form>
-      </div>
-      <!-- /.tab-pane -->
-    </div>
-  </aside>--%>
-  <!-- /.control-sidebar -->
-  
-  <!-- Add the sidebar's background. This div must be placed immediately after the control sidebar -->
-  <div class="control-sidebar-bg"></div>
-</div>
-<!-- ./wrapper -->
-
-	<!-- jQuery 3 -->
-	<script src="../../assets/vendor_components/jquery-3.3.1/jquery-3.3.1.js"></script>
-	
-	<!-- fullscreen -->
-	<script src="../../assets/vendor_components/screenfull/screenfull.js"></script>
-	
-	<!-- popper -->
-	<script src="../../assets/vendor_components/popper/dist/popper.min.js"></script>
-	
-	<!-- Bootstrap 4.1-->
-	<script src="../../assets/vendor_components/bootstrap/dist/js/bootstrap.min.js"></script>
-	
-	<!-- SlimScroll -->
-	<script src="../../assets/vendor_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
-	
-	<!-- FastClick -->
-	<script src="../../assets/vendor_components/fastclick/lib/fastclick.js"></script>
-	
-	<!-- Bankio admin App -->
-	<script src="../js/template.js"></script>
-	
-	
-	
-	
-</body>
-</html>
+ 
+    <!-- /.content -->
+  <%--</div>--%>
+  <!-- /.content-wrapper -->
+</asp:Content>

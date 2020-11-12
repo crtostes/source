@@ -160,9 +160,9 @@
           <ul class="treeview-menu">
             <li><a href="MeuCadastro.aspx"><i class="fa fa-circle-thin"></i>Meu Cadastro</a></li>
               <li><a href="MeuEndereco.aspx"><i class="fa fa-circle-thin"></i>Meu Endereço</a></li>
-              <li><a href="em_manutencao.html"><i class="fa fa-circle-thin"></i>Minha Empresa</a></li>
-              <li><a href="em_manutencao.html"><i class="fa fa-circle-thin"></i>Incluir Indicado</a></li>              
-              <li><a href="em_manutencao.html"><i class="fa fa-circle-thin"></i>Endereço do Indicado</a></li>              
+              <%--<li><a href="em_manutencao.html"><i class="fa fa-circle-thin"></i>Minha Empresa</a></li>--%>
+              <li><a href="MeuIndicado.aspx"><i class="fa fa-circle-thin"></i>Incluir Indicado</a></li>              
+              <li><a href="EnderecoIndicado.aspx""><i class="fa fa-circle-thin"></i>Endereço do Indicado</a></li>              
           </ul>
         </li>
         <li class="treeview">
@@ -173,8 +173,8 @@
             </span>
           </a>
           <ul class="treeview-menu">
-              <li><a href="Default.aspx"><i class="fa fa-circle-thin"></i>Incluir</a></li>  
-              <li><a href="Default.aspx"><i class="fa fa-circle-thin"></i>Consultar/Excluir</a></li>
+              <li><a href="IncluirCotacao.aspx"><i class="fa fa-circle-thin"></i>Incluir</a></li>  
+              <li><a href="GestaoCotacao.aspx"><i class="fa fa-circle-thin"></i>Gestão</a></li>
                       
           </ul>
         </li>  		

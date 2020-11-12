@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 
 namespace actoseg.bkoficce.main.pages
 {
-    public partial class cotacao : System.Web.UI.Page
+    public partial class Cotacao : System.Web.UI.Page
     {
         protected void Page_Load(object sender, EventArgs e)
         {

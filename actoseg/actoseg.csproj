@@ -8613,9 +8613,11 @@
     <Content Include="main\js\template.js" />
     <Content Include="main\pages\Default.aspx" />
     <Content Include="main\pages\em_manutencao.html" />
+    <Content Include="main\pages\GestaoCotacao.aspx" />
+    <Content Include="main\pages\IncluirCotacao.aspx" />
     <Content Include="main\pages\IncluirEmpresa.aspx" />
-    <Content Include="main\pages\IncluirEnderecoIndicado.aspx" />
-    <Content Include="main\pages\IncluirIndicacao.aspx" />
+    <Content Include="main\pages\EnderecoIndicado.aspx" />
+    <Content Include="main\pages\MeuIndicado.aspx" />
     <Content Include="main\pages\IncluirLogin.aspx" />
     <Content Include="main\pages\Login.aspx" />
     <Content Include="main\pages\app-calendar.html" />
@@ -8636,7 +8638,7 @@
     <Content Include="main\pages\chart-inline.html" />
     <Content Include="main\pages\chart-morris.html" />
     <Content Include="main\pages\chart-peity.html" />
-    <Content Include="main\pages\cotacao.aspx" />
+    <Content Include="main\pages\Cotacao.aspx" />
     <Content Include="main\pages\error-404.html" />
     <Content Include="main\pages\error-500.html" />
     <Content Include="main\pages\extension-fullscreen.html" />
@@ -9982,6 +9984,20 @@
     <Compile Include="main\pages\Default.aspx.designer.cs">
       <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
+    <Compile Include="main\pages\GestaoCotacao.aspx.cs">
+      <DependentUpon>GestaoCotacao.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="main\pages\GestaoCotacao.aspx.designer.cs">
+      <DependentUpon>GestaoCotacao.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="main\pages\IncluirCotacao.aspx.cs">
+      <DependentUpon>IncluirCotacao.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="main\pages\IncluirCotacao.aspx.designer.cs">
+      <DependentUpon>IncluirCotacao.aspx</DependentUpon>
+    </Compile>
     <Compile Include="main\pages\IncluirEmpresa.aspx.cs">
       <DependentUpon>IncluirEmpresa.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -9989,19 +10005,19 @@
     <Compile Include="main\pages\IncluirEmpresa.aspx.designer.cs">
       <DependentUpon>IncluirEmpresa.aspx</DependentUpon>
     </Compile>
-    <Compile Include="main\pages\IncluirEnderecoIndicado.aspx.cs">
-      <DependentUpon>IncluirEnderecoIndicado.aspx</DependentUpon>
+    <Compile Include="main\pages\EnderecoIndicado.aspx.cs">
+      <DependentUpon>EnderecoIndicado.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="main\pages\IncluirEnderecoIndicado.aspx.designer.cs">
-      <DependentUpon>IncluirEnderecoIndicado.aspx</DependentUpon>
+    <Compile Include="main\pages\EnderecoIndicado.aspx.designer.cs">
+      <DependentUpon>EnderecoIndicado.aspx</DependentUpon>
     </Compile>
-    <Compile Include="main\pages\IncluirIndicacao.aspx.cs">
-      <DependentUpon>IncluirIndicacao.aspx</DependentUpon>
+    <Compile Include="main\pages\MeuIndicado.aspx.cs">
+      <DependentUpon>MeuIndicado.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="main\pages\IncluirIndicacao.aspx.designer.cs">
-      <DependentUpon>IncluirIndicacao.aspx</DependentUpon>
+    <Compile Include="main\pages\MeuIndicado.aspx.designer.cs">
+      <DependentUpon>MeuIndicado.aspx</DependentUpon>
     </Compile>
     <Compile Include="main\pages\IncluirLogin.aspx.cs">
       <DependentUpon>IncluirLogin.aspx</DependentUpon>
@@ -10017,12 +10033,12 @@
     <Compile Include="main\pages\Login.aspx.designer.cs">
       <DependentUpon>Login.aspx</DependentUpon>
     </Compile>
-    <Compile Include="main\pages\cotacao.aspx.cs">
-      <DependentUpon>cotacao.aspx</DependentUpon>
+    <Compile Include="main\pages\Cotacao.aspx.cs">
+      <DependentUpon>Cotacao.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="main\pages\cotacao.aspx.designer.cs">
-      <DependentUpon>cotacao.aspx</DependentUpon>
+    <Compile Include="main\pages\Cotacao.aspx.designer.cs">
+      <DependentUpon>Cotacao.aspx</DependentUpon>
     </Compile>
     <Compile Include="main\pages\MeuCadastro.aspx.cs">
       <DependentUpon>MeuCadastro.aspx</DependentUpon>
@@ -10092,6 +10108,22 @@
     <ProjectReference Include="..\Acto.Cliente.Entity\Acto.Cliente.Entity.csproj">
       <Project>{d9412ba8-07cc-4f10-b24a-75a25d8bb24c}</Project>
       <Name>Acto.Cliente.Entity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Acto.Endereco.Busines\Acto.Endereco.Busines.csproj">
+      <Project>{6a18757c-a164-47b5-8396-92710e5cfc87}</Project>
+      <Name>Acto.Endereco.Busines</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Acto.Endereco.Entity\Acto.Endereco.Entity.csproj">
+      <Project>{a5009815-f520-4150-86ac-42c1bbab9913}</Project>
+      <Name>Acto.Endereco.Entity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Acto.Indicado.Busines\Acto.Indicado.Busines.csproj">
+      <Project>{4291f777-b882-4083-a0b4-02ad88fd3f1a}</Project>
+      <Name>Acto.Indicado.Busines</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Acto.Indicado.Entity\Acto.Indicado.Entity.csproj">
+      <Project>{819b9e1f-93f4-401b-a0cf-0f2e18414c4b}</Project>
+      <Name>Acto.Indicado.Entity</Name>
     </ProjectReference>
     <ProjectReference Include="..\Acto.Infra.Contexto\Acto.Infra.Contexto.csproj">
       <Project>{baa5ed3e-7a09-4565-824c-8a754febc59c}</Project>

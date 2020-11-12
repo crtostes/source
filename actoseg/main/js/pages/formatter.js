@@ -7,22 +7,22 @@ $(function () {
 	//Date dd/mm/yyyy
 	$('#ContentPlaceHolder1_txtDataNascimento').formatter({
 		'pattern': '{{99}}/{{99}}/{{9999}}',
-		'persistent': true
+		'persistent': false
 	});
 	$('#txtDataNascimento').formatter({
 		'pattern': '{{99}}/{{99}}/{{9999}}',
-		'persistent': true
+		'persistent': false
 	});
 
 	//Date dd/mm/yyyy
 	$('#ContentPlaceHolder1_txtDataExpedicao').formatter({
 		'pattern': '{{99}}/{{99}}/{{9999}}',
-		'persistent': true
+		'persistent': false
 	});
 
 	$('#txtDataExpedicao').formatter({
 		'pattern': '{{99}}/{{99}}/{{9999}}',
-		'persistent': true
+		'persistent': false
 	});
 
 	//Date dd/mm/yyyy
@@ -57,22 +57,31 @@ $(function () {
 	
 	$('#txtTelefoneCelular').formatter({
 		'pattern': '({{99}}) {{99999}}-{{9999}}',
-		'persistent': true
+		'persistent': false
+	});
+
+	$('#txtTelefoneCelular2').formatter({
+		'pattern': '({{99}}) {{99999}}-{{9999}}',
+		'persistent': false
 	});
 
 	$('#ContentPlaceHolder1_txtTelefoneCelular').formatter({
 		'pattern': '({{99}}) {{99999}}-{{9999}}',
-		'persistent': true
+		'persistent': false
+	});
+	$('#ContentPlaceHolder1_txtTelefoneCelular2').formatter({
+		'pattern': '({{99}}) {{99999}}-{{9999}}',
+		'persistent': false
 	});
 
 	$('#txtTelefoneFixo').formatter({
 		'pattern': '({{99}}) {{9999}}-{{9999}}',
-		'persistent': true
+		'persistent': false
 	});
 
 	$('#ContentPlaceHolder1_txtTelefoneFixo').formatter({
 		'pattern': '({{99}}) {{9999}}-{{9999}}',
-		'persistent': true
+		'persistent': false
 	});
 	//Phone 2 E.g. +1 123-456-7890
 	$('#phone2').formatter({

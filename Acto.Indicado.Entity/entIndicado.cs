@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Acto.Cliente.Entity
+namespace Acto.Indicado.Entity
 {
-    public class entCliente
+    public class entIndicado
     {
         public int id_cliente { get; set; }
         public string ds_nome { get; set; }
@@ -24,9 +24,10 @@ namespace Acto.Cliente.Entity
         public int id_genero { get; set; }
         public int id_usuario { get; set; }
         public int id_cliente_pj { get; set; }
+        public int id_cliente_indicado { get; set; }
     }
 
-    public class entClienteTexto
+    public class entIndicadoTexto
     {
         public string id_cliente { get; set; }
         public string ds_nome { get; set; }
@@ -44,5 +45,6 @@ namespace Acto.Cliente.Entity
         public string id_genero { get; set; }
         public string id_usuario { get; set; }
         public string id_cliente_pj { get; set; }
+        public string id_cliente_indicado { get; set; }
     }
 }
