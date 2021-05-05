@@ -60,15 +60,6 @@ namespace actoseg.main.pages
         protected global::System.Web.UI.WebControls.TextBox txtComplemento;
 
         /// <summary>
-        /// txtBairro control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtBairro;
-
-        /// <summary>
         /// txtCidade control.
         /// </summary>
         /// <remarks>

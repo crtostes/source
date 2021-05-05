@@ -21,14 +21,14 @@ namespace actoseg.main.pages
         protected void Page_Load(object sender, EventArgs e)
         {
             ActoContexto objContexto = (ActoContexto)HttpContext.Current.Session["contexto"];
-
+            if (objContexto == null) Response.Redirect("Login.aspx");
             //txtEmail.Text = objContexto.Usuario.Email;
-            busCliente objBusCliente = new busCliente();
-            entCliente objEntcliente = objBusCliente.ConsultarClienteEmail(objContexto.Usuario.Email);
-            objContexto.Cliente = objEntcliente;
-            HttpContext.Current.Session["contexto"] = objContexto;
+            //busCliente objBusCliente = new busCliente();
+            //entCliente objEntcliente = objBusCliente.ConsultarClienteEmail(objContexto.Usuario.Email);
+            //objContexto.Cliente = objEntcliente;
+            //HttpContext.Current.Session["contexto"] = objContexto;
 
-            txtIdClienteIndicador.Text = objEntcliente.id_cliente.ToString();
+            txtIdClienteIndicador.Text = objContexto.Cliente.id_cliente.ToString();
         }
         [System.Web.Services.WebMethod]
         public static entEnderecoTexto wmConsultarEnderecoIndicado(int id_cliente)

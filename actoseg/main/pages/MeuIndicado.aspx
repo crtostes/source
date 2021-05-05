@@ -20,109 +20,109 @@
       function mascaraCnpj(valor) {
           return valor.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/g, "\$1.\$2.\$3\/\$4\-\$5");
       }
-        function validaTelefone($phone)
-        {
-            //^(\(11\) [9][0-9]{4}-[0-9]{4})|(\(1[2-9]\) [5-9][0-9]{3}-[0-9]{4})|(\([2-9][1-9]\) [5-9][0-9]{3}-[0-9]{4})$
+    function validaTelefone($phone)
+    {
+        //^(\(11\) [9][0-9]{4}-[0-9]{4})|(\(1[2-9]\) [5-9][0-9]{3}-[0-9]{4})|(\([2-9][1-9]\) [5-9][0-9]{3}-[0-9]{4})$
 
-            //turn preg_match('/^(?:(?:\+|00)?(55)\s?)?(?:\(?([1-9][0-9])\)?\s?)?(?:((?:9\d|[2-9])\d{3})\-?(\d{4}))$/', $phone);
+        //turn preg_match('/^(?:(?:\+|00)?(55)\s?)?(?:\(?([1-9][0-9])\)?\s?)?(?:((?:9\d|[2-9])\d{3})\-?(\d{4}))$/', $phone);
 
-            //$phone = '(11)99999-9999';
-            var isValid = /^(?:(?:\+|00)?(55)\s?)?(?:\(?([1-9][0-9])\)?\s?)?(?:((?:9\d|[2-9])\d{3})\-?(\d{4}))$/.test($phone)
+        //$phone = '(11)99999-9999';
+        var isValid = /^(?:(?:\+|00)?(55)\s?)?(?:\(?([1-9][0-9])\)?\s?)?(?:((?:9\d|[2-9])\d{3})\-?(\d{4}))$/.test($phone)
 
-            return isValid;
-        }
+        return isValid;
+    }
 
-        function phoneValidate($phone) {
-            $regex = '/^(?:(?:\+|00)?(55)\s?)?(?:\(?([1-9][0-9])\)?\s?)?(?:((?:9\d|[2-9])\d{3})\-?(\d{4}))$/';
-            alert("teste1" + $phone);
-            if (preg_match($regex, $phone) == false) {
-                alert("teste1" + "false");
-                // O número não foi validado.
-                return false;
-            } else {
-                alert("teste1" + "true");
-                // Telefone válido.
-                return true;
-            }
-        }
-        function valida_email2() {
-            var filter = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
-            if (!filter.test(document.getElementById("email").value)) {
-                alert('Por favor, digite o email corretamente');
-                document.getElementById("email").focus();
-                return false
-            }
-        }
-
-        /*função valida email*/
-        function valida_email1() {
-            var x = document.forms["myForm"]["email"].value;
-            var atpos = x.indexOf("@");
-            var dotpos = x.lastIndexOf(".");
-            if (atpos < 1 || dotpos < atpos + 2 || dotpos + 2 >= x.length) {
-                alert("Não é um endereço de e-mail válido");
-                return false;
-            }
+    function phoneValidate($phone) {
+        $regex = '/^(?:(?:\+|00)?(55)\s?)?(?:\(?([1-9][0-9])\)?\s?)?(?:((?:9\d|[2-9])\d{3})\-?(\d{4}))$/';
+        alert("teste1" + $phone);
+        if (preg_match($regex, $phone) == false) {
+            alert("teste1" + "false");
+            // O número não foi validado.
+            return false;
+        } else {
+            alert("teste1" + "true");
+            // Telefone válido.
             return true;
         }
-        function ValidaData(data) {
-            reg = /[^\d\/\.]/gi;                  // Mascara = dd/mm/aaaa | dd.mm.aaaa
-            var valida = data.replace(reg, '');    // aplica mascara e valida só numeros
-            if (valida && valida.length == 10) {  // é válida, então ;)
-                var ano = data.substr(6),
-                    mes = data.substr(3, 2),
-                    dia = data.substr(0, 2),
-                    M30 = ['04', '06', '09', '11'],
-                    v_mes = /(0[1-9])|(1[0-2])/.test(mes),
-                    v_ano = /(19[1-9]\d)|(20\d\d)|2100/.test(ano),
-                    rexpr = new RegExp(mes),
-                    fev29 = ano % 4 ? 28 : 29;
+    }
+    function valida_email2() {
+        var filter = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+        if (!filter.test(document.getElementById("email").value)) {
+            alert('Por favor, digite o email corretamente');
+            document.getElementById("email").focus();
+            return false
+        }
+    }
 
-                if (v_mes && v_ano) {
-                    if (mes == '02') return (dia >= 1 && dia <= fev29);
-                    else if (rexpr.test(M30)) return /((0[1-9])|([1-2]\d)|30)/.test(dia);
-                    else return /((0[1-9])|([1-2]\d)|3[0-1])/.test(dia);
-                }
+    /*função valida email*/
+    function valida_email1() {
+        var x = document.forms["myForm"]["email"].value;
+        var atpos = x.indexOf("@");
+        var dotpos = x.lastIndexOf(".");
+        if (atpos < 1 || dotpos < atpos + 2 || dotpos + 2 >= x.length) {
+            alert("Não é um endereço de e-mail válido");
+            return false;
+        }
+        return true;
+    }
+    function ValidaData(data) {
+        reg = /[^\d\/\.]/gi;                  // Mascara = dd/mm/aaaa | dd.mm.aaaa
+        var valida = data.replace(reg, '');    // aplica mascara e valida só numeros
+        if (valida && valida.length == 10) {  // é válida, então ;)
+            var ano = data.substr(6),
+                mes = data.substr(3, 2),
+                dia = data.substr(0, 2),
+                M30 = ['04', '06', '09', '11'],
+                v_mes = /(0[1-9])|(1[0-2])/.test(mes),
+                v_ano = /(19[1-9]\d)|(20\d\d)|2100/.test(ano),
+                rexpr = new RegExp(mes),
+                fev29 = ano % 4 ? 28 : 29;
+
+            if (v_mes && v_ano) {
+                if (mes == '02') return (dia >= 1 && dia <= fev29);
+                else if (rexpr.test(M30)) return /((0[1-9])|([1-2]\d)|30)/.test(dia);
+                else return /((0[1-9])|([1-2]\d)|3[0-1])/.test(dia);
             }
-            return false                           // se inválida :(
         }
-        function validarCPF(cpf) {
-            cpf = cpf.replace(/[^\d]+/g, '');
-            if (cpf == '') return false;
-            // Elimina CPFs invalidos conhecidos	
-            if (cpf.length != 11 ||
-                cpf == "00000000000" ||
-                cpf == "11111111111" ||
-                cpf == "22222222222" ||
-                cpf == "33333333333" ||
-                cpf == "44444444444" ||
-                cpf == "55555555555" ||
-                cpf == "66666666666" ||
-                cpf == "77777777777" ||
-                cpf == "88888888888" ||
-                cpf == "99999999999")
-                return false;
-            // Valida 1o digito	
-            add = 0;
-            for (i = 0; i < 9; i++)
-                add += parseInt(cpf.charAt(i)) * (10 - i);
-            rev = 11 - (add % 11);
-            if (rev == 10 || rev == 11)
-                rev = 0;
-            if (rev != parseInt(cpf.charAt(9)))
-                return false;
-            // Valida 2o digito	
-            add = 0;
-            for (i = 0; i < 10; i++)
-                add += parseInt(cpf.charAt(i)) * (11 - i);
-            rev = 11 - (add % 11);
-            if (rev == 10 || rev == 11)
-                rev = 0;
-            if (rev != parseInt(cpf.charAt(10)))
-                return false;
-            return true;
-        }
-        function Voltar() {
+        return false                           // se inválida :(
+    }
+    function validarCPF(cpf) {
+        cpf = cpf.replace(/[^\d]+/g, '');
+        if (cpf == '') return false;
+        // Elimina CPFs invalidos conhecidos	
+        if (cpf.length != 11 ||
+            cpf == "00000000000" ||
+            cpf == "11111111111" ||
+            cpf == "22222222222" ||
+            cpf == "33333333333" ||
+            cpf == "44444444444" ||
+            cpf == "55555555555" ||
+            cpf == "66666666666" ||
+            cpf == "77777777777" ||
+            cpf == "88888888888" ||
+            cpf == "99999999999")
+            return false;
+        // Valida 1o digito	
+        add = 0;
+        for (i = 0; i < 9; i++)
+            add += parseInt(cpf.charAt(i)) * (10 - i);
+        rev = 11 - (add % 11);
+        if (rev == 10 || rev == 11)
+            rev = 0;
+        if (rev != parseInt(cpf.charAt(9)))
+            return false;
+        // Valida 2o digito	
+        add = 0;
+        for (i = 0; i < 10; i++)
+            add += parseInt(cpf.charAt(i)) * (11 - i);
+        rev = 11 - (add % 11);
+        if (rev == 10 || rev == 11)
+            rev = 0;
+        if (rev != parseInt(cpf.charAt(10)))
+            return false;
+        return true;
+    }
+    function Voltar() {
             window.location.href = "Default.aspx";
         }
       function AtualizarIndicado() {

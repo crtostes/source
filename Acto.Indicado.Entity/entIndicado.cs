@@ -25,6 +25,9 @@ namespace Acto.Indicado.Entity
         public int id_usuario { get; set; }
         public int id_cliente_pj { get; set; }
         public int id_cliente_indicado { get; set; }
+        public string ds_genero  { get; set; }
+        public string ds_estado_civil { get; set; }
+
     }
 
     public class entIndicadoTexto
@@ -46,5 +49,7 @@ namespace Acto.Indicado.Entity
         public string id_usuario { get; set; }
         public string id_cliente_pj { get; set; }
         public string id_cliente_indicado { get; set; }
+        public string ds_genero { get; set; }
+        public string ds_estado_civil { get; set; }
     }
 }

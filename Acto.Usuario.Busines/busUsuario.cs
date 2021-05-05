@@ -33,13 +33,13 @@ namespace Acto.Usuario.Busines
             try
             {
                 daoUsuario objDaoUsuario = new daoUsuario();
-                return objDaoUsuario.ConsultarAcesso(pEntUsuario);                
+                return objDaoUsuario.ConsultarAcesso(pEntUsuario);
             }
             catch (Exception ex)
             {
                 //MessageBox.Show("Houve problemas. Erro: \n\n" + ex.Message);
                 return false;
-            }            
+            }
 
         }
 
@@ -131,5 +131,30 @@ namespace Acto.Usuario.Busines
 
             return emailValido;
         }
+
+        public List<entFuncao> PermissoesUsuario(entUsuario pEntUsuario) {
+
+            
+            List<entFuncao> lstFuncoes = new List<entFuncao>();
+            if (pEntUsuario.CPF == "16252708879")
+            {
+                entFuncao objFuncao = new entFuncao();
+                objFuncao.id_funcao = 1;
+                objFuncao.cd_funcao = "ADMRESCAL";
+                objFuncao.ds_funcao = "Administração do Resultado do Cálculo";
+                lstFuncoes.Add(objFuncao);  
+            }
+            if (pEntUsuario.CPF == "16252708879")
+            {
+                entFuncao objFuncao = new entFuncao();
+                objFuncao.id_funcao = 2;
+                objFuncao.cd_funcao = "CONTODCOT";
+                objFuncao.ds_funcao = "Consulta Todas Cotações";
+                lstFuncoes.Add(objFuncao);
+            }
+            return lstFuncoes;
+        }
+
+
     }
 }

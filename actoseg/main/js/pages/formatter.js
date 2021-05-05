@@ -3,7 +3,13 @@
 
 $(function () {
   'use strict';
-		
+
+	
+	$('#txtDtFimVigencia').formatter({
+		'pattern': '{{99}}/{{99}}/{{9999}}',
+		'persistent': false
+	});
+
 	//Date dd/mm/yyyy
 	$('#ContentPlaceHolder1_txtDataNascimento').formatter({
 		'pattern': '{{99}}/{{99}}/{{9999}}',
@@ -21,6 +27,42 @@ $(function () {
 	});
 
 	$('#txtDataExpedicao').formatter({
+		'pattern': '{{99}}/{{99}}/{{9999}}',
+		'persistent': false
+	});
+
+	$('#txtDtVigenciaInicial').formatter({
+		'pattern': '{{99}}/{{99}}/{{9999}}',
+		'persistent': false
+	});
+
+	$('#txtDtVigenciaFinal').formatter({
+		'pattern': '{{99}}/{{99}}/{{9999}}',
+		'persistent': false
+	});
+
+	$('#txtDataNascimentoCondutor').formatter({
+		'pattern': '{{99}}/{{99}}/{{9999}}',
+		'persistent': false
+	});
+	
+	$('#txtDataEmissaoRgCondutorPrincipal').formatter({
+		'pattern': '{{99}}/{{99}}/{{9999}}',
+		'persistent': false
+	});
+		
+	$('#txtDataHabilitacao').formatter({
+		'pattern': '{{99}}/{{99}}/{{9999}}',
+		'persistent': false
+	});
+
+	$('#txtDataVigenciaAnteriorInicio').formatter({
+		'pattern': '{{99}}/{{99}}/{{9999}}',
+		'persistent': false
+	});
+
+	
+	$('#txtDataVigenciaAnteriorFim').formatter({
 		'pattern': '{{99}}/{{99}}/{{9999}}',
 		'persistent': false
 	});
@@ -102,11 +144,18 @@ $(function () {
 	});
 	
 	//Price E.g. $ 999.99
-	$('#price').formatter({
-	  'pattern': '$ {{999}}.{{99}}',
-	  'persistent': true
-	});
+	//$('#price').formatter({
+	//	'pattern': '{{999}},{{999}},{{99}}',
+	//  'persistent': true
+	//});
 	
+
+
+	$('#price').formatter({
+		'pattern': '$ {{999}}.{{99}}',
+		'persistent': true
+	});
+
 	//Credit card
 	$('#creditcard').formatter({
 	  'pattern': '{{9999}}-{{9999}}-{{9999}}-{{9999}}',
@@ -124,5 +173,38 @@ $(function () {
 	  'pattern': 'P{{a}} {{999}} {{9999}}',
 	  'persistent': true
 	});
+
+	$('#ContentPlaceHolder1_txtCep').formatter({
+		'pattern': '{{99999}}-{{999}}',
+		'persistent': false
+	});
+
+	$('#txtCEPFrequencia').formatter({
+		'pattern': '{{99999}}-{{999}}',
+		'persistent': false
+	});
+
+	$('#txtCepPernoite').formatter({
+		'pattern': '{{99999}}-{{999}}',
+		'persistent': false
+	});
 	
+	$('#txtCEPFrequencia').formatter({
+		'pattern': '{{99999}}-{{999}}',
+		'persistent': false
+	});
+
+	$('#txtCEPResidencia').formatter({
+		'pattern': '{{99999}}-{{999}}',
+		'persistent': false
+	});
+
+	$('#ContentPlaceHolder1_txtCNPJ').formatter({
+		'pattern': '{{99}}.{{999}}.{{999}}/{{9999}}-{{99}}',
+		'persistent': false
+	});
+	$('#txtCPFCondutorPrincipal').formatter({
+		'pattern': '{{999}}.{{999}}.{{999}}-{{99}}',
+		'persistent': false
+	});
 });// End of use strict

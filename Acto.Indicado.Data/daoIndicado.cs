@@ -237,6 +237,8 @@ namespace Acto.Indicado.Data
                         if (myReader["ds_telefone_comercial"].ToString() != "") objIndicado.ds_telefone_comercial = Convert.ToString(myReader["ds_telefone_comercial"]);
                         if (myReader["id_estado_civil"].ToString() != "") objIndicado.id_estado_civil = Convert.ToInt32(myReader["id_estado_civil"]);
                         if (myReader["id_genero"].ToString() != "") objIndicado.id_genero = Convert.ToInt32(myReader["id_genero"]);
+                        if (myReader["ds_genero"].ToString() != "") objIndicado.ds_genero = Convert.ToString(myReader["ds_genero"]);
+                        if (myReader["ds_estado_civil"].ToString() != "") objIndicado.ds_estado_civil = Convert.ToString(myReader["ds_estado_civil"]);
                         //objResp.Add(objIndicdo);
 
                     }

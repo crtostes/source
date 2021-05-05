@@ -4,7 +4,7 @@
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
   <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
+<%--  <div class="content-wrapper">
 	  <section class="content">	
 		<div class="container">	
 			<div class="row">
@@ -26,7 +26,7 @@
 		</div>	  		      
 	</section>
     <!-- /.content -->
-  </div>
+  </div>--%>
   <!-- /.content-wrapper -->
 </asp:Content>
 

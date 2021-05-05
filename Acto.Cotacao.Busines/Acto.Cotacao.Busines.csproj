@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{5B355F49-7E7D-44CF-A562-AD3C5A7C4BF6}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Acto.Cotacao.Busines</RootNamespace>
+    <AssemblyName>Acto.Cotacao.Busines</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="busCotacao.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Acto.Cliente.Busines\Acto.Cliente.Busines.csproj">
+      <Project>{1d43a7f1-ec58-4098-8743-5bdbb7f08ff7}</Project>
+      <Name>Acto.Cliente.Busines</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Acto.Cliente.Entity\Acto.Cliente.Entity.csproj">
+      <Project>{d9412ba8-07cc-4f10-b24a-75a25d8bb24c}</Project>
+      <Name>Acto.Cliente.Entity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Acto.Cotacao.Data\Acto.Cotacao.Data.csproj">
+      <Project>{62a5efba-4078-4a01-afe6-72ba04a08dfd}</Project>
+      <Name>Acto.Cotacao.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Acto.Cotacao.Entity\Acto.Cotacao.Entity.csproj">
+      <Project>{35000ea0-eec6-4e1a-90d6-17a11240d28e}</Project>
+      <Name>Acto.Cotacao.Entity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Acto.Infra.Mail\Acto.Infra.Mail.csproj">
+      <Project>{953b4b53-ef09-4b05-8776-12986a1908b7}</Project>
+      <Name>Acto.Infra.Mail</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Acto.Log\Acto.Infra.Log.csproj">
+      <Project>{09b98e52-1348-4bf0-b493-6a8531d8d79a}</Project>
+      <Name>Acto.Infra.Log</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

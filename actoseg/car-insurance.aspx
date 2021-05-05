@@ -80,7 +80,7 @@
                                 <p>Com esses bônus você corre o risco de ter sua renovação de gratis, esse risco sim é bom hein!</p>
                                 <p></p>
                                 <div class="btn-box">
-									<a class="default-btn" cf-scroll-trigger="#envia_contato" href="bkoficce/main/pages/cotacao.aspx">COTE AGORA<span></span></a>
+									<a class="default-btn" cf-scroll-trigger="#envia_contato" href="/main/pages/login.aspx">COTE AGORA<span></span></a>
 									
 								</div>
                             </div>

@@ -25,6 +25,49 @@ namespace actoseg
             return "Descrição: " + Codigo.ToString();
 
         }
+
+        [System.Web.Services.WebMethod]
+        [System.Web.Script.Services.ScriptMethod(ResponseFormat = System.Web.Script.Services.ResponseFormat.Json)]
+        public static string SaveData(string file, string name)//string Name, string[] fileData)
+        {
+        
+            System.IO.FileStream stream = new System.IO.FileStream(@"C:\_tfs\source\actoseg\upload\file.pdf", System.IO.FileMode.CreateNew);
+            System.IO.BinaryWriter writer =  new System.IO.BinaryWriter(stream);
+            file = file.Replace("data:application/pdf;base64,", "");
+            byte[] bytes = Convert.FromBase64String(file);
+            writer.Write(bytes, 0, bytes.Length);
+            writer.Close();
+            //Breakpoint
+            return "ok";
+        }
+
+        //public string UploadPDF(HttpPostedFile file)
+
+        //{
+
+        //    if (Context.Request.Files.Count > 0)
+        //    {
+
+        //        HttpFileCollection files = Context.Request.Files;
+
+        //        file = files[0];
+
+        //        file.SaveAs(Server.MapPath("upload/" + file.FileName));
+        //        //string bucketname = "*******";
+        //        //string localpath = Server.MapPath("EmpDocs/" + file.FileName);
+        //        //string s3path = "diesel_bills/" + file.FileName;
+        //        //UploadFiles obj = new UploadFiles();
+        //        //bool uploaded;
+
+        //        //uploaded = obj.sendMyFileToS3Subforlder(bucketname, file.FileName, localpath, s3path);
+        //        //File.Delete(Server.MapPath("EmpDocs/" + file.FileName));
+
+        //        //param.Add("@Bill_Front_Copy", file.FileName);
+        //    }
+        //    return "OK";
+
+        //}
+
         //protected void Button1_Click(object sender, EventArgs e)
         //{
 

@@ -281,10 +281,20 @@
 					                    <hr class="my-15">
 					                    <div class="row">
 					                      <div class="col-md-6">
-						                    <div class="form-group">
+						                    <%--<div class="form-group">
 						                      <label>Marca</label>
 						                      <input type="text" class="form-control" placeholder="Digite a Marca">
-						                    </div>
+						                    </div>--%>
+											<div class="form-group">
+												<label>Minimal</label>
+												<select class="form-control select2" style="width: 100%;">
+												  <option selected="selected">Digite...</option>
+												  <option>VW</option>
+												  <option>FIAT</option>
+												  <option>FORD</option>
+												  <option>GM</option>												  
+												</select>
+											  </div>
 					                      </div>
 					                      <div class="col-md-6">
 						                    <div class="form-group">

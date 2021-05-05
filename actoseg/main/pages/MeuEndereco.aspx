@@ -78,7 +78,7 @@
 			}
             // Verifica Cidade
             if ($("#ContentPlaceHolder1_txtCidade").val() == '') {
-                alert("Informe o Cidade.");
+                alert("Informe a Cidade.");
                 return false;
 			}
             // Verifica Estado
@@ -182,9 +182,7 @@
 					</div>
 
 					<div class="form-group">
-					  <label>Bairro:</label>		
-					  <%--<input id="txtBairro" class="form-control" type="text"  placeholder="Digite o Bairro">					  --%>
-						<asp:TextBox name="txtBairro" id="txtBairro" type="text" class="form-control" CssClass="form-control" runat="server" placeholder="Digite o Bairro"></asp:TextBox>
+					  
 					</div>
 
 					<div class="form-group">

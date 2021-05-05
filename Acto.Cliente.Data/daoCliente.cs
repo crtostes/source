@@ -70,6 +70,64 @@ namespace Acto.Cliente.Data
             return objResp;
         }
 
+        public entCliente ConsultarClienteIdCliente(int pid_cliente)
+        {
+            entCliente objResp = new entCliente();
+            InfraDb ActoDb = new InfraDb();
+            MySqlConnection conn = ActoDb.ActoConn();
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand("sp_cliente_consultar_id_cliente", conn);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add(new MySqlParameter("?pid_cliente", pid_cliente));
+                MySqlDataReader myReader;
+                myReader = cmd.ExecuteReader();
+                try
+                {
+                    if (myReader.Read())
+                    {
+                        objResp.id_cliente = Convert.ToInt32(myReader["id_cliente"]);
+                        objResp.ds_nome = Convert.ToString(myReader["ds_nome"]);
+                        objResp.dt_inclusao = Convert.ToDateTime(myReader["dt_inclusao"]);
+                        objResp.nr_cpf_cnpj = Convert.ToString(myReader["nr_cpf_cnpj"]);
+                        objResp.ds_email = Convert.ToString(myReader["ds_email"]);
+                        if (myReader["dt_nascimento"].ToString() != "") objResp.dt_nascimento = Convert.ToDateTime(myReader["dt_nascimento"]);
+                        if (myReader["tp_pessoa"].ToString() != "") objResp.tp_pessoa = Convert.ToString(myReader["tp_pessoa"]);
+                        if (myReader["ds_rg"].ToString() != "") objResp.ds_rg = Convert.ToString(myReader["ds_rg"]);
+                        if (myReader["ds_emissao"].ToString() != "") objResp.ds_emissao = Convert.ToString(myReader["ds_emissao"]);
+                        if (myReader["dt_emissao_rg"].ToString() != "") objResp.dt_emissao_rg = Convert.ToDateTime(myReader["dt_emissao_rg"]);
+                        if (myReader["ds_telefone_celular"].ToString() != "") objResp.ds_telefone_celular = Convert.ToString(myReader["ds_telefone_celular"]);
+                        if (myReader["ds_telefone_comercial"].ToString() != "") objResp.ds_telefone_comercial = Convert.ToString(myReader["ds_telefone_comercial"]);
+                        if (myReader["id_estado_civil"].ToString() != "") objResp.id_estado_civil = Convert.ToInt32(myReader["id_estado_civil"]);
+                        if (myReader["id_genero"].ToString() != "") objResp.id_genero = Convert.ToInt32(myReader["id_genero"]);
+
+                    }
+                }
+                catch (Exception ex)
+                {
+                    //MessageBox.Show("Houve problemas. Erro: \n\n" + ex.Message);
+                    return null;
+                }
+                finally
+                {
+                    /* se a conexão esta aberta, a fechamos */
+                    if (conn.State == ConnectionState.Open) conn.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                //MessageBox.Show("Houve problemas. Erro: \n\n" + ex.Message);
+                return null;
+            }
+            finally
+            {
+                /* se a conexão esta aberta, a fechamos */
+                if (conn.State == ConnectionState.Open) conn.Close();
+            }
+            return objResp;
+        }
+
+
         public Boolean AtualizarCliente(entCliente pobjentCliente)
         {
             entCliente objResp = new entCliente();

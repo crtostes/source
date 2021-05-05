@@ -15,4 +15,14 @@ namespace Acto.Usuario.Entity
         public string Senha { get; set; }
 
     }
+
+    public class entFuncao
+    {
+        public int id_funcao { get; set; }
+        public string cd_funcao { get; set; }
+        public string ds_funcao { get; set; }
+        
+
+    }
+
 }

@@ -16,7 +16,7 @@ namespace actoseg.main
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            HttpContext.Current.Session["contexto"] = null;
         }
 
         protected void btnLogar_Click(object sender, EventArgs e)
@@ -73,6 +73,7 @@ namespace actoseg.main
             objEntUsuario.Senha = txtSenha.Text;
 
             ActoContexto objContexto = new ActoContexto();
+
             objContexto.Usuario = objEntUsuario;
 
             busCliente objBusCliente = new busCliente();
@@ -80,14 +81,15 @@ namespace actoseg.main
             if (objEntcliente != null)
             {
                 objContexto.Cliente = objEntcliente;
-                
+                objEntUsuario.CPF = objEntcliente.nr_cpf_cnpj;  
             }
 
-            HttpContext.Current.Session.Add("contexto", objContexto);
+            
 
             if (objBusUsuario.ConsultarAcesso(objEntUsuario))
-            { 
-                
+            {
+                objContexto.Funcoes = objBusUsuario.PermissoesUsuario(objEntUsuario); 
+                HttpContext.Current.Session.Add("contexto", objContexto);
                 return true;
             }
             #endregion
