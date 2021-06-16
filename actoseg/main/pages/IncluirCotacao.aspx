@@ -3,9 +3,20 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+	<style type="text/css">
+		.grdacto {
+			font-family: Arial;
+			color: black;
+			font-size:12px;
+			border-bottom-width: 2px;
+			font-weight: bold;
+			 
+				}
+	</style>
+	   
 	<script src="..\..\Scripts\Pages\IncluirCotacao.js" type="text/javascript"></script>
-	
-	 <script>
+	<%--//CARGA INICIAL--%>
+	 <script> 
 
 		 //ONLOAD JAVASCRIPT DA PAGINA
     //     function codeAddress() {
@@ -34,8 +45,49 @@
             CarregarListarMoraEm();
             CarregarListarLocalPernoites();
 			CarregarCotacao();
+             $("#txtDtVigenciaInicial").blur(function () {
+				 SomaDataVigencia();
+                 //alert("teste lost focus data: " + document.getElementById("txtDtVigenciaInicial").value);
+             });
+			 
+			 
+		 });
+        
+         function SomaDataVigencia() {
+             stringToSplit = document.getElementById("txtDtVigenciaInicial").value;
+			 var arrayOfStrings = stringToSplit.split("-");
+			 //alert("ano: " + arrayOfStrings[0]);
+			 //alert("mes: " + arrayOfStrings[1]);
+             //alert("dia: " + arrayOfStrings[2]);
+
+			 var dt = new Date(parseInt(arrayOfStrings[0]), parseInt(arrayOfStrings[1]) - 1, parseInt(arrayOfStrings[2]));
+             //alert(dt);
+             var dia = dt.getDate().toString().padStart(2, '0'),
+                 mes = (dt.getMonth() + 1).toString().padStart(2, '0'), //+1 pois no getMonth Janeiro começa com zero.
+				 ano = dt.getFullYear() + 1;
+			 //alert(dt);
+			 //alert(ano + "-" + mes + "-" + dia);
+             document.getElementById("txtDtVigenciaFinal").value = ano + "-" + mes + "-" + dia;
+		 }
+
+         function ConvertDataDBtoJS(data) {
+             var arrayOfStrings = data.split("/");
              
-		});
+			ano = arrayOfStrings[2];
+            mes = arrayOfStrings[1];
+            dia = arrayOfStrings[0];
+			return ano + "-" + mes + "-" + dia;
+		 }
+         function ConvertDataJstoDB(data) {
+             var arrayOfStrings = data.split("-");
+             //alert("ano: " + arrayOfStrings[0]);
+             //alert("mes: " + arrayOfStrings[1]);
+             //alert("dia: " + arrayOfStrings[2]);
+             ano = arrayOfStrings[2];
+             mes = arrayOfStrings[1];
+             dia = arrayOfStrings[0];
+             return ano + "/" + mes + "/" + dia;
+         }
 		function CarregarCotacao() {
             
 			if ($("#ContentPlaceHolder1_txtIdCotacao").val() != '') {
@@ -55,10 +107,18 @@
 			else
 			{
 				
-				$('#txtDtVigenciaInicial').val(dataAtualFormatada(0));
-				$('#txtDtVigenciaFinal').val(dataAtualFormatada(1));
+
+				//$('#txtDtVigenciaInicial').val(dataAtualFormatada(0)); // data hoje
+                document.getElementById("txtDtVigenciaInicial").value = dataAtualFormatadaToDate(0);			
+				//$('#txtDtVigenciaFinal').val(dataAtualFormatada(1));
+                document.getElementById("txtDtVigenciaFinal").value = dataAtualFormatadaToDate(1);			
 				TrocaFigura("segurado", false);
-                document.getElementById("btnGravar").disabled = false;
+				if ($("#ContentPlaceHolder1_txtIdClienteCotacaoNova").val() != '') {
+                    $("#txtIdClienteCotacao").val($("#ContentPlaceHolder1_txtIdClienteCotacaoNova").val());
+                    CarregarIndicado();
+                }
+				document.getElementById("btnGravar").disabled = false;
+                document.getElementById("btnGravar").hidden = false;
 			}
 
 
@@ -66,69 +126,140 @@
 		function OnSuccessCarregarCotacao(data, status) {
 	     	 //Topo
 			
+             document.getElementById("btnChat").hidden = false;
              $("#ddlTipoSeguro").val(data.d.ds_tipo_cotacao);
-             $("#txtDtVigenciaInicial").val(data.d.ds_data_vigencia_inicial);
-			$("#txtDtVigenciaFinal").val(data.d.ds_data_vigencia_final);
-            $("#txtCotacao").val(data.d.id_cotacao);
-             $("#ContentPlaceHolder1_txtIdCotacao").val(data.d.id_cotacao);
-             $("#txtCotacaoAutomovel").val(data.d.id_cotacao_automovel);
+			//$("#txtDtVigenciaInicial").val(data.d.ds_data_vigencia_inicial);
+			document.getElementById("txtDtVigenciaInicial").value = ConvertDataDBtoJS(data.d.ds_data_vigencia_inicial);
+			//$("#txtDtVigenciaFinal").val(data.d.ds_data_vigencia_final);
+            document.getElementById("txtDtVigenciaFinal").value = ConvertDataDBtoJS(data.d.ds_data_vigencia_final);
+
+             $("#txtCotacao").val(data.d.id_cotacao);
+			 $("#ContentPlaceHolder1_txtIdCotacao").val(data.d.id_cotacao);
+			 $("#txtIdFormaPagamento").val(data.d.id_forma_pagamento);
+			 $("#ddlFormaPagamento").val(data.d.id_forma_pagamento);
+			 document.getElementById("ddlFormaPagamento").disabled = true;
+			$("#txtCotacaoAutomovel").val(data.d.id_cotacao_automovel);
+			
              switch (data.d.ds_status_cotacao) {
                  case 'GR': 
 					 $("#txtStatusCotacao").val("COTAÇÃO GRAVADA");
 					 //$("#btnEnviar").disabled = false;
 					 document.getElementById("btnEnviar").disabled = false;
-                     document.getElementById("btnGravar").disabled = false;
+					 document.getElementById("btnEnviar").hidden = false;
+					 document.getElementById("btnGravar").disabled = false;
+					 document.getElementById("btnGravar").hidden = false;
+                     document.getElementById("btnCancelar").hidden = false;
+					 <% if (TemPermissao("ADMRESCAL")) { %>
+                     document.getElementById("btnInsereCotacao").hidden = true;
+                     document.getElementById("btnLimparItensCotacao").hidden = true;
+                     document.getElementById("btnUploadPDF").hidden = true;
+                     document.getElementById("btnFinalizaCotacao").hidden = true;
+                     <% }%>
 					 $("#txtMensagemCotacao").val("Você pode alterar e gravar ou enviar para processamento.");
                      break;
 				 case 'CE':
 					 
 					 $("#txtStatusCotacao").val("COTAÇÃO EM PROCESSAMENTO");
 					 document.getElementById("btnGravar").disabled = true;
+					 document.getElementById("btnGravar").hidden = true;
 					 document.getElementById("btnEnviar").disabled = true;
+					 document.getElementById("btnEnviar").hidden = true;
                      document.getElementById("btnPDF").disabled = true;
-					 document.getElementById("btnClonar").disabled = false;
-                     document.getElementById("btnInsereCotacao").hidden = false;
+                     document.getElementById("btnClonar").disabled = false;
+					 document.getElementById("btnClonar").hidden = false;
+                     document.getElementById("btnCancelar").hidden = true;
+					 // Os Botões não existem pois são excluidos pelo TemPermissão
+					 <% if (TemPermissao("ADMRESCAL")) { %>
+					 document.getElementById("btnInsereCotacao").hidden = false;
                      document.getElementById("btnLimparItensCotacao").hidden = false;
                      document.getElementById("btnUploadPDF").hidden = false;
-                     document.getElementById("btnFinalizaCotacao").hidden = false;
+					 document.getElementById("btnFinalizaCotacao").hidden = false;
+                     <% }%>
+                     MostraAbaCotacao("calculo");
                      $("#txtMensagemCotacao").val("Esta Cotação foi enviada para processamento, aguarde o retorno.");
                      break;
 				 case 'CP':
                      
 					 $("#txtStatusCotacao").val("COTAÇÃO PRONTA");
-                     document.getElementById("btnGravar").disabled = false;
-                     document.getElementById("btnEnviar").disabled = true;
+					 document.getElementById("btnGravar").disabled = false;
+					 document.getElementById("btnGravar").hidden = false;
+					 document.getElementById("btnEnviar").disabled = true;
+					 document.getElementById("btnEnviar").hidden = true;
                      document.getElementById("btnPDF").disabled = false;
 					 document.getElementById("btnClonar").disabled = false;
-                     $("#txtMensagemCotacao").val("Esta Cotação está PRONTA, contate o cliente para Aprovação.");
+					 document.getElementById("btnClonar").hidden = false;
+                     document.getElementById("btnCancelar").hidden = false;
+					  <% if (TemPermissao("ADMRESCAL")) { %>
+					 document.getElementById("btnInsereCotacao").hidden = true;
+                     document.getElementById("btnLimparItensCotacao").hidden = true;
+                     document.getElementById("btnUploadPDF").hidden = true;
+                     document.getElementById("btnFinalizaCotacao").hidden = true;
+                     <% }%>
+                 
+
+					 $("#txtMensagemCotacao").val("Esta Cotação está PRONTA, contate o cliente para Aprovação.");
+					 MostraAbaCotacao("calculo");
 					 break;
 				 case 'CA':
                      
 					 $("#txtStatusCotacao").val("CANCELADA");
-                     document.getElementById("btnGravar").disabled = true;
-                     document.getElementById("btnEnviar").disabled = true;
+					 document.getElementById("btnGravar").disabled = true;
+					 document.getElementById("btnGravar").hidden = true;
+					 document.getElementById("btnEnviar").disabled = true;
+					 document.getElementById("btnEnviar").hidden = true;
                      document.getElementById("btnPDF").disabled = true;
 					 document.getElementById("btnClonar").disabled = true;
+					 document.getElementById("btnClonar").hidden = true;
+                     document.getElementById("btnCancelar").hidden = true;
+					<% if (TemPermissao("ADMRESCAL")) { %>
+                     document.getElementById("btnInsereCotacao").hidden = true;
+                     document.getElementById("btnLimparItensCotacao").hidden = true;
+                     document.getElementById("btnUploadPDF").hidden = true;
+                     document.getElementById("btnFinalizaCotacao").hidden = true;
+                     <% }%>
+
                      $("#txtMensagemCotacao").val("Você pode CLONAR esta cotação e gerar um nova.");
 					 break;
 				 case 'AP':
                     
 					 $("#txtStatusCotacao").val("COTAÇÃO APROVADA");
-                     document.getElementById("btnGravar").disabled = true;
-                     document.getElementById("btnEnviar").disabled = true;
+					 document.getElementById("btnGravar").disabled = true;
+					 document.getElementById("btnGravar").hidden = true;
+					 document.getElementById("btnEnviar").disabled = true;
+					 document.getElementById("btnEnviar").hidden = true;
                      document.getElementById("btnPDF").disabled = false;
 					 document.getElementById("btnClonar").disabled = false;
-					 
-                     $("#txtMensagemCotacao").val("Esta Cotação está APROVADA, contate o cliente para PAGAMENTO e EMISSÃO.");
+					 document.getElementById("btnClonar").hidden = false;
+                     document.getElementById("btnCancelar").hidden = true;
+					 <% if (TemPermissao("ADMRESCAL")) { %>
+                     document.getElementById("btnInsereCotacao").hidden = true;
+                     document.getElementById("btnLimparItensCotacao").hidden = true;
+                     document.getElementById("btnUploadPDF").hidden = true;
+                     document.getElementById("btnFinalizaCotacao").hidden = false;
+                     <% }%>
+                     MostraAbaCotacao("calculo");
+                     $("#txtMensagemCotacao").val("Esta Cotação está APROVADA, aguarde EMISSÃO da Apólice.");
 
                      break;
 				 case 'EM':
                      
 					 $("#txtStatusCotacao").val("APOLICE EMITIDA");
-                     document.getElementById("btnGravar").disabled = true;
-                     document.getElementById("btnEnviar").disabled = true;
+					 document.getElementById("btnGravar").disabled = true;
+					 document.getElementById("btnGravar").hidden = true;
+					 document.getElementById("btnEnviar").disabled = true;
+					 document.getElementById("btnEnviar").hidden = true;
                      document.getElementById("btnPDF").disabled = true;
-                     document.getElementById("btnClonar").disabled = true;
+					 document.getElementById("btnClonar").disabled = true;
+					 document.getElementById("btnClonar").hidden = true;
+                     document.getElementById("btnCancelar").hidden = true;
+					 <% if (TemPermissao("ADMRESCAL")) { %>
+                     document.getElementById("btnInsereCotacao").hidden = true;
+                     document.getElementById("btnLimparItensCotacao").hidden = true;
+                     document.getElementById("btnUploadPDF").hidden = true;
+                     document.getElementById("btnFinalizaCotacao").hidden = true;
+                     <% }%>
+                     $("#txtMensagemCotacao").val("COTAÇÃO COM APÓLICE EMITIDA, PROCESSO FINALIZADO.");
+                     MostraAbaCotacao("calculo");
                      break;
                  
              }
@@ -504,14 +635,14 @@
 
         }
         function Voltar() {
-            window.location.href = "Default.aspx";
+            window.location.href = "GestaoCotacao.aspx";
         }
         function CarregarListaIndicados() {
 			
             $.ajax({
                 type: "POST",
-                url: "MeuIndicado.aspx/wmListarIndicados",
-                data: "{id_cliente: " + $("#ContentPlaceHolder1_txtIdClienteIndicador").val() + "}",
+                url: "MeuCadastro.aspx/wmListarClientesIndicados",
+                data: "{}",
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: OnSuccessCarregarListaIndicado,
@@ -530,7 +661,7 @@
             //    alert(key + ": " + value);
             //});
 			$('#ddlIndicados').append('<option Value="">Selecione...</option>');
-            $('#ddlIndicados').append('<option Value="' + $("#ContentPlaceHolder1_txtIdClienteIndicador").val() + '">' + $("#ContentPlaceHolder1_txtNomeClienteIndicador").val() + '</option>');
+            
 			
 
             var obj = JSON.parse(data.d);
@@ -557,7 +688,7 @@
 
             $.ajax({
                 type: "POST",
-                url: "MeuIndicado.aspx/wmConsultarIndicado",
+                url: "MeuCadastro.aspx/wmConsultarCliente",
                 data: "{id_cliente: " + $('#ddlIndicados').val() + "}",
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
@@ -572,7 +703,7 @@
             
             $.ajax({
                 type: "POST",
-                url: "MeuIndicado.aspx/wmConsultarIndicado",
+                url: "MeuCadastro.aspx/wmConsultarCliente",
                 data: "{id_cliente: '" + $("#txtIdClienteCotacao").val() + "'}",
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
@@ -587,13 +718,76 @@
             //$('p').html("Sobrenome:" + data.d._sobreNome + " idade:" + data.d._idade + "");
             $("#txtIdClienteCotacao").val(data.d.id_cliente);
             $("#txtCPF").val(data.d.nr_cpf_cnpj);
-            $("#txtNome").val(data.d.ds_nome);
-            $("#txtEmail").val(data.d.ds_email);
+			$("#txtNome").val(data.d.ds_nome);
+			$("#txtNomeSeguroPagamento").val(data.d.ds_nome);
+			$("#txtEmail").val(data.d.ds_email);
             $("#txtDataNascimento").val(data.d.dt_nascimento);
 			$("#txtTelefoneCelular").val(data.d.ds_telefone_celular);
             $("#txtTelefoneCelular2").val(data.d.ds_telefone_comercial);
+			
 			$("#txtGenero").val(data.d.ds_genero);
-            $("#txtEstadoCivil").val(data.d.ds_estado_civil);
+			$("#txtEstadoCivil").val(data.d.ds_estado_civil);
+
+            $("#txtCEP").val(data.d.ds_cep);
+            $("#txtCepPernoite").val(data.d.ds_cep);
+            $("#txtCEPFrequencia").val(data.d.ds_cep);
+            $("#txtCEPResidencia").val(data.d.ds_cep);
+
+            $("#txtEndereco").val(data.d.ds_endereco);
+            $("#txtNumeroEndereco").val(data.d.ds_numero);
+            $("#txtComplemento").val(data.d.ds_complemento);
+            $("#txtBairro").val(data.d.ds_bairro);
+			$("#txtCidadeUF").val(data.d.ds_cidade + ' - ' + data.d.ds_estado);
+
+            $("#txtCPFCondutorPrincipal_h").val(data.d.nr_cpf_cnpj);
+			$("#txtNomeCondutoPrincipal_h").val(data.d.ds_nome);
+            $("#txtDataNascimentoCondutor_h").val(data.d.dt_nascimento);
+
+            $("#txtGeneroCondutorPricipal_h").val(data.d.ds_genero);
+			$("#txtEstadoCivilCondutorPricipal_h").val(data.d.ds_estado_civil);
+
+            $("#txtProfissao_h").val(data.d.ds_profissao);
+			$("#txtDetalheProfissao_h").val(data.d.ds_profissao_complemento);
+
+            $("#txtRgCondutorPrinicpal_h").val(data.d.ds_rg);
+            $("#txtDataEmissaoRgCondutorPrincipal_h").val(data.d.dt_emissao_rg);
+            $("#txtEmissorRG_h").val(data.d.ds_emissao);
+            $("#txtCnhCondutorPrincipal_h").val(data.d.ds_cnh);
+            $("#txtDataHabilitacao_h").val(data.d.dt_1_habilitacao);
+
+			if ($("#ddlPrincipalCondutor").val() == "SIM") {
+				document.getElementById("ddlRelComSegurado").disabled = true;
+				document.getElementById("txtCPFCondutorPrincipal").disabled = true;
+				document.getElementById("txtNomeCondutoPrincipal").disabled = true;
+				document.getElementById("txtDataNascimentoCondutor").disabled = true;
+				document.getElementById("ddlGeneroCondutorPricipal").disabled = true;
+				document.getElementById("ddlEstadoCivilCondutorPricipal").disabled = true;
+				document.getElementById("ddlProfissao").disabled = true;
+				document.getElementById("txtDetalheProfissao").disabled = true;
+
+				document.getElementById("txtRgCondutorPrinicpal").disabled = true;
+				document.getElementById("txtDataEmissaoRgCondutorPrincipal").disabled = true;
+				document.getElementById("txtEmissorRG").disabled = true;
+				document.getElementById("txtCnhCondutorPrinicpal").disabled = true;
+				document.getElementById("txtDataHabilitacao").disabled = true;
+
+			}
+			else {
+                document.getElementById("ddlRelComSegurado").disabled = false;
+                document.getElementById("txtCPFCondutorPrincipal").disabled = false;
+                document.getElementById("txtNomeCondutoPrincipal").disabled = false;
+                document.getElementById("txtDataNascimentoCondutor").disabled = false;
+                document.getElementById("ddlGeneroCondutorPricipal").disabled = false;
+                document.getElementById("ddlEstadoCivilCondutorPricipal").disabled = false;
+                document.getElementById("ddlProfissao").disabled = false;
+                document.getElementById("txtDetalheProfissao").disabled = false;
+
+                document.getElementById("txtRgCondutorPrinicpal").disabled = false;
+                document.getElementById("txtDataEmissaoRgCondutorPrincipal").disabled = false;
+                document.getElementById("txtEmissorRG").disabled = false;
+                document.getElementById("txtCnhCondutorPrinicpal").disabled = false;
+                document.getElementById("txtDataHabilitacao").disabled = false;
+            }
 			//$("#ContentPlaceHolder1_rdoTipoPessoa1").attr('checked', true);
 			TrocaFigura("segurado", true);
             
@@ -615,60 +809,14 @@
 			//$("#ContentPlaceHolder1_txtDataInclusao").val(data.d.dt_inclusao);
 
 
-            ConsultaEnderecoIndicado();
+            //ConsultaEnderecoIndicado();
             //CarregarListarUtilizacoes();
             //CarregarListarMoraEm();
             //CarregarListarLocalPernoites();
             //CarregarListaSeguradoras(); 
 
         }
-		function ConsultaEnderecoIndicado() {
-            
-            $.ajax({
-                type: "POST",
-                url: "EnderecoIndicado.aspx/wmConsultarEnderecoIndicado",
-                data: "{id_cliente: '" + $("#txtIdClienteCotacao").val() + "'}",
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                success: OnSuccessConsultaEnderecoIndicado,
-                error: function (request, status, error) {
-                    alert(request.responseText);
-                }
-            });
-		 }
-        function OnSuccessConsultaEnderecoIndicado(data, status) {
-            
-
-			
-            //$('p').html("Sobrenome:" + data.d._sobreNome + " idade:" + data.d._idade + "");
-           // $("#ContentPlaceHolder1_cboTipoEndereco").val(data.d.id_tipo_endereco);
-			$("#txtCEP").val(data.d.ds_cep);
-            $("#txtCepPernoite").val(data.d.ds_cep);
-            $("#txtCEPFrequencia").val(data.d.ds_cep);
-            $("#txtCEPResidencia").val(data.d.ds_cep);
-
-            $("#txtEndereco").val(data.d.ds_endereco);
-            $("#txtNumeroEndereco").val(data.d.ds_numero);
-            $("#txtComplemento").val(data.d.ds_complemento);
-            $("#txtBairro").val(data.d.ds_bairro);
-            $("#txtCidadeUF").val(data.d.ds_cidade + ' - ' + data.d.ds_estado);
-            //$("#ContentPlaceHolder1_cboEstado").val(data.d.ds_estado);
-            //$("#ContentPlaceHolder1_txtDataAtualizacao").val(data.d.dt_atualizacao);
-			
-
-
-            //cboTipoEndereco.SelectedValue = objEntEndereco.id_tipo_endereco.ToString();
-            //txtCep.Text = objEntEndereco.ds_cep;
-            //txtEndereco.Text = objEntEndereco.ds_endereco;
-            //txtNumeroEndereco.Text = objEntEndereco.ds_numero;
-            //txtComplemento.Text = objEntEndereco.ds_complemento;
-            //txtBairro.Text = objEntEndereco.ds_bairro;
-            //txtCidade.Text = objEntEndereco.ds_cidade;
-            //cboEstado.Text = objEntEndereco.ds_estado;
-            //txtDataAtualizacao.Text = objEntEndereco.dt_atualizacao.ToString(@"dd/MM/yyyy");
-
-		}
-        function CarregarListarUtilizacoes() {
+		function CarregarListarUtilizacoes() {
 
             $.ajax({
                 type: "POST",
@@ -798,7 +946,10 @@
 			 });
 		 }
 
+        
+
      </script>
+	<%--//UPLOAF PDF & ENVIAR COTACAO--%>
 	<script>
 		function AbrePopupUploadPDF() {
             $('#modal-sobe-pdf').modal('show');
@@ -843,7 +994,7 @@
 		}
 		function OnSuccessSaveData(data, status) {
 			$('#em-processamento').modal('hide');
-			MensagemActoSimples("UPLOAD PDF COTAÇÃO", "Arquivo Enviado com sucesso!");
+            MensagemActoSucesso("UPLOAD PDF COTAÇÃO", "Arquivo Enviado com sucesso!");
 
             
 
@@ -857,7 +1008,114 @@
                 "scrollbars=yes, resizable=no, width=680, " +
                 "height=650, left=180, top=50");
 		}
+
+        function EnviarCotacao() {
+            $('#modal-enviar-cotacao').modal('show');
+        }
+        function EfetivarEnviarCotacao() {
+
+
+            //CE = Cotação Enviada
+			if (ValidarCamposCotacao() == false) {
+				EmProcessamento(false);
+                return false;
+			}
+            if ($('#ddlFormaPagamentoEnvio').val() == "")
+			{
+                MensagemActoSimples("Enviar Cotação", "Selecione a Forma de Pagamento preferida!");
+                return false;
+			}
+
+            $('#modal-enviar-cotacao').modal('hide');
+			EmProcessamento(true);
+
+            var conteudoPDF = "";
+
+            //Read File
+            var selectedFile = $("#FileUploadEnviar")[0].files;
+            //Check File is not Empty
+			if (selectedFile.length > 0) {
+				// Select the very first file from list
+				var fileToLoad = selectedFile[0];
+				// FileReader function for read the file.
+				var fileReader = new FileReader();
+				var base64;
+				// Onload of file read the file content
+				fileReader.onload = function (fileLoadedEvent) {
+					base64 = fileLoadedEvent.target.result;
+					// Print data in console
+					conteudoPDF = base64;
+					$.ajax({
+						type: "POST",
+						url: "IncluirCotacao.aspx/wmAtualizarStatusCotacaoAutomovel",
+						data: "{pid_cotacao: '" + $("#ContentPlaceHolder1_txtIdCotacao").val() +
+							"', pid_cliente: '" + $("#txtIdClienteCotacao").val() +
+							"', pcd_status_cotacao: 'CE'" +
+							" , pid_forma_pagamento: '" + $("#ddlFormaPagamentoEnvio").val() +
+							"', pds_mensagem: '" + $("#txtMensagemEnviarCotacao").val() +
+							"', file: '" + conteudoPDF +
+							"'}",
+						contentType: "application/json; charset=utf-8",
+						dataType: "json",
+						success: OnSuccessEfetivarEnviarCotacao,
+						error: function (request, status, error) {
+							alert(request.responseText);
+						}
+					});
+				};
+				// Convert data to base64
+				fileReader.readAsDataURL(fileToLoad);
+			}
+			else
+			{
+				$.ajax({
+					type: "POST",
+					url: "IncluirCotacao.aspx/wmAtualizarStatusCotacaoAutomovel",
+					data: "{pid_cotacao: '" + $("#ContentPlaceHolder1_txtIdCotacao").val() +
+						"', pid_cliente: '" + $("#txtIdClienteCotacao").val() +
+						"', pcd_status_cotacao: 'CE'" +
+						" , pid_forma_pagamento: '" + $("#ddlFormaPagamentoEnvio").val() +
+						"', pds_mensagem: '" + $("#txtMensagemEnviarCotacao").val() +
+						"', file: '" + conteudoPDF +
+						"'}",
+					contentType: "application/json; charset=utf-8",
+					dataType: "json",
+					success: OnSuccessEfetivarEnviarCotacao,
+					error: function (request, status, error) {
+						alert(request.responseText);
+					}
+				});
+			
+            }
+
+        }
+        function OnSuccessEfetivarEnviarCotacao(data, status) {
+
+            $("#txtStatusCotacao").val("COTAÇÃO EM PROCESSAMENTO");
+			document.getElementById("btnGravar").disabled = true;
+			document.getElementById("btnGravar").hidden = true;
+			document.getElementById("btnEnviar").disabled = true;
+			document.getElementById("btnEnviar").hidden = true;
+			document.getElementById("btnClonar").disabled = false;
+			document.getElementById("btnClonar").hidden = false;
+            $("#txtMensagemCotacao").val("Esta Cotação foi enviada para processamento, aguarde o retorno.");
+            EmProcessamento(false);
+            if (isNumeric(data.d) && data.d != "0") {
+                $('#txtCotacaoAutomovel').val(data.d);
+                MensagemActoSucesso("Enviar Cotação para Processamento", "Cotação de Automóvel enviada para Cotação com sucesso!");
+                CarregarCotacao();
+				//alert("Cotação de Automóvel enviada para Cotação com sucesso!");
+
+                //$('#modal-incluir-indicado').modal('hide'); show
+            }
+            else {
+                alert("Infelizmente não foi possível enviadar para  a cotação agora, contate o ZAP 11-9-3208-9366.");
+                return false;
+            }
+        }
+
     </script>
+	<%--//INSERE COTACAO, ITENS CARREGA GRID, APROVA, CHAR, PDF CONTA PROPOSTA--%>
 	 <script>
 		
         $(document).ready(function () {
@@ -889,14 +1147,19 @@
 			 }
 				
          }
-         
+        function GravarCotacao() {
+            
+			//if ($("#txtStatusCotacao").val() == "COTAÇÃO PRONTA") {
+			//	MensagemActoDecisaobtnGravar("GRAVAR COTAÇÂO", "COTACAO PRONTA\n ao GRAVAR, você perderá a cotação atual.\nDeseja realmente GRAVAR?", "SIM", "NÂO");
+			//	return false;
+			//}
 
-		 function GravarCotacao() {
+			//return false;
 
-			 if (ValidarCamposCotacao() == false) {
-                EmProcessamento(false);
-				return false;
-			}
+			
+            //alert("Gravarcotacao: (" + $("#txtStatusCotacao").val() + ")");
+           
+
 			EmProcessamento(true);
 			if ($("#ContentPlaceHolder1_txtIdCotacao").val() != '') {
 				$("#txtCotacao").val($("#ContentPlaceHolder1_txtIdCotacao").val());
@@ -904,15 +1167,20 @@
 			else
 			{
                 $("#ContentPlaceHolder1_txtIdCotacao").val("0");
-            }
-			 if ($("#txtStatusCotacao").val = "COTAÇÃO PRONTA") {
+			}
+            
+			 if ($("#txtStatusCotacao").val() == "COTAÇÃO PRONTA") {
                  
 				 $.ajax({
 					 type: "POST",
 					 url: "IncluirCotacao.aspx/wmAtualizarStatusCotacaoAutomovel",
                      data: "{pid_cotacao: '" + $("#ContentPlaceHolder1_txtIdCotacao").val() +
 						 "', pid_cliente: '" + $("#txtIdClienteCotacao").val() +
-						 "', pcd_status_cotacao: 'GR'}",
+						 "', pcd_status_cotacao: 'GR'" +
+                         " , pid_forma_pagamento: '" + 
+                         "', pds_mensagem: '" +
+                         "', file: '" + 
+                         "'}",
 					 contentType: "application/json; charset=utf-8",
 					 dataType: "json",
 					 error: function (request, status, error) {
@@ -920,7 +1188,7 @@
 					 }
 				 });
 			 }
-
+            
 			$.ajax({
 				type: "POST",
 				url: "IncluirCotacao.aspx/wmAtualizarCotacaoAutomovel",
@@ -929,9 +1197,10 @@
 					"', pid_cliente: '" + $("#txtIdClienteCotacao").val() + 
 
                     "', pds_tipo_cotacao: '" + $("#ddlTipoSeguro").val() +
-                    "', pds_data_vigencia_inicial: '" + $("#txtDtVigenciaInicial").val() +
-                    "', pds_data_vigencia_final: '" + $("#txtDtVigenciaFinal").val() +
-
+                    //"', pds_data_vigencia_inicial: '" + $("#txtDtVigenciaInicial").val() +
+                    "', pds_data_vigencia_inicial: '" + ConvertDataJstoDB(document.getElementById("txtDtVigenciaInicial").value) +
+                    //"', pds_data_vigencia_final: '" + $("#txtDtVigenciaFinal").val() +
+                    "', pds_data_vigencia_final: '" + ConvertDataJstoDB(document.getElementById("txtDtVigenciaFinal").value) +
 					"', pds_ano_fabricao: '" + $("#txtAnoFabricacao").val() +
 					"', pds_ano_modelo: '" + $("#ddlAnoModelo").val() +
 					"', pcd_fipe: '" + $("#ddlModelo").val() +
@@ -1037,10 +1306,11 @@
 				 $('#txtCotacao').val(data.d);
 				 $('#ContentPlaceHolder1_txtIdCotacao').val(data.d);
 				 $("#txtStatusCotacao").val("COTAÇÃO GRAVADA");
-                 document.getElementById("btnEnviar").disabled = false;
+				 document.getElementById("btnEnviar").disabled = false;
+				 document.getElementById("btnEnviar").hidden = false;
 				 CarregarCotacao();
 				 EmProcessamento(false);
-                 MensagemActoSimples("Gravar Cotação", "Cotação de Automóvel gravada com sucesso!");
+                 MensagemActoSucesso("Gravar Cotação", "Cotação de Automóvel gravada com sucesso!");
                  
                  //$("#btnEnviar").disabled = false;
                  
@@ -1057,56 +1327,11 @@
                  return false;
              }
 		 }
-		 function EnviarCotacao() {
-             
-			 if (ValidarCamposCotacao() == false) {
-                 EmProcessamento(false);
-				return false;
-			 }
-			EmProcessamento(true);
-             $.ajax({
-                 type: "POST",
-                 url: "IncluirCotacao.aspx/wmAtualizarStatusCotacaoAutomovel",
-                 data: "{pid_cotacao: '" + $("#ContentPlaceHolder1_txtIdCotacao").val() +
-                     "', pid_cliente: '" + $("#txtIdClienteCotacao").val() +
-					 "', pcd_status_cotacao: 'CE'}",
-                 contentType: "application/json; charset=utf-8",
-                 dataType: "json",
-                 success: OnSuccessEnviarCotacao,
-                 error: function (request, status, error) {
-                     alert(request.responseText);
-                 }
-			 });
-
-            
-		 }
-		function OnSuccessEnviarCotacao(data, status) {
-
-             $("#txtStatusCotacao").val("COTAÇÃO EM PROCESSAMENTO");
-			 document.getElementById("btnGravar").disabled = true;
-			 document.getElementById("btnEnviar").disabled = true;             
-			 document.getElementById("btnClonar").disabled = false;
-             $("#txtMensagemCotacao").val("Esta Cotação foi enviada para processamento, aguarde o retorno.");
-            EmProcessamento(false);
-             if (isNumeric(data.d) && data.d != "0") {
-				 $('#txtCotacaoAutomovel').val(data.d);
-                 MensagemActoSimples("Enviar Cotação para Processamento", "Cotação de Automóvel enviada para Cotação com sucesso!"); 
-                 //alert("Cotação de Automóvel enviada para Cotação com sucesso!");
-
-                 //$('#modal-incluir-indicado').modal('hide'); show
-             }
-             else {
-                 alert("Infelizmente não foi possível enviadar para  a cotação agora, contate o ZAP 11-9-3208-9366.");
-                 return false;
-             }
-		 }
-
-         function CarregaTelaInsereCotacao() {
+		function CarregaTelaInsereCotacao() {
              $('#modal-insere-cotacao').modal('show');
 
          }
-
-         function InsereCotacaoItem() {
+		function InsereCotacaoItem() {
              $.ajax({
                  type: "POST",
                  url: "IncluirCotacao.aspx/wmIncluirCotacaoAutomovelItem",
@@ -1126,11 +1351,11 @@
                  }
              });
          }
-         function OnSuccessInsereCotacaoItem(data, status) {
+        function OnSuccessInsereCotacaoItem(data, status) {
 
 			 if (isNumeric(data.d) && data.d != "0") {
                  $('#modal-insere-cotacao').modal('hide');
-                 MensagemActoSimples("Cotação", "Item de Cotação de Automóvel incluída com sucesso!");
+                 MensagemActoSucesso("Cotação", "Item de Cotação de Automóvel incluída com sucesso!");
                 //alert("");
 				 CarregaCotacaoAutomoveisItensGrid();
              }
@@ -1139,7 +1364,7 @@
                  return false;
              }
          }
-		 function CarregaTelaLimparItensCotacao() {
+		function CarregaTelaLimparItensCotacao() {
              $.ajax({
                  type: "POST",
                  url: "IncluirCotacao.aspx/wmExcluirItensCotacao",
@@ -1152,10 +1377,10 @@
                  }
              });
          }
-         function OnSuccessCarregaTelaLimparItensCotacao(data, status) {
+        function OnSuccessCarregaTelaLimparItensCotacao(data, status) {
 
              if (isNumeric(data.d) && data.d != "0") {
-                 MensagemActoSimples("Itens Cotação", "Itens da Cotação excluídos com sucesso!");
+                 MensagemActoSucesso("Itens Cotação", "Itens da Cotação excluídos com sucesso!");
                  //alert("");
                  CarregaCotacaoAutomoveisItensGrid();
              }
@@ -1164,7 +1389,6 @@
                  return false;
              }
          }
-
          function CarregaCotacaoAutomoveisItensGrid() {
 
              $.ajax({
@@ -1268,53 +1492,222 @@
 
              EmProcessamento(false);
 
-         }
+		 }
+         function ClonarCotacao() {
+             EmProcessamento(true);
+             //if (ValidarCamposCotacao() == false) {
+             //             EmProcessamento(false);
+             //             return false;
+             //         }
+
+                 $.ajax({
+                     type: "POST",
+                     url: "IncluirCotacao.aspx/wmClonarCotacao",
+                     data: "{pid_cotacao: '" + $("#ContentPlaceHolder1_txtIdCotacao").val() +
+                         "'}",
+                     contentType: "application/json; charset=utf-8",
+                     dataType: "json",
+                     success: OnSuccessClonarCotacao,
+                     error: function (request, status, error) {
+                         alert(request.responseText);
+                     }
+                 });
+             
+
+             
+		 }
+
+		 function OnSuccessClonarCotacao(data, status) {
+			 if (isNumeric(data.d) && data.d != "0") {
+				 $('#txtCotacao').val(data.d);
+				 $('#ContentPlaceHolder1_txtIdCotacao').val(data.d);
+				 $("#txtStatusCotacao").val("COTAÇÃO GRAVADA");
+				 document.getElementById("btnEnviar").disabled = false;
+				 document.getElementById("btnEnviar").hidden = false;
+				 CarregarCotacao();
+				 EmProcessamento(false);
+                 MensagemActoSucesso("Clonar Cotação", "Clone executado com sucesso!");
+			 }
+		 }
+
 		 function FinalizaCotacao() {
 			 EmProcessamento(true);
 			 //if (ValidarCamposCotacao() == false) {
     //             EmProcessamento(false);
     //             return false;
     //         }
-			 
-             $.ajax({
-                 type: "POST",
-                 url: "IncluirCotacao.aspx/wmAtualizarStatusCotacaoAutomovel",
-                 data: "{pid_cotacao: '" + $("#ContentPlaceHolder1_txtIdCotacao").val() +
-                     "', pid_cliente: '" + $("#txtIdClienteCotacao").val() +
-                     "', pcd_status_cotacao: 'CP'}",
-                 contentType: "application/json; charset=utf-8",
-                 dataType: "json",
-                 success: OnSuccessFinalizaCotacao,
-                 error: function (request, status, error) {
-                     alert(request.responseText);
-                 }
-             });
+
+             if ($("#txtStatusCotacao").val() == "COTAÇÃO EM PROCESSAMENTO") {
+				 $.ajax({
+					 type: "POST",
+					 url: "IncluirCotacao.aspx/wmAtualizarStatusCotacaoAutomovel",
+					 data: "{pid_cotacao: '" + $("#ContentPlaceHolder1_txtIdCotacao").val() +
+						 "', pid_cliente: '" + $("#txtIdClienteCotacao").val() +
+						 "', pcd_status_cotacao: 'CP'" +
+						 " , pid_forma_pagamento: '" + 
+						 "', pds_mensagem: '" + 
+						 "', file: '" + 
+						 "'}",
+					 contentType: "application/json; charset=utf-8",
+					 dataType: "json",
+                     success: OnSuccessCotacaoPronta,
+					 error: function (request, status, error) {
+						 alert(request.responseText);
+					 }
+				 });
+			 }
+
+             if ($("#txtStatusCotacao").val() == "COTAÇÃO APROVADA") {
+                 $.ajax({
+                     type: "POST",
+                     url: "IncluirCotacao.aspx/wmAtualizarStatusCotacaoAutomovel",
+                     data: "{pid_cotacao: '" + $("#ContentPlaceHolder1_txtIdCotacao").val() +
+                         "', pid_cliente: '" + $("#txtIdClienteCotacao").val() +
+                         "', pcd_status_cotacao: 'EM'" +
+                         " , pid_forma_pagamento: '" +
+                         "', pds_mensagem: '" +
+                         "', file: '" +
+                         "'}",
+                     contentType: "application/json; charset=utf-8",
+                     dataType: "json",
+                     success: OnSuccessCotacaoEmitida,
+                     error: function (request, status, error) {
+                         alert(request.responseText);
+                     }
+                 });
+             }
 		 }
-         function OnSuccessFinalizaCotacao(data, status) {
+
+         function OnSuccessCotacaoPronta(data, status) {
 
              $("#txtStatusCotacao").val("COTAÇÃO PRONTA");
-             document.getElementById("btnGravar").disabled = true;
-             document.getElementById("btnEnviar").disabled = true;
+			 document.getElementById("btnGravar").disabled = true;
+			 document.getElementById("btnGravar").hidden = true;
+			 document.getElementById("btnEnviar").disabled = true;
+			 document.getElementById("btnEnviar").hidden = true;
              document.getElementById("btnPDF").disabled = false;
-             document.getElementById("btnClonar").disabled = false;
-			 $("#txtMensagemCotacao").val("Esta Cotação está PRONTA, contate o cliente para Aprovação.");
+			 document.getElementById("btnClonar").disabled = false;
+			 document.getElementById("btnClonar").hidden = false;
+			 //$("#txtMensagemCotacao").val("Esta Cotação está PRONTA, contate o cliente para Aprovação.");
 			 CarregarCotacao(); 
              EmProcessamento(false);
              if (isNumeric(data.d) && data.d != "0") {
 				 $('#txtCotacaoAutomovel').val(data.d);
-				 MensagemActoSimples("Finalizar Cotação", "Cotação de Automóvel finalizada com sucesso!");
-                 //alert("Cotação de Automóvel finalizada com sucesso!");
-
-                 //$('#modal-incluir-indicado').modal('hide'); show
+                 MensagemActoSucesso("Finalizar Status", "COTAÇÃO PRONTA com sucesso!");
              }
              else {
                  alert("Infelizmente não foi possível enviadar para  a cotação agora, contate o ZAP 11-9-3208-9366.");
                  return false;
              }
 		 }
-		 
-		 function AprovarCotacao(pflg_aprovacao, pid_cotacao, pid_seguradora) {
-            
+
+         function OnSuccessCotacaoEmitida(data, status) {
+
+             $("#txtStatusCotacao").val("COTAÇÃO PRONTA");
+             document.getElementById("btnGravar").disabled = true;
+             document.getElementById("btnGravar").hidden = true;
+             document.getElementById("btnEnviar").disabled = true;
+             document.getElementById("btnEnviar").hidden = true;
+             document.getElementById("btnPDF").disabled = false;
+			 document.getElementById("btnClonar").disabled = false;
+			 document.getElementById("btnClonar").hidden = false;
+			 //$("#txtMensagemCotacao").val("Cotação com APÓLICE EMITIDA.");
+             CarregarCotacao();
+             EmProcessamento(false);
+             if (isNumeric(data.d) && data.d != "0") {
+                 $('#txtCotacaoAutomovel').val(data.d);
+                 MensagemActoSucesso("Finalizar Status", "COTAÇÃO EMITIDA APÓLICE com sucesso!");
+             }
+             else {
+                 alert("Infelizmente não foi possível enviadar para  a cotação agora, contate o ZAP 11-9-3208-9366.");
+                 return false;
+             }
+		 }
+
+         function CancelarCotacao() {
+             EmProcessamento(true);
+             //if (ValidarCamposCotacao() == false) {
+             //             EmProcessamento(false);
+             //             return false;
+             //         }
+             //alert("Cancelar");
+             //$.ajax({
+             //    type: "POST",
+             //    url: "IncluirCotacao.aspx/wmCancelarCotacao",
+             //    data: "{pid_cotacao: '" + $("#ContentPlaceHolder1_txtIdCotacao").val() +
+             //        "'}",
+             //    contentType: "application/json; charset=utf-8",
+             //    dataType: "json",
+             //    success: OnSuccessClonarCotacao,
+             //    error: function (request, status, error) {
+             //        alert(request.responseText);
+             //    }
+             //});
+             $.ajax({
+                 type: "POST",
+                 url: "IncluirCotacao.aspx/wmAtualizarStatusCotacaoAutomovel",
+                 data: "{pid_cotacao: '" + $("#ContentPlaceHolder1_txtIdCotacao").val() +
+                     "', pid_cliente: '" + $("#txtIdClienteCotacao").val() +
+                     "', pcd_status_cotacao: 'CA'" +
+                     " , pid_forma_pagamento: '" +
+                     "', pds_mensagem: '" +
+                     "', file: '" +
+                     "'}",
+                 contentType: "application/json; charset=utf-8",
+                 dataType: "json",
+                 success: OnSuccessCancelarCotacao,
+                 error: function (request, status, error) {
+                     alert(request.responseText);
+                 }
+             });
+
+
+         }
+
+         function OnSuccessCancelarCotacao(data, status) {
+             //if (isNumeric(data.d) && data.d != "0") {
+             //    $('#txtCotacao').val(data.d);
+             //    $('#ContentPlaceHolder1_txtIdCotacao').val(data.d);
+             //    $("#txtStatusCotacao").val("COTAÇÃO GRAVADA");
+             //    document.getElementById("btnEnviar").disabled = false;
+             //    document.getElementById("btnEnviar").hidden = false;
+                 CarregarCotacao();
+                 //EmProcessamento(false);
+			 //MensagemActoSimples("Cancelar Cotacão", "Cotação Cancelada com Sucesso!");
+             MensagemActoSucesso("Cancelar Cotacão", "Cotação Cancelada com Sucesso!");
+            //}
+		 }
+
+		 function AprovarCotacao(pflg_aprovacao, pid_cotacao, pid_seguradora, pvalor) {
+
+             if ($("#txtIdFormaPagamento").val() == '1') document.getElementById("telaCartaoCredito").hidden = false;
+             if ($("#txtIdFormaPagamento").val() == '2') document.getElementById("telaBoleto").hidden = false;
+             if ($("#txtIdFormaPagamento").val() == '3') document.getElementById("telaDebitoConta").hidden = false;
+             if ($("#txtIdFormaPagamento").val() == '4') document.getElementById("telaCartaoPortoNovo").hidden = false;
+
+			 $("#txtpflg_aprovacao").val(pflg_aprovacao);
+			 $("#txtpid_cotacao").val(pid_cotacao);
+			 $("#txtpid_seguradora").val(pid_seguradora);
+			 $("#txtpvalor").val(pvalor);
+             $("#txtValorParcelaPagamento").val(pvalor);
+             
+			 $('#modal-pagamento').modal('show');
+             //$('#modal-pagamento').modal({
+             //    backdrop: 'static',
+             //    keyboard: false  // to prevent closing with Esc button (if you want this too)
+             //})
+		 }
+
+		 function EfetivaAprovarCotacao(pflg_aprovacao, pid_cotacao, pid_seguradora) {
+
+             if (ValidarAprovarCotacao() == false) {
+                 EmProcessamento(false);
+                 //alert("Validar Cotação errro");
+                 return false;
+             }
+
+
+             $('#modal-pagamento').modal('hide');
              EmProcessamento(true);
 
 			 //if (ValidarCamposCotacao() == false) {
@@ -1322,18 +1715,37 @@
              //             return false;
              //         }
 
+
+
+
              $.ajax({
                  type: "POST",
                  url: "IncluirCotacao.aspx/wmAprovarCotacaoAutomovel",
-				 data: "{pid_cotacao: '" + pid_cotacao +
-					 "', pid_seguradora: '" + pid_seguradora +
-                     "', pflg_aprovacao: '" + pflg_aprovacao +
+                 data: "{pid_cotacao: '" + $("#txtpid_cotacao").val() +
+                     "', pid_seguradora: '" + $("#txtpid_seguradora").val() +
+                     "', pflg_aprovacao: '" + $("#txtpflg_aprovacao").val() +
                      "', pid_cliente_aprovador: '" + $("#ContentPlaceHolder1_txtIdClienteIndicador").val() +					 
-                     "', pid_cliente_cotacao: '" + $("#txtIdClienteCotacao").val() +					 
+					 "', pid_cliente_cotacao: '" + $("#txtIdClienteCotacao").val() +	
+                     "', pid_forma_pagamento: '" + $("#txtIdFormaPagamento").val() +	
+                     "', pnr_parcelas: '" + $("#ddlNrParcelas").val() +	
+                     "', pds_bandeira_cc: '" + $("#ddlBandeiraCC").val() +	
+                     "', pds_nr_cartao_cc: '" + $("#txtNrCartaoCC").val() +	
+                     "', pds_validade_cc: '" + $("#txtValidadeCC").val() +	
+                     "', pds_nome_cliente_cc: '" + $("#txtNomeCC").val() +	
+                     "', ptp_dados_segurado_dc: '" + $("#ddlDadosDC").val() +	
+                     "', pds_nome_titular_conta: '" + $("#txtTitularContaDC").val() +	
+                     "', pds_banco_dc: '" + $("#ddlBancoDC").val() +	
+                     "', ptp_pessoa_dc: '" + $("#ddlTipoPessoaDC").val() +	
+                     "', pds_cpf_titular_conta_dc: '" + $("#txtCPFTitularDC").val() + $("#txtCPFCC").val() +
+                     "', pds_parentesco_titular_dc: '" + $("#ddlParanteTitularDC").val() +	
+                     "', pds_nr_agencia_dc: '" + $("#txtNrAgenciaDC").val() +	
+                     "', pds_digito_agencia_dc: '" + $("#txtNrAgenciaDigDC").val() +	
+                     "', pds_nr_conta_dc: '" + $("#txtNrContaDC").val() +	
+                     "', pds_digito_conta_dc: '" + $("#txtNrContaDigDC").val() +	
 				     "'}",
                  contentType: "application/json; charset=utf-8",
                  dataType: "json",
-                 success: OnSuccessAprovarCotacao,
+                 success: OnSuccessEfetivaAprovarCotacao,
 				 error: function (request, status, error) {
                      EmProcessamento(false);
 					 alert(request.responseText);
@@ -1341,19 +1753,22 @@
                  }
              });
          }
-         function OnSuccessAprovarCotacao(data, status) {
-
+         function OnSuccessEfetivaAprovarCotacao(data, status) {
+			 
              $("#txtStatusCotacao").val("COTAÇÃO APROVADA");
-             document.getElementById("btnGravar").disabled = true;
-             document.getElementById("btnEnviar").disabled = true;
+			 document.getElementById("btnGravar").disabled = true;
+			 document.getElementById("btnGravar").hidden = true;
+			 document.getElementById("btnEnviar").disabled = true;
+			 document.getElementById("btnEnviar").hidden = true;
              document.getElementById("btnPDF").disabled = false;
-             document.getElementById("btnClonar").disabled = false;
-             $("#txtMensagemCotacao").val("Esta Cotação está APROVADA, contate o cliente para PAGAMENTO e EMISSÃO.");
+			 document.getElementById("btnClonar").disabled = false;
+			 document.getElementById("btnClonar").hidden = false;
+             //$("#txtMensagemCotacao").val("Esta Cotação está APROVADA, contate o cliente para PAGAMENTO e EMISSÃO.");
              CarregarCotacao();
              EmProcessamento(false);
              if (isNumeric(data.d) && data.d != "0") {
                  $('#txtCotacaoAutomovel').val(data.d);
-                 MensagemActoSimples("Aprovar Cotação", "Cotação de Automóvel APROVADA com sucesso!");
+                 MensagemActoSucesso("Aprovar Cotação", "Cotação de Automóvel APROVADA com Sucesso!");
                  //alert("Cotação de Automóvel finalizada com sucesso!");
 
                  //$('#modal-incluir-indicado').modal('hide'); show
@@ -1367,37 +1782,140 @@
 			 onchange_aba_perfil();
 
 			 if ($("#ddlPrincipalCondutor").val() == "SIM") {
-				 
-                 $('#ddlRelComSegurado').val("O próprio");
-                 $("#txtCPFCondutorPrincipal").val($("#txtCPF").val());
-				 $("#txtDataNascimentoCondutor").val($("#txtDataNascimento").val());
-				 $('#txtNomeCondutoPrincipal').val($("#txtNome").val());
-				$('#ddlGeneroCondutorPricipal').val($("#txtGenero").val());
-				 //if ($.trim($('#ddlRelComSegurado').val()) == '') { resultado = false; }
 
-                 $('#ddlEstadoCivilCondutorPricipal').val($("#txtEstadoCivil").val());
-				//$('#ddlProfissao').val();
-				//$('#txtDetalheProfissao').val();
-				 $('#txtRgCondutorPrinicpal').val();
-				 $('#txtDataEmissaoRgCondutorPrincipal').val();
-				 $('#txtEmissorRG').val();
-				//$('#txtCnhCondutorPrinicpal').val();
-				 $('#txtDataHabilitacao').val();
 				 
-                 //$("#txtTelefoneCelular").val(data.d.ds_telefone_celular);
-                 //$("#txtTelefoneCelular2").val(data.d.ds_telefone_comercial);
-                 //$("#txtGenero").val(data.d.ds_genero);
-                 //$("#txtEstadoCivil").val(data.d.ds_estado_civil);
+
+                 $('#ddlRelComSegurado').val("O próprio"); document.getElementById("ddlRelComSegurado").disabled = true;
+
+                 $("#txtCPFCondutorPrincipal").val($("#txtCPFCondutorPrincipal_h").val()); document.getElementById("txtCPFCondutorPrincipal").disabled = true;
+                 $('#txtNomeCondutoPrincipal').val($("#txtNomeCondutoPrincipal_h").val()); document.getElementById("txtNomeCondutoPrincipal").disabled = true;
+                 $("#txtDataNascimentoCondutor").val($("#txtDataNascimentoCondutor_h").val()); document.getElementById("txtDataNascimentoCondutor").disabled = true;
+
+                 $('#ddlGeneroCondutorPricipal').val($("#txtGeneroCondutorPricipal_h").val()); document.getElementById("ddlGeneroCondutorPricipal").disabled = true;
+                 $('#ddlEstadoCivilCondutorPricipal').val($("#txtEstadoCivilCondutorPricipal_h").val()); document.getElementById("ddlEstadoCivilCondutorPricipal").disabled = true;
+
+                 $('#ddlProfissao').val($("#txtProfissao_h").val()); document.getElementById("ddlProfissao").disabled = true;
+                 $('#txtDetalheProfissao').val($('#txtDetalheProfissao_h').val()); document.getElementById("txtDetalheProfissao").disabled = true;
+
+                 $('#txtRgCondutorPrinicpal').val($('#txtRgCondutorPrinicpal_h').val()); document.getElementById("txtRgCondutorPrinicpal").disabled = true;
+                 $('#txtDataEmissaoRgCondutorPrincipal').val($('#txtDataEmissaoRgCondutorPrincipal_h').val()); document.getElementById("txtDataEmissaoRgCondutorPrincipal").disabled = true;
+                 $('#txtEmissorRG').val($('#txtEmissorRG_h').val()); document.getElementById("txtEmissorRG").disabled = true;
+                 $('#txtCnhCondutorPrinicpal').val($('#txtCnhCondutorPrincipal_h').val()); document.getElementById("txtCnhCondutorPrinicpal").disabled = true;
+                 $('#txtDataHabilitacao').val($('#txtDataHabilitacao_h').val()); document.getElementById("txtDataHabilitacao").disabled = true;
+				
 			 }
 			 else
 			 {
-                 alert("Limpa");
+                 $('#ddlRelComSegurado').val(""); document.getElementById("ddlRelComSegurado").disabled = false;
+
+                 $("#txtCPFCondutorPrincipal").val(""); document.getElementById("txtCPFCondutorPrincipal").disabled = false;
+                 $('#txtNomeCondutoPrincipal').val(""); document.getElementById("txtNomeCondutoPrincipal").disabled = false;
+                 $("#txtDataNascimentoCondutor").val(""); document.getElementById("txtDataNascimentoCondutor").disabled = false;
+
+                 $('#ddlGeneroCondutorPricipal').val(""); document.getElementById("ddlGeneroCondutorPricipal").disabled = false;
+                 $('#ddlEstadoCivilCondutorPricipal').val(""); document.getElementById("ddlEstadoCivilCondutorPricipal").disabled = false;
+
+                 $('#ddlProfissao').val(""); document.getElementById("ddlProfissao").disabled = false;
+                 $('#txtDetalheProfissao').val(""); document.getElementById("txtDetalheProfissao").disabled = false;
+
+                 $('#txtRgCondutorPrinicpal').val(""); document.getElementById("txtRgCondutorPrinicpal").disabled = false;
+                 $('#txtDataEmissaoRgCondutorPrincipal').val(""); document.getElementById("txtDataEmissaoRgCondutorPrincipal").disabled = false;
+                 $('#txtEmissorRG').val(""); document.getElementById("txtEmissorRG").disabled = false;
+                 $('#txtCnhCondutorPrinicpal').val(""); document.getElementById("txtCnhCondutorPrinicpal").disabled = false;
+                 $('#txtDataHabilitacao').val(""); document.getElementById("txtDataHabilitacao").disabled = false;
 			 }
 
 			 
              
+		 }
+		 function CarregaTelaChat() {
+			 CarregaChat();
+             $('#modal-chat').modal('show');
+		 }
+		 function CarregaChat() {
+             $.ajax({
+                 type: "POST",
+                 url: "IncluirCotacao.aspx/wmListarChat",
+                 data: "{pid_cotacao: " + $("#ContentPlaceHolder1_txtIdCotacao").val() + "}",
+                 contentType: "application/json; charset=utf-8",
+                 dataType: "json",
+                 success: OnSuccessCarregaChatGrid,
+                 error: function (request, status, error) {
+                     alert(request.responseText);
+                 }
+             });
+		 }
+         function OnSuccessCarregaChatGrid(data, status) {
+
+             $('#grdChat').DataTable().destroy();
+             var Jsondata = JSON.parse(data.d);
+
+
+             var table =  $('#grdChat').DataTable({
+                 "data": Jsondata,
+                 "searching":false,
+                 "paging": false,
+				 "info": false,
+                 //"scrollY": true,
+				 //"scrollX": true,
+                 "ordering": false,
+                 select: "single",
+                 "columns": [
+                     { "data": "dt_interacao" },
+                     { "data": "ds_mensagem"},
+                     { "data": "ds_forma_pagamento"},
+                     { "data": "bt_pdf_cotacao_concorrente"},
+
+                 ],
+                 "order": [[1, 'asc']]
+             });
+
+            
+
+             EmProcessamento(false);
+
+		 }
+		 function IncluiMsgChat() {
+			 if ($("#txtMensagemChat").val()=="") {
+                 MensagemActoSimples("Mensagem Chat", "Para enviar mensagem ao Chat, é necessário incluir um texto.");
+				 return false;
+             }
+
+             $.ajax({
+                 type: "POST",
+                 url: "IncluirCotacao.aspx/wmIncluiMsgChat",
+                 data: "{pid_cotacao: '" + $("#ContentPlaceHolder1_txtIdCotacao").val() +
+                     "', pds_mensagem: '" + $("#txtMensagemChat").val() +
+                     "'}",
+                 contentType: "application/json; charset=utf-8",
+                 dataType: "json",
+                 success: OnSuccessIncluiMsgChat,
+                 error: function (request, status, error) {
+                     EmProcessamento(false);
+                     alert(request.responseText);
+
+                 }
+             });
+		 }
+         function OnSuccessIncluiMsgChat() {
+			 $("#txtMensagemChat").val("");
+			 CarregaChat();
+		 }
+         function CarregaPDF(tipo, pds_pdf) {
+             if (pds_pdf != "") {
+                 window.open("../../../upload/" + pds_pdf + ".pdf",
+                     "",
+                     "toolbar=no, location=no, status=no, menubar=yes, " +
+                     "scrollbars=yes, resizable=no, width=680, " +
+                     "height=650, left=180, top=50");
+             }            
          }
+         
      </script>
+	<%--//FORMA PAGAMENTO--%>
+	<script>
+
+	</script>
     <!-- Content Wrapper. Contains page content -->
   <%--<div class="content-wrapper">--%>
     <!-- Content Header (Page header) -->
@@ -1480,6 +1998,255 @@
 
     <!-- Main content -->
     <section class="content">
+		<!-- Modal APROVA & PAGAMENTO-->
+				<div class="modal center-modal fade" id="modal-pagamento" tabindex="-2" data-keyboard="false" data-backdrop="static" >
+				  <div class="modal-dialog modal-lg" >
+					<div class="modal-content" style="width: 800px;" >
+					  <div class="modal-header" >
+						<h5 class="modal-title"><label>CONFIRME A APROVAÇÃO DO SEGURO - Aprovar Cotação e enviar dados para Pagamento</label></h5>
+						<button type="button" class="close" data-dismiss="modal" >
+						  <span aria-hidden="true">&times;</span>
+						</button>
+					  </div>
+						<input id="txtpflg_aprovacao" type="hidden">
+						<input id="txtpid_cotacao" type="hidden">
+						<input id="txtpid_seguradora" type="hidden">
+						<input id="txtpvalor" type="hidden">
+					  <div class=""  >
+						   <div class="row">		
+							<div class="col-lg-12 col-12">
+		                      <div class="">
+			                    <!-- /.box-header -->
+			                    <form class="form">
+				                    <div class="box-body">
+					                    <%--<h4 class="box-title text-info"><i class="ti-user mr-15"></i> Informações Pessoais                </h4>--%>
+					                    <%--<hr class="my-15">--%>
+										<div class="row">
+					                      <div class="col-md-6">
+						                    <div class="form-group">
+						                      <label>Nome do Segurado</label>
+						                      <input name="txtNomeSeguroPagamento" id="txtNomeSeguroPagamento" type="text" class="form-control" onchange="" disabled>
+												
+						                    </div>
+					                      </div>
+											  <div class="col-md-2">
+						                    <div class="form-group">
+						                      <label>Nº Parcelas</label>
+						                      <select name="ddlNrParcelas" id="ddlNrParcelas" class="form-control" onchange="">
+												<option selected value="1">1</option> 												  									
+												<option value="2">2</option> 												  									
+												<option value="3">3</option> 												  									
+												<option value="4">4</option> 												  									
+												<option value="5">5</option> 												  									
+												<option value="6">6</option> 												  									
+												<option value="7">7</option> 												  									
+												<option value="8">8</option> 												  									
+												<option value="9">9</option> 												  									
+												<option value="10">10</option> 												  									
+												<option value="10">11</option> 												  									
+												<option value="10">12</option> 												  									
+											</select>
+						                    </div>
+					                      </div>
+											<div class="col-md-4">
+						                    <div class="form-group">
+						                      <label>Valor 1ª Parcela</label>
+											  <input name="txtValorParcelaPagamento" id="txtValorParcelaPagamento" type="text" class="form-control" placeholder="000.000.000-00">
+						                     
+						                    </div>
+					                      </div>
+
+										</div>
+										<div id="telaDebitoConta" hidden>
+					                    <div class="row">
+					                      <div class="col-md-6">
+												<div class="form-group">
+													<label>Dados Débito em Conta</label>
+													<select name="ddlDadosDC" id="ddlDadosDC" class="form-control" onchange="">
+														<option selected value="1">Utilizar os dados do Segurado no Cálculo</option> 												  									
+														<option value="2">Informar dados da Conta para débito</option> 												  																					
+													</select>
+													
+												</div>
+												</div>
+											<div class="col-md-6">
+												<div class="form-group">
+													 <label>Parentesco Titular da Conta</label>
+						                       <select name="ddlParanteTitularDC" id="ddlParanteTitularDC" class="form-control" onchange="">
+												<option selected value="">Selecione...</option> 												  									
+												<option value="O Próprio Segurado">O Próprio Segurado</option> 												  									
+												<option value="Esposo(a)">Esposo(a)</option> 												  																					
+												<option value="Filho(a)">Filho(a)</option> 												  																					
+												<option value="Irmão">Irmão</option> 												  																					
+												<option value="Pai">Pai</option> 												  																					
+												<option value="Mãe">Mãe</option> 												  																					
+												<option value="Outros">Outros</option> 												  																					
+											</select>
+													
+												</div>
+												</div>
+					                    </div>
+										<div class="row">
+					                      <div class="col-md-9">
+						                    <div class="form-group">
+						                      <label >Titular da Conta (Nome)</label>
+						                      <input name="txtTitularContaDC" id="txtTitularContaDC" type="text" class="form-control" placeholder="Digite o nome do Titula da Conta" maxlength ="100">
+						                    </div>
+					                      </div>
+					                      <div class="col-md-3">
+						                    <div class="form-group">
+						                      <label>Tipo Pessoa</label>
+						                       <select name="ddlTipoPessoaDC" id="ddlTipoPessoaDC" class="form-control" onchange="" disabled>
+												<option selected value="">Selecione...</option> 												  									
+												<option selected value="F">Fisica</option> 												  									
+												<option value="J">Juridica</option> 												  																					
+											</select>
+						                    </div>
+					                      </div>
+											
+					                    </div>
+                                        <div class="row">
+					                     
+											<div class="col-md-6">
+						                    <div class="form-group">
+						                     <label>CPF do Titular</label>
+													<input name="txtCPFTitularDC" id="txtCPFTitularDC" type="text" class="form-control" placeholder="000.000.000-00">
+						                    </div>
+					                      </div>
+										  <div class="col-md-6">
+						                    <div class="form-group">
+						                      <label>Banco</label>
+						                       <select name="ddlBancoDC" id="ddlBancoDC" class="form-control" onchange="">
+												<option selected value="">Selecione...</option> 												  									
+												<option value="341">341 - Banco Itaú</option> 												  									
+												<option value="237">237 - Banco Bradesco</option> 												  																					
+											</select>
+						                    </div>
+					                      </div>
+					                    </div>
+										<div class="row">
+											<div class="col-md-4">
+												<div class="form-group">
+												  <label>Nº Agencia</label>
+												  <input name="txtNrAgenciaDC" id="txtNrAgenciaDC" type="text" class="form-control" onchange="" maxlength="7" onkeypress="return somenteNumeros(event)">											  
+												</div>
+											</div>
+											<div class="col-md-2">
+												<div class="form-group">
+													<label>Dig.</label>
+													<input name="txtNrAgenciaDigDC" id="txtNrAgenciaDigDC" type="text" class="form-control" onchange="" maxlength="2" onkeypress="return somenteNumeros(event)">
+												</div>
+					                        </div>
+											<div class="col-md-4">
+												<div class="form-group">
+												  <label>Nº Conta Corrente</label>
+												  <input name="txtNrContaDC" id="txtNrContaDC" type="text" class="form-control" onchange="" maxlength="13" onkeypress="return somenteNumeros(event)">											  
+												</div>
+											</div>
+											<div class="col-md-2">
+												<div class="form-group">
+													<label>Dig.</label>
+													<input name="txtNrContaDigDC" id="txtNrContaDigDC" type="text" class="form-control" onchange="" maxlength="2" onkeypress="return somenteNumeros(event)">
+												</div>
+					                        </div>
+					                    </div>
+										</div>
+
+										<div id="telaCartaoCredito" hidden>
+					                    <div class="row">
+					                      <div class="col-md-3">
+												<div class="form-group">
+													<label>Bandeira</label>
+													<select name="ddlBandeiraCC" id="ddlBandeiraCC" class="form-control" onchange="">
+														<option selected value="">Selecione...</option> 												  									
+														<option value="1">Elo</option> 												  																					
+														<option value="2">Dinners</option> 												  																					
+														<option value="3">Mastercard</option> 												  																					
+														<option value="4">Visa</option> 												  																					
+													</select>
+													
+												</div>
+												</div>
+											<div class="col-md-3">
+												<div class="form-group">
+													 <label>Nº Cartão de Crédito</label>
+													<input name="txtNrCartaoCC" id="txtNrCartaoCC" type="text" class="form-control" placeholder="0000.0000.0000.0000" maxlength ="19">
+													
+												</div>
+												</div>
+											<div class="col-md-3">
+						                    <div class="form-group">
+						                      <label >Validade MM/AA</label>
+						                      <input name="txtValidadeCC" id="txtValidadeCC" type="text" class="form-control" placeholder="MM/AA" maxlength ="5">
+						                    </div>
+					                      </div>
+					                    </div>
+										<div class="row">
+					                      
+					                      
+											
+					                    </div>
+                                        <div class="row">
+					                     
+											<div class="col-md-6">
+						                    <div class="form-group">
+						                     <label>CPF do Cartão de Crédito</label>
+											 <input name="txtCPFCC" id="txtCPFCC" type="text" class="form-control" placeholder="000.000.000-00">
+						                    </div>
+					                      </div>
+										  <div class="col-md-6">
+						                    <div class="form-group">
+						                      <label>Nome (Como aparece no cartão)</label>
+												<input name="txtNomeCC" id="txtNomeCC" type="text" class="form-control" onchange="" >											  
+						                    </div>
+					                      </div>
+					                    </div>
+										
+										</div>
+										<div id="telaBoleto" hidden>
+					                    <div class="row">
+					                      <div class="col-md-12">
+												<div class="form-group">
+													<label>AGUARDE O RECEBIMENTO DO BOLETO PARA PAGAMENTO, POR E-MAIL OU WHATSAPP</label>
+												</div>
+												</div>
+											
+					                    </div>
+										</div>
+										<div id="telaCartaoPortoNovo" hidden>
+					                    <div class="row">
+					                      <div class="col-md-12">
+												<div class="form-group">
+													<label>PAGAMENTO COM CARTÃO PORTO SEGURO NOVO, 5% DE DESCONTO, AGUARDE O PROCESSO DE EMISSÃO DA APÓLICE</label>
+												</div>
+												</div>
+											
+					                    </div>
+										</div>
+									</div>
+				                    <!-- /.box-body -->
+				                    <%--<div class="box-footer">
+					                    <input type="button" class="btn btn-success" onclick="InserirDadosCliente()">
+					                      <i class="ti-save-alt"></i> Grave
+					                    </input>
+				                    </div>  --%>
+			                    </form>
+		                      </div>
+		                      <!-- /.box -->			
+		                    </div> 
+		                    
+                            
+                            </div>
+						</div>
+                        <div class="modal-footer modal-footer-uniform">
+						<button type="button" class="btn btn-bold btn-primary float-right"  onclick="EfetivaAprovarCotacao()">APROVAR cotação e Enviar Dados p/ Pagamento</button> <%--data-dismiss="modal"--%>
+					  </div>
+					  </div>
+					  
+					</div>
+				</div>
+				
+       <!-- /.modal -->
            <!-- Modal Clientes Indicado -->
 				<div class="modal center-modal fade" id="modal-localizar-indicado" tabindex="-1">
 				  <div class="modal-dialog">
@@ -1552,13 +2319,7 @@
 					                      <div class="col-md-6">
 						                    <div class="form-group">
 						                      <label>Seguradora e Bônus...</label>
-												<%--<asp:TextBox name="txtIdClienteIndicador" id="TextBox1" type="hidden" runat="server"></asp:TextBox>
-												<asp:TextBox name="txtNomeClienteIndicador" id="TextBox2" type="hidden" runat="server"></asp:TextBox>
-												<asp:TextBox name="txtIdCotacao" id="TextBox3" type="hidden" runat="server"></asp:TextBox>--%>
-
-												<%--<input name="txtIdClienteCotacao" id="txtIdClienteCotacao" type="hidden">
-												<input name="txtCotacaoAutomovel" id="txtCotacaoAutomovel" type="hidden" value="0">
-												<input name="txtTipoVeiculoFipe" id="txtTipoVeiculoFipe" type="hidden">--%>
+												
 						                      <select name="ddlSeguradoraRenovacao" id="ddlSeguradoraRenovacao" class="form-control" onchange="">
 												<option selected value="">Selecione...</option> 												  
 												<option value="1">Porto Seguro</option> 												  									
@@ -1678,7 +2439,7 @@
 				  </div>
 				
        <!-- /.modal -->
-		<!-- Modal INSERE COTACAO -->
+		<!-- Modal INSERE COTACAO SEGURADORA-->
 				<div class="modal center-modal fade" id="modal-insere-cotacao" tabindex="-2">
 				  <div class="modal-dialog">
 					<div class="modal-content">
@@ -1734,9 +2495,10 @@
 						                      <label>Forma de Pagamento</label>												
 						                      <select name="ddlFormaPagamento" id="ddlFormaPagamento" class="form-control" onchange="">
 												<option selected value="">Selecione...</option> 												  
-												<option value="1">Cartão de Crédito</option> 												  									
+												<option value="1">Cartão de Crédito</option>
 												<option value="2">Boleto</option> 												  									
 												<option value="3">Débito em Conta</option> 												  															
+												<option value="4">Cartão de Crédito Porto Seguro</option>
 											</select>
 						                    </div>
 					                      </div>
@@ -1869,7 +2631,7 @@
 				
        <!-- /.modal -->
 		<!-- Modal EM PROCESSAMENTO... -->
-				<div class="modal center-modal fade" data-backdrop="static" id="modal-em-processamento" tabindex="-2" style='justify-content: center;align-items: center;'>
+				<div class="modal center-modal fade" data-backdrop="static" id="modal-em-processamento" tabindex="-2" style='justify-content: center;align-items: center;' data-keyboard="false" >
 				  <div class="modal-dialog" style='justify-content: center;align-items: center;'>
 					<div class="modal-content" style='justify-content: center;align-items: center;'>
 					  <div class="modal-header" style='justify-content: center;align-items: center;'>
@@ -1897,6 +2659,157 @@
 				
        <!-- /.modal -->
 
+		<!-- Modal ENVIAR COTACAO PARA PROCESAMENTO-->
+				<div class="modal center-modal fade" id="modal-enviar-cotacao" tabindex="-2">
+				  <div class="modal-dialog">
+					<div class="modal-content">
+					  <div class="modal-header">
+						<h5 class="modal-title">Enviar Cotação para Processamento.</h5>
+						<button type="button" class="close" data-dismiss="modal">
+						  <span aria-hidden="true">&times;</span>
+						</button>
+					  </div>
+					  <div class="">
+						   <div class="row">		
+							<div class="col-lg-12 col-12">
+		                      <div class="">
+			                    <!-- /.box-header -->
+			                    <form class="form">
+				                    <div class="box-body">
+					                    <%--<h4 class="box-title text-info"><i class="ti-user mr-15"></i> Informações Pessoais                </h4>--%>
+					                    <hr class="my-15">
+					                    <div class="row">
+											<div class="col-md-12">
+												<div class="form-group">
+												  <label>Forma de Pagamento</label>												
+												  <select name="ddlFormaPagamentoEnvio" id="ddlFormaPagamentoEnvio" class="form-control" onchange="">
+													<option selected value="">Selecione...</option> 												  
+													<option value="1">Cartão de Crédito</option> 												  									
+													<option value="2">Boleto</option> 												  									
+													<option value="3">Débito em Conta</option>
+													<option value="4">Cartão de Crédito Porto Seguro</option>
+												</select>
+												</div>
+											  </div>
+											
+										</div>
+										<div class="row">
+					                      <div class="col-md-12">
+												<div class="form-group">
+													<label title="Envie uma mensagem, &#013;Ex: &#013;Necessito Cotação com urgência, &#013;Analisar Cotação de outra corretora em Anexo.">Mensagem para Corretora</label>
+													<textarea rows="5" id="txtMensagemEnviarCotacao" class="form-control" placeholder="Opcional"></textarea>
+													
+												</div>
+										  </div>
+											
+					                    </div>
+					                  
+										<div class="row">
+											<div class="col-md-12">
+												<div class="form-group">
+												  <label title="Envio de PDF é opcional">Envie PDF de Cotação</label>
+												  <input type="file" id="FileUploadEnviar" />
+												</div>
+											  </div>											
+										</div>
+									</div>
+				                    <!-- /.box-body -->
+				                    <%--<div class="box-footer">
+					                    <input type="button" class="btn btn-success" onclick="InserirDadosCliente()">
+					                      <i class="ti-save-alt"></i> Grave
+					                    </input>
+				                    </div>  --%>
+			                    </form>
+		                      </div>
+		                      <!-- /.box -->			
+		                    </div> 
+		                    
+                            
+                            </div>
+						</div>
+                        <div class="modal-footer modal-footer-uniform">
+						<button type="button" class="btn btn-bold btn-primary float-right"  onclick="EfetivarEnviarCotacao()">CONFIRMA ENVIO DA COTAÇÃO</button> <%--data-dismiss="modal"--%>
+					  </div>
+					  </div>
+					  
+					</div>
+				  </div>
+				
+       <!-- /.modal -->
+		<!-- Modal CHAT-->
+				<div class="modal center-modal fade" id="modal-chat" tabindex="-2">
+				  <div class="modal-dialog modal-lg" >
+					<div class="modal-content" style="width: 800px;" >
+					  <div class="modal-header" >
+						<h5 class="modal-title">Chat Cotação</h5>
+						<button type="button" class="close" data-dismiss="modal" >
+						  <span aria-hidden="true">&times;</span>
+						</button>
+					  </div>
+					  <div class=""  >
+						   <div class="row">		
+							<div class="col-lg-12 col-12">
+		                      <div class="">
+			                    <!-- /.box-header -->
+			                    <form class="form">
+				                    <div class="box-body">
+					                    <%--<h4 class="box-title text-info"><i class="ti-user mr-15"></i> Informações Pessoais                </h4>--%>
+					                    <hr class="my-15">
+										<div class="row">
+					                      <div class="col-md-12">
+												<div class="form-group">
+													<label title="Envie uma mensagem, &#013;Ex: &#013;Necessito Cotação com urgência, &#013;Analisar Cotação de outra corretora em Anexo.">Mensagem</label>
+													<textarea rows="2" id="txtMensagemChat" class="form-control" placeholder="" maxlength="400"></textarea>
+												</div>
+										  </div>
+											
+					                    </div>
+					                    <div class="row">
+					                      <div class="col-md-12">
+												<div class="form-group" >
+													<div class="table-responsive" style="overflow-y: scroll;display: flex; flex-wrap: wrap; height: 265px;margin-bottom: 12px;">
+													  <%--<table id="grdChat" class="table table-bordered table-striped display nowrap margin-top-10" style="width:100%">--%>
+														  <table id="grdChat" class="grdacto table table-striped" style="width:100%">
+														<thead>
+															<tr>
+																<th>Data/Hora</th>
+																<th>Mensagem</th>
+																<th>Forma de Pagamento</th>
+																<th>Anexo</th>
+															</tr>
+														</thead>
+													  </table>
+            										</div>
+												</div>
+										  </div>
+											
+					                    </div>
+										
+									</div>
+				                    <!-- /.box-body -->
+				                    <%--<div class="box-footer">
+					                    <input type="button" class="btn btn-success" onclick="InserirDadosCliente()">
+					                      <i class="ti-save-alt"></i> Grave
+					                    </input>
+				                    </div>  --%>
+			                    </form>
+		                      </div>
+		                      <!-- /.box -->			
+		                    </div> 
+		                    
+                            
+                            </div>
+						</div>
+                        <div class="modal-footer modal-footer-uniform">
+						<button type="button" class="btn btn-bold btn-primary float-right"  onclick="IncluiMsgChat()">Enviar Mensagem</button> <%--data-dismiss="modal"--%>
+					  </div>
+					  </div>
+					  
+					</div>
+				</div>
+				
+       <!-- /.modal -->
+		
       <!-- tabs -->
 
       <div class="row">
@@ -1910,12 +2823,12 @@
             <div class="box-body">
             	<!-- Nav tabs -->
 				<ul class="nav nav-tabs nav-fill" role="tablist">
-					<li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="#segurado" role="tab"><span class="hidden-sm-up"><i class="ion-person"></i></span> <span class="hidden-xs-down">SEGURADO      </span> <i id="imgSegurado" aria-hidden="false"> </i></a></li>
-					<li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#veiculo" role="tab"><span class="hidden-sm-up"><i class="ion-model-s"></i></span> <span class="hidden-xs-down">VEICULO      <i id="imgVeiculo" class="fa fa-bomb" aria-hidden="false"></i></span></a> </li>
-					<li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#perfil" role="tab"><span class="hidden-sm-up"><i class="ion-home"></i></span> <span class="hidden-xs-down">PERFIL      <i id="imgPerfil" class="fa fa-bomb" aria-hidden="false"></i></span></a> </li>
-					<li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#condutor" role="tab"><span class="hidden-sm-up"><i class="ion-home"></i></span> <span class="hidden-xs-down">CONDUTOR      <i id="imgCondutor" class="fa fa-bomb" aria-hidden="false"></i></span></a> </li>
-					<li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#cobertura" role="tab"><span class="hidden-sm-up"><i class="ion-home"></i></span> <span class="hidden-xs-down">COBERTURA      <i id="imgCobertura" class="fa fa-check" aria-hidden="false"></i></span></a> </li>
-					<li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#calculo" role="tab"><span class="hidden-sm-up"><i class="ion-home"></i></span> <span class="hidden-xs-down">RESULTADO CALCULO</span></a> </li>
+					<li class="nav-item"> <a class="nav-link active" data-toggle="tab" id="tablinksegurado" href="#segurado" role="tab"><span class="hidden-sm-up"><i class="ion-person"></i></span> <span class="hidden-xs-down">SEGURADO      </span> <i id="imgSegurado" aria-hidden="false"> </i></a></li>
+					<li class="nav-item"> <a class="nav-link" data-toggle="tab" id="tablinkveiculo" href="#veiculo" role="tab"><span class="hidden-sm-up"><i class="ion-model-s"></i></span> <span class="hidden-xs-down">VEICULO      <i id="imgVeiculo" class="fa fa-bomb" aria-hidden="false"></i></span></a> </li>
+					<li class="nav-item"> <a class="nav-link" data-toggle="tab" id="tablinkperfil" href="#perfil" role="tab"><span class="hidden-sm-up"><i class="ion-home"></i></span> <span class="hidden-xs-down">PERFIL      <i id="imgPerfil" class="fa fa-bomb" aria-hidden="false"></i></span></a> </li>
+					<li class="nav-item"> <a class="nav-link" data-toggle="tab" id="tablinkcondutor" href="#condutor" role="tab"><span class="hidden-sm-up"><i class="ion-home"></i></span> <span class="hidden-xs-down">CONDUTOR      <i id="imgCondutor" class="fa fa-bomb" aria-hidden="false"></i></span></a> </li>
+					<li class="nav-item"> <a class="nav-link" data-toggle="tab" id="tablinkcobertura" href="#cobertura" role="tab"><span class="hidden-sm-up"><i class="ion-home"></i></span> <span class="hidden-xs-down">COBERTURA      <i id="imgCobertura" class="fa fa-check" aria-hidden="false"></i></span></a> </li>
+					<li class="nav-item"> <a class="nav-link" data-toggle="tab" id="tablinkcalculo" href="#calculo" role="tab"><span class="hidden-sm-up"><i class="ion-home"></i></span> <span class="hidden-xs-down">RESULTADO CALCULO</span></a> </li>
 				</ul>
 
 				<!-- Tab panes -->
@@ -1940,13 +2853,14 @@
 						<div class="col-md-3">
 							<div class="form-group">
 								<label>Vigência Inicial</label>
-								<input name="txtDtVigenciaInicial" id="txtDtVigenciaInicial"  type="text" class="form-control" placeholder="Digite a Data Inícial Vigência">
+								<%--<input name="txtDtVigenciaInicial" id="txtDtVigenciaInicial" type="date" class="form-control" required data-validation-required-message="Data Obrigatória" placeholder="Digite a Data Inícial Vigência" onchange="SomaDataVigencia();"/>--%>
+								<div class="controls"><input name="txtDtVigenciaInicial" id="txtDtVigenciaInicial" type="date" class="form-control" required data-validation-required-message="Data Obrigatória"></div>
 							</div>
 						</div>
 						<div class="col-md-3">
 							<div class="form-group">
 								<label>Vigência Final</label>
-								<input name="txtDtVigenciaFinal" id="txtDtVigenciaFinal"  type="text" class="form-control" placeholder="Digite a Data Final Vigência">
+								<input name="txtDtVigenciaFinal" id="txtDtVigenciaFinal"  type="date" class="form-control" placeholder="Digite a Data Final Vigência">
 							</div>
 						</div>
 						<div class="col-md-3">
@@ -1959,11 +2873,11 @@
 					<div class="row">
 					
 						<div class="col-md-6">
-							<button type="button" name="btnGravar" id="btnGravar" class="btn btn-cyan mb-5" onclick="ValidarStatusEmCotacao()" disabled>Gravar</button>
-							<button type="button" name="btnEnviar" id="btnEnviar" class="btn btn-yellow mb-5" onclick="EnviarCotacao()"  disabled>Enviar</button>
-							<button type="button" name="btnPDF" id="btnPDF" class="btn btn-warning mb-5" onclick="BaixarPDF()" disabled>PDF</button>
-							<button type="button" name="btnClonar" id="btnClonar" class="btn btn-brown mb-5" onclick="ClonarCotacao()" disabled>Clonar</button>
-							<button type="button" class="btn btn-danger mb-5" onclick="Voltar()">Voltar</button>
+							<button data-toggle="tooltip" data-placement="top" title="Cotação será gravada no ACTO ONLINE." type="button" name="btnGravar" id="btnGravar" class="btn btn-cyan mb-5" onclick="ValidarStatusEmCotacao()" disabled hidden>Gravar</button>
+							<button data-toggle="tooltip" data-placement="top" title="Envie a cotação para processamento." type="button" name="btnEnviar" id="btnEnviar" class="btn btn-yellow mb-5" onclick="EnviarCotacao()"  disabled hidden>Enviar</button>
+							<button data-toggle="tooltip" data-placement="top" title="Copiar esta cotação com Status COTAÇÂO GRAVADA." type="button" name="btnClonar" id="btnClonar" class="btn btn-brown mb-5" onclick="ClonarCotacao()" disabled hidden>Clonar</button>
+							<button data-toggle="tooltip" data-placement="top" title="Cancelar a Cotação." type="button" name="btnCancelar" id="btnCancelar" class="btn btn-brown mb-5" onclick="ValidarbtnCancelar()" hidden>Cancelar</button>
+							<button data-toggle="tooltip" data-placement="top" title="Carregar a lista de Cotações." type="button" class="btn btn-danger mb-5" onclick="Voltar()">Lista de Cotações</button>
 						</div>
 						<div class="col-md-6">
 							<input name="txtMensagemCotacao" id="txtMensagemCotacao"  type="text" class="form-control" value="Cotação não gravada" disabled>
@@ -2002,11 +2916,25 @@
 												<asp:TextBox name="txtIdClienteIndicador" id="txtIdClienteIndicador" type="hidden" runat="server"></asp:TextBox>
 												<asp:TextBox name="txtNomeClienteIndicador" id="txtNomeClienteIndicador" type="hidden" runat="server"></asp:TextBox>
 												<asp:TextBox name="txtIdCotacao" id="txtIdCotacao" type="hidden" runat="server"></asp:TextBox>
+												<asp:TextBox name="txtIdClienteCotacaoNova" id="txtIdClienteCotacaoNova" type="hidden" runat="server"></asp:TextBox>
 
 												<input name="txtIdClienteCotacao" id="txtIdClienteCotacao" type="hidden">
 												<input name="txtCotacaoAutomovel" id="txtCotacaoAutomovel" type="hidden" value="0">
 												<input name="txtTipoVeiculoFipe" id="txtTipoVeiculoFipe" type="hidden">
 												<input name="txtPDFCotacao" id="txtPDFCotacao" type="hidden">
+												<input name="txtIdFormaPagamento" id="txtIdFormaPagamento" type="hidden">
+												<input id="txtCPFCondutorPrincipal_h" type="hidden">
+												<input id="txtNomeCondutoPrincipal_h" type="hidden">
+												<input id="txtDataNascimentoCondutor_h" type="hidden">
+												<input id="txtGeneroCondutorPricipal_h" type="hidden">
+												<input id="txtEstadoCivilCondutorPricipal_h" type="hidden">
+												<input id="txtProfissao_h" type="hidden">
+												<input id="txtDetalheProfissao_h" type="hidden">
+												<input id="txtRgCondutorPrinicpal_h" type="hidden">
+												<input id="txtDataEmissaoRgCondutorPrincipal_h" type="hidden">
+												<input id="txtEmissorRG_h" type="hidden">
+												<input id="txtCnhCondutorPrincipal_h" type="hidden">
+												<input id="txtDataHabilitacao_h" type="hidden">
 						                      <input id="txtCPF" type="text" class="form-control" placeholder="Digite seu CPF" readonly>
 						                    </div>
 					                      </div>
@@ -2041,7 +2969,7 @@
 					                      <div class="col-md-6">
 						                    <div class="form-group">
 						                      <label >Telefone Celular 2</label>
-						                      <input name="txtTelefoneCelular2" id="txtTelefoneCelular2" type="text" class="form-control" placeholder="Digite seu Telefone2" readonly>
+						                      <input name="txtTelefoneCelular2" id="txtTelefoneCelular2" type="text" class="form-control" placeholder="Telefone não informado" readonly>
 						                    </div>
 					                      </div>
 					                    </div>
@@ -2335,12 +3263,68 @@
 										<div class="row">
 					                      <div class="col-md-6">
 						                    <div class="form-group">
-						                     <label >Ultilização do Veículo</label>
+						                     <label >Utilização do Veículo</label>
 						                      <select name="ddlUtilizacaoVeiculo" id="ddlUtilizacaoVeiculo" class="form-control" onchange="onchange_aba_veiculo()" >
-												  <option selected value="">Selecione..</option> 												  
-												  <option value="Exercício do Trabalho">Exercício do Trabalho</option> 												  
-												  <option value="Locomoção Diária">Locomoção Diária</option> 												  
-												  <option value="Somente Lazer">Somente Lazer</option> 												  
+												  <option value="">Selecione..</option> 
+												  <option value="5">Ambulância</option>
+													<option value="7">Auto-Escola</option>
+													<option value="8">Bombeiro</option>
+													<option value="46">Canavieiro</option>
+													<option value="38">Carga Comum</option>
+													<option value="39">Carga Explosiva/Inflamável</option>
+													<option value="49">Carga Mista</option>
+													<option value="45">Carga Viva</option>
+													<option value="25">Carro Socorro</option>
+													<option value="11">Casa Volante</option>
+													<option value="27">Colelor de Lixo</option>
+													<option value="21">Desent. de Canos</option>
+													<option value="24">Entregas</option>
+													<option value="19">Espargidor</option>
+													<option value="22">Exposição de Produtos</option>
+													<option value="23">Fins Publicitários</option>
+													<option value="59">Food Truck</option>
+													<option value="2">Frete</option>
+													<option value="6">Funerária</option>
+													<option value="17">Hospital Volante</option>
+													<option value="4">Locadora</option>
+													<option value="29">Locadora Contrato</option>
+													<option value="30">Lotação</option>
+													<option value="34">Micro-Ônibus</option>
+													<option value="14">Oficina Volante</option>
+													<option value="37">Ônibus RCO</option>
+													<option SELECTED value="1">Particular</option>
+													<option value="48">Particular Locado</option>
+													<option value="10">Placa de Fabricante</option>
+													<option value="18">Plat. Elevatória</option>
+													<option value="9">Policiamento</option>
+													<option value="54">Port.de Limit. Física (Lotação)</option>
+													<option value="28">Port.de Limit. Física (Particular)</option>
+													<option value="50">Port.de Limit. Física (Prest. Serviço)</option>
+													<option value="55">Port.de Limit. Física (Repr. Comercial)</option>
+													<option value="53">Port.de Limit. Física (Taxi)</option>
+													<option value="60">Port.de Limit. Física (Transp. App)</option>
+													<option value="51">Port.de Limit. Física (Transp. Func.)</option>
+													<option value="52">Port.de Limit. Física (Turismo)</option>
+													<option value="42">Prestação de Serviço</option>
+													<option value="41">Represent. Comercial/Vendas</option>
+													<option value="31">Rodoviário</option>
+													<option value="3">Táxi</option>
+													<option value="36">Táxi Coletivas</option>
+													<option value="56">Test Drive</option>
+													<option value="12">Trailer</option>
+													<option value="40">Transp. de Funcionários</option>
+													<option value="58">Transp. de Passageiros por App.</option>
+													<option value="35">Transp. Escolar</option>
+													<option value="47">Transporte de Carvão</option>
+													<option value="43">Transporte de Frigorificados</option>
+													<option value="16">Transporte de Valores</option>
+													<option value="61">Traslado de clientes</option>
+													<option value="33">Turismo</option>
+													<option value="32">Urbano</option>
+													<option value="20">Varredora Mecânica</option>
+													<option value="13">Veículo Bar</option>
+													<option value="15">Veículo Pagador</option>
+													<option value="44">Veículos Oficiais</option> 												  
 												</select>
 						                    </div>
 					                      </div>
@@ -2477,8 +3461,8 @@
 						                    <div class="form-group">
 						                      <label>Você é o proprietário</label>
 						                      <select name="ddlProprietario" id="ddlProprietario" class="form-control" onchange="onchange_aba_perfil()">
-												  <option value="">Selecione..</option> 												  
-												  <option selected value="SIM">SIM</option> 												  
+												  <option selected value="">Selecione..</option> 												  
+												  <option value="SIM">SIM</option> 												  
 												  <option value="NÃO">NÃO</option> 												  
 												</select>
 						                    </div>
@@ -2501,12 +3485,12 @@
 						                      <label>Relação com o Prorietário</label>
 						                      <select name="ddlRelacaoProprietario" id="ddlRelacaoProprietario" class="form-control"  onchange="onchange_aba_perfil()">
 												  <option selected value="">Selecione..</option> 												  
-												  <option value="1">O próprio c/ CRV no nome do Segurado</option> 												  
+												  <option value="1">O próprio c/ CRV no nome do Segurado</option> 						
+												  <option value="6">O próprio c/ CRV em transferência</option> 												  
 												  <option value="2">Empregado</option> 												  
 												  <option value="3">Empresa x Sócio/Diretor</option> 												  
 												  <option value="4">Espólio</option> 												  
 												  <option value="5">Flho(a)/Enteado(a)</option> 												  
-												  <option value="6">O próprio c/ CRV em transferência</option> 												  
 												  <option value="7">Operação de Leasing ou Locadora</option> 												  
 												  <option value="8">Outros</option> 												  
 												  <option value="9">Pai/Mãe</option> 												  
@@ -2591,9 +3575,9 @@
 						                    <div class="form-group">
 						                      <label>Garagem na Residência</label>
 						                      <select name="ddlGaragemResidencia" id="ddlGaragemResidencia" class="form-control"  onchange="onchange_aba_perfil()">
-												  <option value="">Selecione..</option> 												  
+												  <option selected value="">Selecione..</option> 												  
 												  <option value="SIM">SIM</option> 												  
-												  <option selected value="NÃO">NÃO</option> 												  
+												  <option  value="NÃO">NÃO</option> 												  
 												</select>
 						                    </div>
 					                      </div>
@@ -2628,11 +3612,12 @@
 						                    <div class="form-group">
 						                      <label>KM Média Mensal</label>
 						                      <input name="txtKmMediaMensal" id="txtKmMediaMensal"  type="text" class="form-control" placeholder="Digite a KM Média Mensal" maxlength ="4" onkeypress="return somenteNumeros(event)"  onchange="onchange_aba_perfil()">
+
 						                    </div>
 					                      </div>
 					                      <div class="col-md-6">
 						                    <div class="form-group">
-						                     <label >Idade 1ª Habilitação</label>
+						                     <label>Idade 1ª Habilitação</label>
 						                      <input name="txtIdadePHabilitacao" id="txtIdadePHabilitacao" type="text" class="form-control" placeholder="Digite a Idade" maxlength ="2" onkeypress="return somenteNumeros(event)"  onchange="onchange_aba_perfil()">
 						                    </div>
 					                      </div>
@@ -3987,11 +4972,14 @@
 									
 			                      <h4 class="box-title">Resultado Calculo</h4>	
 									<ul class="box-title">
+										<button type="button" name="btnChat" id="btnChat" class="btn btn-blue mb-5" onclick="CarregaTelaChat()" hidden>Chat</button>
+										<button type="button" name="btnPDF" id="btnPDF" class="btn btn-warning mb-5" onclick="BaixarPDF()" disabled>PDF</button>
 										 <% if (TemPermissao("ADMRESCAL")) { %>
-				                      <button type="button" name="btnInsereCotacao" id="btnInsereCotacao" class="btn btn-blue mb-5" onclick="CarregaTelaInsereCotacao()" hidden >Inserir</button>
+										
+				                        <button type="button" name="btnInsereCotacao" id="btnInsereCotacao" class="btn btn-blue mb-5" onclick="CarregaTelaInsereCotacao()" hidden>Inserir</button>
 										<button type="button" name="btnLimparItensCotacao" id="btnLimparItensCotacao" class="btn btn-blue mb-5" onclick="CarregaTelaLimparItensCotacao()" hidden >Excluir Todos</button>
 										<button type="button" name="btnUploadPDF" id="btnUploadPDF" class="btn btn-blue mb-5" onclick="AbrePopupUploadPDF()" hidden>Sobe PDF</button>
-										<button type="button" name="btnFinalizaCotacao" id="btnFinalizaCotacao" class="btn btn-blue mb-5" onclick="FinalizaCotacao()" hidden>Finalizar Cotação</button>
+										<button type="button" name="btnFinalizaCotacao" id="btnFinalizaCotacao" class="btn btn-blue mb-5" onclick="FinalizaCotacao()" hidden>Finalizar Status</button>
 										 <% }%>
 				                    </ul>
 									<ul class="box-controls pull-right"></ul>

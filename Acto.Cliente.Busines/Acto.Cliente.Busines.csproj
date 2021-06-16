@@ -61,6 +61,14 @@
       <Project>{6ea2d022-8a4d-439b-8725-9a911f983e48}</Project>
       <Name>Acto.Empresa.Entity</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Acto.Usuario.Busines\Acto.Usuario.Busines.csproj">
+      <Project>{e078d005-289c-4c90-a9ee-b1836eee2796}</Project>
+      <Name>Acto.Usuario.Busines</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Acto.Usuario.Entity\Acto.Usuario.Entity.csproj">
+      <Project>{9db0eccc-a435-442a-9ffc-1bd189a13b2f}</Project>
+      <Name>Acto.Usuario.Entity</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -47,5 +47,11 @@
     <Compile Include="CaixaEmail.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Acto.Cotacao.Entity\Acto.Cotacao.Entity.csproj">
+      <Project>{35000ea0-eec6-4e1a-90d6-17a11240d28e}</Project>
+      <Name>Acto.Cotacao.Entity</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

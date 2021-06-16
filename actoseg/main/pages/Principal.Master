@@ -3,13 +3,37 @@
 <!DOCTYPE html>
 
 <html>
+
 <head runat="server">
-    <title></title>
+    <title>ACTO ONLINE</title>
+    <meta charset="utf-8"/>
+		<%--<title>Detecta tecla pressionada</title>--%>
+		<link rel="icon" href="../../images/logos/RGB/Logo_ActoSeg%20Corretora_RGB-01_login.jpg">
+		<%--<style>
+			body {
+				text-align: center;
+				padding: 100px;
+			}
+ 
+			div {
+				font-size: 40px;
+				line-height: 80px;
+			}
+ 
+			span {
+				color: blue;
+				font-size: 50px;
+			}
+		</style>--%>
     <asp:ContentPlaceHolder ID="head" runat="server">
 
     </asp:ContentPlaceHolder>
 </head>
+
 <body>
+ <%--   <div class="key">
+			Aperte alguma tecla <br>
+		</div>--%>
     <form id="form1" runat="server">
         <div>
                <!DOCTYPE html>
@@ -208,8 +232,8 @@
           <ul class="treeview-menu">
             <li><a href="MeuCadastro.aspx"><i class="fa fa-circle-thin"></i>Cliente</a></li>
               <%--<li><a href="em_manutencao.html"><i class="fa fa-circle-thin"></i>Minha Empresa</a></li>--%>
-              <li><a href="MeuIndicado.aspx"><i class="fa fa-circle-thin"></i>Incluir Indicado</a></li>              
-              <li><a href="EnderecoIndicado.aspx""><i class="fa fa-circle-thin"></i>Endereço do Indicado</a></li>              
+              <%--<li><a href="MeuIndicado.aspx"><i class="fa fa-circle-thin"></i>Incluir Indicado</a></li>              
+              <li><a href="EnderecoIndicado.aspx""><i class="fa fa-circle-thin"></i>Endereço do Indicado</a></li>              --%>
           </ul>
         </li>
         <li class="treeview">
@@ -462,5 +486,8 @@
 	<script src="../../assets/vendor_components/select2/dist/js/select2.full.js"></script>
        <!-- Bankio admin for advanced form element -->
 	<script src="../js/pages/advanced-form-element.js"></script>
+    <!-- Form validator JavaScript -->
+    <script src="../js/pages/validation.js"></script>
+    <script src="../js/pages/form-validation.js"></script>
 </body>
 </html>

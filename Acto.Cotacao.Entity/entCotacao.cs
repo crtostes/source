@@ -103,32 +103,29 @@ namespace Acto.Cotacao.Entity
         public string ds_renovacao_apolice { get; set; }
         public string ds_renovacao_apolice_item { get; set; }
         public string ds_renovacao_apolice_ci { get; set; }
+        public string id_forma_pagamento { get; set; }
     }
     public class entMoraEm
     {
         public int id_mora_em { get; set; }
         public string ds_mora_em { get; set; }
     }
-
     public class entUtilizacao
     {
         public int id_utilizacao { get; set; }
         public string ds_utilizacao { get; set; }
     }
-
     public class entLocalPernoite
     {
         public int id_local_pernoite { get; set; }
         public string ds_local_pernoite { get; set; }
     }
-
     public class entSeguradora
     {
         public int id_seguradora { get; set; }
         public string cd_seguradora { get; set; }
         public string ds_seguradora { get; set; }
     }
-    
     public class entCotacaoAutomovelGrid
     {
         public string id_cotacao { get; set; }
@@ -149,7 +146,6 @@ namespace Acto.Cotacao.Entity
 
 
     }
-
     public class entCotacaoAutomovelItem
     {
 
@@ -161,7 +157,6 @@ namespace Acto.Cotacao.Entity
         public string ds_valor_franquia_100 { get; set; }
         public string ds_valor_premio_f100 { get; set; }
     }
-
     public class entCotacaoAutomovelItemGrid
     {
         public string id_cotacao { get; set; }
@@ -187,5 +182,136 @@ namespace Acto.Cotacao.Entity
 
 
 
+    }
+
+    public class entCotacaoInteracao
+    {
+        public int id_cotacao_interacao { get; set; }
+        public int id_cotacao { get; set; }
+        public int id_forma_pagamento { get; set; }
+        public string ds_forma_pagamento { get; set; }
+        public string ds_mensagem { get; set; }
+        public string ds_pdf_cotacao_concorrente { get; set; }
+        public string bt_pdf_cotacao_concorrente { get; set; }
+        public string dt_interacao { get; set; }
+
+    }
+    public class entCotacaoFormaPagamento
+    {
+        public int id_cotacao_forma_pagamento { get; set; }
+        public int id_cotacao { get; set; }
+        public int id_forma_pagamento { get; set; }
+        public string nr_parcelas { get; set; }
+        public string ds_bandeira_cc { get; set; }
+        public string ds_nr_cartao_cc { get; set; }
+        public string ds_validade_cc { get; set; }
+        public string ds_nome_cliente_cc { get; set; }
+        public string tp_dados_segurado_dc { get; set; }
+        public string ds_nome_titular_conta_dc { get; set; }
+        public string ds_banco_dc { get; set; }
+        public string tp_pessoa_dc { get; set; }
+        public string ds_cpf_titular_conta_dc { get; set; }
+        public string ds_parentesco_titular_dc { get; set; }
+        public string ds_nr_agencia_dc { get; set; }
+        public string ds_digito_agencia_dc { get; set; }
+        public string ds_nr_conta_dc { get; set; }
+        public string ds_digito_conta_dc { get; set; }
+    }
+
+    public class entCotacaoEnviar{
+        public string ds_nome { get; set; }
+        public string tp_pessoa { get; set; }
+        public string nr_cpf_cnpj { get; set; }
+        public string ds_rg { get; set; }
+        public string dt_nascimento { get; set; }
+        public string ds_genero { get; set; }
+        public string ds_estado_civil { get; set; }
+
+        public string ds_email { get; set; }
+        public string ds_telefone_celular { get; set; }
+        public string ds_telefone_comercial { get; set; }
+        public string ds_data_vigencia_inicial { get; set; }
+        public string ds_data_vigencia_final { get; set; }
+        public string ds_tipo_cotacao { get; set; }
+
+
+      
+        public string ds_tipo_veiculo { get; set; }
+        public string ds_ano_fabricao { get; set; }
+        public string ds_ano_modelo { get; set; }
+        public string ds_marca { get; set; }
+        public string ds_modelo { get; set; }
+        public string ds_zero_km { get; set; }
+        public string ds_utilizacao_veiculo { get; set; }
+        public string ds_placa { get; set; }
+        public string ds_chassi { get; set; }
+        public string ds_combustivel { get; set; }
+        public string ds_estado_veiculo { get; set; }
+        public string ds_portas { get; set; }
+        public string ds_financiado { get; set; }
+        public string ds_cep { get; set; }
+        public string ds_cep_pernoite { get; set; }
+        public string ds_cep_circulacao { get; set; }
+        public string ds_cep_residencia { get; set; }
+        
+        public string ds_renovacao_seguradora { get; set; }
+        public string ds_renovacao_data_vigencia_anterior_inicio { get; set; }
+        public string ds_renovacao_data_vigencia_anterior_fim { get; set; }
+        public string ds_renovacao_bonus_anterior { get; set; }
+        public string ds_renovacao_bonus_atual { get; set; }
+        public string ds_renovacao_apolice { get; set; }
+        public string ds_renovacao_apolice_item { get; set; }
+        public string ds_renovacao_apolice_ci { get; set; }
+
+        public string ds_tipo_cobertura { get; set; }
+        public string ds_cobertura_valor_mercado { get; set; }
+        public string ds_cobertura_valor_acessorios { get; set; }
+        public string ds_cobertura_valor_vidros { get; set; }
+        public string ds_cobertura_valor_equipamentos { get; set; }
+        public string ds_cobertura_valor_despesas_extras { get; set; }
+        public string ds_blindado { get; set; }
+
+        public string ds_cobertura_danos_materiais { get; set; }
+        public string ds_cobertura_danos_corporais { get; set; }
+        public string ds_cobertura_danos_morais { get; set; }
+        public string ds_cobertura_valor_dia_paralisacao { get; set; }
+        public string ds_cobertura_passageiros { get; set; }
+        public string ds_cobertura_valor_morte { get; set; }
+        public string ds_cobertura_valor_invalidez { get; set; }
+        public string ds_cobertura_valor_despesas_medicas { get; set; }
+
+        public string ds_cobertura_carro_reserva { get; set; }
+        public string ds_cobertura_assistencia { get; set; }
+
+        public string ds_utilizacao { get; set; }
+        public string ds_km_media_mensal { get; set; }
+        public string ds_garagem_residencia { get; set; }
+        public string ds_garagem_escola { get; set; }
+        public string ds_garagem_trabalho { get; set; }
+
+        public string ds_relacao_proprietario { get; set; }
+        public string ds_18_a_25_dirige { get; set; }
+        
+
+        public string ds_condutor_relacao_com_segurado { get; set; }
+        public string ds_condutor_nome { get; set; }
+        public string ds_condutor_cpf { get; set; }
+        public string ds_condutor_genero { get; set; }
+        public string ds_condutor_estado_civil { get; set; }
+        public string ds_condutor_profissao { get; set; }
+        public string ds_condutor_detalhe_profissao { get; set; }
+        public string ds_condutor_reside_em { get; set; }
+        public string ds_condutor_considerado { get; set; }
+        public string ds_condutor_acima_25 { get; set; }
+        
+
+        public string ds_condutor_data_nascimento { get; set; }
+        public string ds_condutor_idade_p_habilitacao { get; set; }
+        public string ds_condutor_total_veiculos { get; set; }
+        public string ds_condutor_cnh { get; set; }
+        public string ds_condutor_data_habilitacao { get; set; }
+        public string ds_condutor_rg { get; set; }
+        public string ds_condutor_data_emissao_rg { get; set; }
+        public string ds_condutor_emissor_rg { get; set; }
     }
 }

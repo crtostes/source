@@ -11,7 +11,7 @@ namespace Acto.Infra.Mail
     public class CaixaEmail
     {
         private static readonly System.Net.Http.HttpClient HttpClient = new System.Net.Http.HttpClient();
-        public void EnviaEmailGmail(int id_cotacao, string Nome, string email, string telefone,string novo_status)
+        public void EnviaEmailGmail(int id_cotacao, string Nome, string email, string telefone,string novo_status, string pBody = "")
         {
             System.Net.Mail.SmtpClient client = new System.Net.Mail.SmtpClient();
 
@@ -34,8 +34,18 @@ namespace Acto.Infra.Mail
             mail.Sender = new System.Net.Mail.MailAddress("acto.cotacao@gmail.com", "ACTOSEG CORRETORA");
             mail.From = new MailAddress("acto.cotacao@gmail.com", "ACTOSEG CORRETORA");
             mail.To.Add(new MailAddress("crtostes@globo.com", "CHARLES RICARDO TOSTES"));
-            mail.Subject = "NOVA COTAÇÃO nº " + id_cotacao.ToString("000") + "Novo Status:" + novo_status;
-            mail.Body = " Mensagem do site:<br/> Nome:  " + Nome.ToUpper()  + "<br/> Email : " + email + " <br/> Telofone : " + telefone + " <br/> Mensagem : " + "NOVA COTAÇÃO NUMERO " + id_cotacao.ToString("000") + " " + nome;
+
+            string strSubject = "NOVA COTAÇÃO nº " + id_cotacao.ToString("000") + " - Novo Status: (" + novo_status + ")";
+            string strBody = " Mensagem do site:<br/> Nome:  " + Nome.ToUpper() + "<br/> Email : " + email + " <br/> Telofone : " + telefone + " <br/> Mensagem : " + "NOVA COTAÇÃO NUMERO " + id_cotacao.ToString("000") + " " + nome;
+            if (novo_status == "CE")
+            { 
+                strSubject = "COTAÇÃO EM PROCESSAMENTO nº " + id_cotacao.ToString("000") + " - Novo Status: (" + novo_status + ")";
+                strBody = pBody;
+            }
+            mail.Subject = strSubject;
+            mail.Body = strBody;
+
+
             mail.IsBodyHtml = true;
             mail.Priority = MailPriority.High;
             //try
@@ -106,6 +116,7 @@ namespace Acto.Infra.Mail
             //client.Send(mensagemEmail);
 
         }
+       
         public void EnvioEmailAsync()
         {
             var client = new SendGrid.SendGridClient(HttpClient, "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");
@@ -122,6 +133,6 @@ namespace Acto.Infra.Mail
             msg.AddTo(new EmailAddress("crtostes@globo.com","CHARLES RICARDO TOSTES"));
             var response = client.SendEmailAsync(msg);
         }
-
+        
     }
 }

@@ -8,7 +8,7 @@ using Acto.Infra.Db;
 using MySql.Data.MySqlClient;
 using MySql.Data.Types;
 using System.Data;
-
+using Dapper;
 namespace Acto.Cotacao.Data
 {
     public class daoCotacao
@@ -217,7 +217,61 @@ namespace Acto.Cotacao.Data
             }
             return objResp;
         }
+        public List<entCotacaoInteracao> ListarCotacaoInteracao(int pid_cotacao)
+        {
 
+            List<entCotacaoInteracao> objResp = new List<entCotacaoInteracao>();
+            InfraDb ActoDb = new InfraDb();
+            MySqlConnection conn = ActoDb.ActoConn();
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand("sp_cotacao_interacao_listar", conn);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add(new MySqlParameter("?pid_cotacao", pid_cotacao));
+                MySqlDataReader myReader;
+                myReader = cmd.ExecuteReader();
+                try
+                {
+                    while (myReader.Read())
+                    {
+
+                        entCotacaoInteracao objEnt = new entCotacaoInteracao();
+                        objEnt.dt_interacao = Convert.ToDateTime(myReader["dt_interacao"]).ToString();
+                        objEnt.ds_mensagem = Convert.ToString(myReader["ds_mensagem"]);
+                        objEnt.ds_pdf_cotacao_concorrente = Convert.ToString(myReader["ds_pdf_cotacao_concorrente"]);
+                        if (Convert.ToString(myReader["ds_pdf_cotacao_concorrente"]).Trim() != string.Empty) objEnt.bt_pdf_cotacao_concorrente = "<img src='../../images/dl_pdf.png' style='width: 40px; height: 40px; ' onclick=\"CarregaPDF('A','" + Convert.ToString(myReader["ds_pdf_cotacao_concorrente"]) + "')\">";
+                        objEnt.id_forma_pagamento = Convert.ToInt32(myReader["id_forma_pagamento"]);
+                        objEnt.ds_forma_pagamento = Convert.ToString(myReader["ds_forma_pagamento"]);
+
+                        objResp.Add(objEnt);
+
+                    }
+
+
+                }
+                catch (Exception ex)
+                {
+                    //MessageBox.Show("Houve problemas. Erro: \n\n" + ex.Message);
+                    return null;
+                }
+                finally
+                {
+                    /* se a conexão esta aberta, a fechamos */
+                    if (conn.State == ConnectionState.Open) conn.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                //MessageBox.Show("Houve problemas. Erro: \n\n" + ex.Message);
+                return null;
+            }
+            finally
+            {
+                /* se a conexão esta aberta, a fechamos */
+                if (conn.State == ConnectionState.Open) conn.Close();
+            }
+            return objResp;
+        }
         public int AtualizarCotacao(entCotacaoAutomovel pobjentCotacaoAutomovel)
         {
             Int32 retorno = 0;
@@ -364,6 +418,7 @@ namespace Acto.Cotacao.Data
 
             return pid_cotacao;
         }
+
         public int AprovarCotacaoAutomovel(int pid_cotacao, int pid_seguradora, string pflg_aprovacao, int pid_cliente_aprovador)
         {
             Int32 retorno = 0;
@@ -673,7 +728,7 @@ namespace Acto.Cotacao.Data
                         if (Convert.ToString(myReader["id_forma_pagamento"]) == "2") objEnt.ds_forma_pagamento = "Boleto";
                         if (Convert.ToString(myReader["id_forma_pagamento"]) == "3") objEnt.ds_forma_pagamento = "Débito em Conta";
 
-                        objEnt.ds_valor_franquia_50 = "R$ " +Convert.ToString(myReader["ds_valor_franquia_50"]);
+                        objEnt.ds_valor_franquia_50 = "R$ " + Convert.ToString(myReader["ds_valor_franquia_50"]);
                         objEnt.ds_valor_premio_f50 = "R$ " + Convert.ToString(myReader["ds_valor_premio_f50"]);
                         objEnt.ds_valor_franquia_100 = "R$ " + Convert.ToString(myReader["ds_valor_franquia_100"]);
                         objEnt.ds_valor_premio_f100 = "R$ " + Convert.ToString(myReader["ds_valor_premio_f100"]);
@@ -685,8 +740,8 @@ namespace Acto.Cotacao.Data
                         objEnt.ds_data_hora_aprovada_reduzida = Convert.ToString(myReader["ds_data_hora_aprovada_reduzida"]);
                         if (Convert.ToString(myReader["cd_status_cotacao"]) == "CP") 
                         { 
-                            objEnt.bt_cotacao_aprova_normal = "<button type=\"button\" class='btn btn-xs btn-success pull-right' onclick=\"AprovarCotacao('NOR','" + Convert.ToString(myReader["id_cotacao"]) + "','" + Convert.ToString(myReader["id_seguradora_cotacao"]) + "')\">APROVAR NORMAL</button>";
-                            objEnt.bt_cotacao_aprova_reduzida = "<button type=\"button\" class='btn btn-xs btn-success pull-right' onclick=\"AprovarCotacao('RED','" + Convert.ToString(myReader["id_cotacao"]) + "','" + Convert.ToString(myReader["id_seguradora_cotacao"]) + "')\">APROVAR REDUZIDA 50%</button>";
+                            objEnt.bt_cotacao_aprova_normal = "<button type=\"button\" class='btn btn-xs btn-success pull-right' onclick=\"AprovarCotacao('NOR','" + Convert.ToString(myReader["id_cotacao"]) + "','" + Convert.ToString(myReader["id_seguradora_cotacao"]) + "','" + Convert.ToString(myReader["ds_valor_premio_f100"]) + "')\">APROVAR NORMAL</button>";
+                            objEnt.bt_cotacao_aprova_reduzida = "<button type=\"button\" class='btn btn-xs btn-success pull-right' onclick=\"AprovarCotacao('RED','" + Convert.ToString(myReader["id_cotacao"]) + "','" + Convert.ToString(myReader["id_seguradora_cotacao"]) + "','" + Convert.ToString(myReader["ds_valor_premio_f50"]) + "')\">APROVAR REDUZIDA 50%</button>";
                         }
                         else
                         { 
@@ -726,7 +781,6 @@ namespace Acto.Cotacao.Data
             }
             return objResp;
         }
-        
         public int ExcluirItensCotacao(int pid_cotacao)
         {
             Int32 retorno = 0;
@@ -768,7 +822,6 @@ namespace Acto.Cotacao.Data
             if (pid_seguradora == 6) { return "images/06_cotacao_suhai.jpg"; }
             return "";
         }
-
         public int AtualizarPDFCotacao(int pid_cotacao, string pds_pdf)
         {
             Int32 retorno = 0;
@@ -799,6 +852,248 @@ namespace Acto.Cotacao.Data
 
             return pid_cotacao;
         }
+        public bool IncluirCotacaoInteracao(entCotacaoInteracao pobjentCotacaoInteracao)
+        {
+            InfraDb ActoDb = new InfraDb();
+            MySqlConnection conn = ActoDb.ActoConn();
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand("sp_cotacao_interacao_incluir", conn);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add(new MySqlParameter("?pid_cotacao", pobjentCotacaoInteracao.id_cotacao));
+                cmd.Parameters.Add(new MySqlParameter("?pid_forma_pagamento", pobjentCotacaoInteracao.id_forma_pagamento));
+                cmd.Parameters.Add(new MySqlParameter("?pds_mensagem", pobjentCotacaoInteracao.ds_mensagem));
+                cmd.Parameters.Add(new MySqlParameter("?pds_pdf_cotacao_concorrente", pobjentCotacaoInteracao.ds_pdf_cotacao_concorrente));
+               
+                cmd.ExecuteNonQuery();
+
+                
+            }
+            catch (Exception ex)
+            {
+                //MessageBox.Show("Houve problemas. Erro: \n\n" + ex.Message);
+                Acto.Infra.Log.LogError objError = new Acto.Infra.Log.LogError();
+                objError.TrataErro(ex.Message + " - " + ex.StackTrace);
+                return false;
+            }
+            finally
+            {
+                /* se a conexão esta aberta, a fechamos */
+                if (conn.State == ConnectionState.Open) conn.Close();
+
+            }
+
+            return true;
+        }
+        public bool IncluirCotacaoFormaPagamento(entCotacaoFormaPagamento pobjent)
+        {
+            InfraDb ActoDb = new InfraDb();
+            MySqlConnection conn = ActoDb.ActoConn();
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand("sp_cotacao_forma_pagamento_incluir", conn);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add(new MySqlParameter("?pid_cotacao", pobjent.id_cotacao));
+                cmd.Parameters.Add(new MySqlParameter("?pid_forma_pagamento", pobjent.id_forma_pagamento));
+                cmd.Parameters.Add(new MySqlParameter("?pnr_parcelas", pobjent.nr_parcelas));
+                cmd.Parameters.Add(new MySqlParameter("?pds_bandeira_cc", pobjent.ds_bandeira_cc));
+                cmd.Parameters.Add(new MySqlParameter("?pds_nr_cartao_cc", pobjent.ds_nr_cartao_cc));
+                cmd.Parameters.Add(new MySqlParameter("?pds_validade_cc", pobjent.ds_validade_cc));
+                cmd.Parameters.Add(new MySqlParameter("?pds_nome_cliente_cc", pobjent.ds_nome_cliente_cc));
+                cmd.Parameters.Add(new MySqlParameter("?ptp_dados_segurado_dc", pobjent.tp_dados_segurado_dc));
+                cmd.Parameters.Add(new MySqlParameter("?pds_nome_titular_conta_dc", pobjent.ds_nome_titular_conta_dc));
+                cmd.Parameters.Add(new MySqlParameter("?pds_banco_dc", pobjent.ds_banco_dc));
+                cmd.Parameters.Add(new MySqlParameter("?ptp_pessoa_dc", pobjent.tp_pessoa_dc));
+                cmd.Parameters.Add(new MySqlParameter("?pds_cpf_titular_conta_dc", pobjent.ds_cpf_titular_conta_dc));
+                cmd.Parameters.Add(new MySqlParameter("?pds_parentesco_titular_dc", pobjent.ds_parentesco_titular_dc));
+                cmd.Parameters.Add(new MySqlParameter("?pds_nr_agencia_dc", pobjent.ds_nr_agencia_dc));
+                cmd.Parameters.Add(new MySqlParameter("?pds_digito_agencia_dc", pobjent.ds_digito_agencia_dc));
+                cmd.Parameters.Add(new MySqlParameter("?pds_nr_conta_dc", pobjent.ds_nr_conta_dc));
+                cmd.Parameters.Add(new MySqlParameter("?pds_digito_conta_dc", pobjent.ds_digito_conta_dc));
+
+                cmd.ExecuteNonQuery();
+
+
+            }
+            catch (Exception ex)
+            {
+                //MessageBox.Show("Houve problemas. Erro: \n\n" + ex.Message);
+                Acto.Infra.Log.LogError objError = new Acto.Infra.Log.LogError();
+                objError.TrataErro(ex.Message + " - " + ex.StackTrace);
+                return false;
+            }
+            finally
+            {
+                /* se a conexão esta aberta, a fechamos */
+                if (conn.State == ConnectionState.Open) conn.Close();
+
+            }
+
+            return true;
+        }
+        public entCotacaoFormaPagamento ConsultarCotacaoFormaPagamento(int pid_cotacao)
+        {
+            entCotacaoFormaPagamento objEnt = new entCotacaoFormaPagamento();
+            InfraDb ActoDb = new InfraDb();
+            MySqlConnection conn = ActoDb.ActoConn();
+            try
+            {
+                
+                MySqlCommand cmd = new MySqlCommand("sp_cotacao_forma_pagamento_consultar", conn);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add(new MySqlParameter("?pid_cotacao", pid_cotacao));
+                MySqlDataReader myReader;
+                myReader = cmd.ExecuteReader();
+                try
+                {
+                    while (myReader.Read())
+                    {
+                        objEnt.id_cotacao = Convert.ToInt32(myReader["id_cotacao"]);
+                        objEnt.id_cotacao_forma_pagamento = Convert.ToInt32(myReader["id_cotacao_forma_pagamento"]);
+                        objEnt.nr_parcelas = Convert.ToString(myReader["nr_parcelas"]);
+                        objEnt.ds_bandeira_cc = Convert.ToString(myReader["ds_bandeira_cc"]);
+                        objEnt.ds_nr_cartao_cc = Convert.ToString(myReader["ds_nr_cartao_cc"]);
+                        objEnt.ds_validade_cc = Convert.ToString(myReader["ds_validade_cc"]);
+                        objEnt.ds_nome_cliente_cc = Convert.ToString(myReader["ds_nome_cliente_cc"]);
+                        objEnt.tp_dados_segurado_dc = Convert.ToString(myReader["tp_dados_segurado_dc"]);
+                        objEnt.ds_nome_titular_conta_dc = Convert.ToString(myReader["ds_nome_titular_conta_dc"]);
+                        objEnt.ds_banco_dc = Convert.ToString(myReader["ds_banco_dc"]);
+                        objEnt.tp_pessoa_dc = Convert.ToString(myReader["tp_pessoa_dc"]);
+                        objEnt.ds_cpf_titular_conta_dc = Convert.ToString(myReader["ds_cpf_titular_conta_dc"]);
+                        objEnt.ds_parentesco_titular_dc = Convert.ToString(myReader["ds_parentesco_titular_dc"]);
+                        objEnt.ds_nr_agencia_dc = Convert.ToString(myReader["ds_nr_agencia_dc"]);
+                        objEnt.ds_digito_agencia_dc = Convert.ToString(myReader["ds_digito_agencia_dc"]);
+                        objEnt.ds_nr_conta_dc = Convert.ToString(myReader["ds_nr_conta_dc"]);
+                        objEnt.ds_digito_conta_dc = Convert.ToString(myReader["ds_digito_conta_dc"]);
+                    }
+
+
+                }
+                catch (Exception ex)
+                {
+                    //MessageBox.Show("Houve problemas. Erro: \n\n" + ex.Message);
+                    return null;
+                }
+                finally
+                {
+                    /* se a conexão esta aberta, a fechamos */
+                    if (conn.State == ConnectionState.Open) conn.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                //MessageBox.Show("Houve problemas. Erro: \n\n" + ex.Message);
+                return null;
+            }
+            finally
+            {
+                /* se a conexão esta aberta, a fechamos */
+                if (conn.State == ConnectionState.Open) conn.Close();
+            }
+            return objEnt;
+        }
+        public int ConsultarCotacaoFormaPagamentoId(int pid_cotacao)
+        {
+            int Ret = 0;
+            InfraDb ActoDb = new InfraDb();
+            MySqlConnection conn = ActoDb.ActoConn();
+            try
+            {
+
+                MySqlCommand cmd = new MySqlCommand("sp_cotacao_forma_pagamento_id_consultar", conn);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add(new MySqlParameter("?pid_cotacao", pid_cotacao));
+                MySqlDataReader myReader;
+                myReader = cmd.ExecuteReader();
+                try
+                {
+                    while (myReader.Read())
+                    {
+                        Ret = Convert.ToInt32(myReader["id_forma_pagamento"]);
+                    }
+
+
+                }
+                catch (Exception ex)
+                {
+                    //MessageBox.Show("Houve problemas. Erro: \n\n" + ex.Message);
+                    return 0;
+                }
+                finally
+                {
+                    /* se a conexão esta aberta, a fechamos */
+                    if (conn.State == ConnectionState.Open) conn.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                //MessageBox.Show("Houve problemas. Erro: \n\n" + ex.Message);
+                return 0;
+            }
+            finally
+            {
+                /* se a conexão esta aberta, a fechamos */
+                if (conn.State == ConnectionState.Open) conn.Close();
+            }
+            return Ret;
+        }
+        public int ClonarCotacao(int pid_cotacao)
+        {
+            int retorno = 0;
+            entCotacaoAutomovel objResp = new entCotacaoAutomovel();
+            InfraDb ActoDb = new InfraDb();
+            MySqlConnection conn = ActoDb.ActoConn();
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand("sp_cotacao_clonar", conn);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add(new MySqlParameter("?pid_cotacao", pid_cotacao));
+                cmd.Parameters.Add(new MySqlParameter("?pid_cotacao_clone", MySqlDbType.Int32));
+                cmd.Parameters["?pid_cotacao_clone"].Direction = ParameterDirection.Output;
+                cmd.ExecuteNonQuery();
+                retorno = (Int32)cmd.Parameters["?pid_cotacao_clone"].Value;
+            }
+            catch (Exception ex)
+            {
+                //MessageBox.Show("Houve problemas. Erro: \n\n" + ex.Message);
+                Acto.Infra.Log.LogError objError = new Acto.Infra.Log.LogError();
+                objError.TrataErro(ex.Message + " - " + ex.StackTrace);
+                return 0;
+            }
+            finally
+            {
+                /* se a conexão esta aberta, a fechamos */
+                if (conn.State == ConnectionState.Open) conn.Close();
+
+            }
+
+            return retorno;
+        }
+        public entCotacaoEnviar ConsultarCotacaoEnviar(int pid_cotacao)
+        {
+
+            InfraDb ActoDb = new InfraDb();
+            MySqlConnection conn = ActoDb.ActoConn();
+            try
+            {
+                //var sql = "exec [db_acto.sp_cotacao_automovel_consultar_enviar] @pid_cotacao";
+                var sql = "CALL `db_acto`.`sp_cotacao_automovel_consultar_enviar`(@pid_cotacao)";
+                var values = new { pid_cotacao = pid_cotacao.ToString() };
+                return conn.Query<entCotacaoEnviar>(sql, values).FirstOrDefault();
+
+            }
+            catch (Exception ex)
+            {
+                //MessageBox.Show("Houve problemas. Erro: \n\n" + ex.Message);
+                return null;
+            }
+            finally
+            {
+                /* se a conexão esta aberta, a fechamos */
+                if (conn.State == ConnectionState.Open) conn.Close();
+            }
+            
+        }
         //public string ConsultarPDFCotacao(int pid_cotacao)
         //{
         //    InfraDb ActoDb = new InfraDb();
@@ -817,7 +1112,7 @@ namespace Acto.Cotacao.Data
         //                return Convert.ToString(myReader["ds_pdf"]).Trim();
         //            }
 
-                    
+
         //        }
         //        catch (Exception ex)
         //        {

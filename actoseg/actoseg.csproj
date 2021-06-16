@@ -9633,7 +9633,6 @@
     <Content Include="assets\vendor_components\Web-Ticker-master\webticker.jquery.json" />
     <Content Include="main\pages\Cotacao.aspx" />
     <Content Include="main\pages\Default.aspx" />
-    <Content Include="main\pages\EnderecoIndicado.aspx" />
     <Content Include="main\pages\GestaoCotacao.aspx" />
     <Content Include="main\pages\images\01_cotacao_porto.jpg" />
     <Content Include="main\pages\images\02_cotacao_azul.jpg" />
@@ -9642,14 +9641,13 @@
     <Content Include="main\pages\images\05_cotacao_mapfre.jpg" />
     <Content Include="main\pages\images\06_cotacao_suhai.jpg" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
+    <Content Include="main\pages\images\cadcliente_ok.jpg" />
     <Content Include="main\pages\images\dot-bricks.gif" />
     <Content Include="main\pages\IncluirCotacao.aspx" />
     <Content Include="main\pages\IncluirEmpresa.aspx" />
     <Content Include="main\pages\IncluirLogin.aspx" />
     <Content Include="main\pages\Login.aspx" />
     <Content Include="main\pages\MeuCadastro.aspx" />
-    <Content Include="main\pages\MeuEndereco.aspx" />
-    <Content Include="main\pages\MeuIndicado.aspx" />
     <Content Include="main\pages\Principal.Master" />
     <Content Include="main\pages\Teste.aspx" />
     <Content Include="main\pages\TesteGrid.aspx" />
@@ -9682,7 +9680,13 @@
     <Content Include="Scripts\WebForms\WebForms.js" />
     <Content Include="Scripts\WebForms\WebParts.js" />
     <Content Include="Scripts\WebForms\WebUIValidation.js" />
+    <Content Include="sulamerica\odonto.html" />
+    <Content Include="sulamerica\odonto160x600.jpg" />
+    <Content Include="sulamerica\odonto300x250.jpg" />
+    <Content Include="sulamerica\odontocel.html" />
+    <Content Include="sulamerica\odontotop.html" />
     <Content Include="teste.aspx" />
+    <Content Include="upload\upload.txt" />
     <Content Include="ViewSwitcher.ascx" />
     <Content Include="Web.config" />
     <Content Include="Bundle.config" />
@@ -9735,13 +9739,6 @@
     <Compile Include="main\pages\Default.aspx.designer.cs">
       <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
-    <Compile Include="main\pages\EnderecoIndicado.aspx.cs">
-      <DependentUpon>EnderecoIndicado.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="main\pages\EnderecoIndicado.aspx.designer.cs">
-      <DependentUpon>EnderecoIndicado.aspx</DependentUpon>
-    </Compile>
     <Compile Include="main\pages\GestaoCotacao.aspx.cs">
       <DependentUpon>GestaoCotacao.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -9783,20 +9780,6 @@
     </Compile>
     <Compile Include="main\pages\MeuCadastro.aspx.designer.cs">
       <DependentUpon>MeuCadastro.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="main\pages\MeuEndereco.aspx.cs">
-      <DependentUpon>MeuEndereco.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="main\pages\MeuEndereco.aspx.designer.cs">
-      <DependentUpon>MeuEndereco.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="main\pages\MeuIndicado.aspx.cs">
-      <DependentUpon>MeuIndicado.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="main\pages\MeuIndicado.aspx.designer.cs">
-      <DependentUpon>MeuIndicado.aspx</DependentUpon>
     </Compile>
     <Compile Include="main\pages\Principal.Master.cs">
       <DependentUpon>Principal.Master</DependentUpon>
@@ -9846,7 +9829,6 @@
     <Folder Include="App_Data\" />
     <Folder Include="assets\vendor_components\flat-color-icons\PNG\512\A\" />
     <Folder Include="Properties\PublishProfiles\" />
-    <Folder Include="upload\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -9900,14 +9882,6 @@
     <ProjectReference Include="..\Acto.Fipe.Entity\Acto.Fipe.Entity.csproj">
       <Project>{25447719-e2c0-4922-bacc-4c15453d1c0a}</Project>
       <Name>Acto.Fipe.Entity</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Acto.Indicado.Busines\Acto.Indicado.Busines.csproj">
-      <Project>{4291f777-b882-4083-a0b4-02ad88fd3f1a}</Project>
-      <Name>Acto.Indicado.Busines</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Acto.Indicado.Entity\Acto.Indicado.Entity.csproj">
-      <Project>{819b9e1f-93f4-401b-a0cf-0f2e18414c4b}</Project>
-      <Name>Acto.Indicado.Entity</Name>
     </ProjectReference>
     <ProjectReference Include="..\Acto.Infra.Contexto\Acto.Infra.Contexto.csproj">
       <Project>{baa5ed3e-7a09-4565-824c-8a754febc59c}</Project>

@@ -1,34 +1,99 @@
 function ValidarStatusEmCotacao() {
-    
-    if ($("#txtStatusCotacao").val == "COTAÇÃO PRONTA") {
+    if (ValidarCamposCotacao() == false) {
+        EmProcessamento(false);
+        //alert("Validar Cotação errro");
+        return false;
+    }
+
+    if ($("#txtStatusCotacao").val() == "COTAÇÃO PRONTA") {
         //MensagemActoSimples("COTAÇÃO PRONTA!!", "Deseja realmente alterar a cotação?");
 
 
         swal({
-            title: "COTAÇÃO PRONTA!!",
-            text: "Isto CANCELA a cotação atual.\nDeseja realmente alterar a cotação? ",
+            title: "GRAVAR COTAÇÂO",
+            text: "COTACAO PRONTA\n ao GRAVAR, você perderá a cotação atual.\nDeseja realmente GRAVAR?",
             type: "warning",
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",
-            confirmButtonText: "Sim",
-            cancelButtonText: "Não",
+            confirmButtonText: "CONFIRMA",
+            cancelButtonText: "CANCELA",
             closeOnConfirm: true,
-            closeOnCancel: true
+            closeOnCancel: false
         }, function (isConfirm) {
             if (isConfirm) {
+
                 GravarCotacao();
             }
             else {
-                MensagemActoSimples("COTAÇÃO PRONTA!!", "Aprove esta Cotação o quanto antes!!");
+                MostraAbaCotacao("calculo");
+                swal("GRAVAÇÃO CANCELADA", "VERIFIQUE AS COTAÇÕES E APROVE A MELHOR OPÇÃO!!", "");
+                //alert("CACELADA");
+                //MensagemActoSimples("COTAÇÃO PRONTA!!", "Aprove esta Cotação o quanto antes!!");
             }
 
         });
 
     }
-    else
-    {
-        GravarCotacao();
+    else {
+        //GravarCotacao();
+        if ($("#txtStatusCotacao").val() != "NOVO") {
+            //MensagemActoSimples("COTAÇÃO PRONTA!!", "Deseja realmente alterar a cotação?");
+            swal({
+                title: "GRAVAR COTAÇÂO",
+                text: "Deseja realmente GRAVAR as alterações?",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "SIM",
+                cancelButtonText: "NÂO",
+                closeOnConfirm: true,
+                closeOnCancel: false
+            }, function (isConfirm) {
+                if (isConfirm) {
+                    GravarCotacao();
+                }
+                else {
+                    swal("GRAVAÇÃO CANCELADA", "", "");
+                }
+            });
+
+        }
+        else
+        {
+            GravarCotacao();
+        }
     }
+}
+
+function ValidarbtnCancelar() {
+    //if (ValidarCamposCotacao() == false) {
+    //    EmProcessamento(false);
+    //    return false;
+    //}
+
+    swal({
+        title: "CANCELAR COTAÇÂO",
+        text: "Você deseja realmente CANCELAR esta Cotação?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "SIM",
+        cancelButtonText: "NÃO",
+        closeOnConfirm: true,
+        closeOnCancel: false
+    }, function (isConfirm) {
+        if (isConfirm) {
+
+            CancelarCotacao();
+        }
+        else {
+            swal("A COTAÇÃO NÃO SERÁ CANCELADA", "", "");
+            //alert("CACELADA");
+            //MensagemActoSimples("COTAÇÃO PRONTA!!", "Aprove esta Cotação o quanto antes!!");
+        }
+
+    });
+
 }
 
 function ValidarCamposCotacao() {
@@ -44,22 +109,24 @@ function ValidarCamposCotacao() {
 
     
     
-
-
+    //alert(document.getElementById("txtDtVigenciaInicial").value);
+    //alert(ConvertDataJstoDB(document.getElementById("txtDtVigenciaInicial").value));
     // Valida Data de Vigencia Inicial e Final
-    if (ValidaData($("#txtDtVigenciaInicial").val()) == false) {
+    if (ValidaData(ConvertDataJstoDB(document.getElementById("txtDtVigenciaInicial").value)) == false) {
         MensagemActoSimples("Gravar Cotação", "Data da Vigência Inícial Inválida!");
         return false;
     }
-    if (ValidaData($("#txtDtVigenciaFinal").val()) == false) {
+    if (ValidaData(ConvertDataJstoDB(document.getElementById("txtDtVigenciaFinal").value)) == false) {
         //alert("Data da Vigencia final Invalida.");
         MensagemActoSimples("Gravar Cotação", "Data da Vigência Final Inválida.");
         return false;
     }
 
     //var str1 = "28/02/2020";
-    var dateDtVIni = $("#txtDtVigenciaInicial").val().split('/').reverse().join('');
-    var dateDtVFim = $("#txtDtVigenciaFinal").val().split('/').reverse().join('');
+    //var dateDtVIni = $("#txtDtVigenciaInicial").val().split('/').reverse().join('');
+    //var dateDtVFim = $("#txtDtVigenciaFinal").val().split('/').reverse().join('');
+    var dateDtVIni = ConvertDataJstoDB(document.getElementById("txtDtVigenciaInicial").value).split('/').reverse().join('');
+    var dateDtVFim = ConvertDataJstoDB(document.getElementById("txtDtVigenciaFinal").value).split('/').reverse().join('');
     var dateAgora = dataAtualFormatada(0).split('/').reverse().join('');
     //var novaData = new Date();
     //alert("data aqui" + dateAgora);
@@ -72,6 +139,7 @@ function ValidarCamposCotacao() {
         return false
     }
     if (dateAgora > dateDtVIni) {
+        
         MensagemActoSimples("Gravar Cotação", "Data Vigência Início não pode ser menor que Hoje.");
         return false
     }
@@ -416,39 +484,59 @@ function ValidarCamposCotacao() {
         MensagemActoSimples("Gravar Cotação - CONDUTOR", "Data da Emissão R.G. Condultor Principal é Inválida.");
         //
         //alert("Data da Vigencia final Invalida.");
-       
 
-        if ($.trim($('#txtEmissorRG').val()) == '') {
-            MensagemActoSimples("Gravar Cotação - CONDUTOR", "Informe o Emissor do R.G. do Condutor Principal.");
-        //alert('Na aba CONDUTOR PRINCIPAL\n');
-            return false;
-        }
+    }
+    if ($.trim($('#txtEmissorRG').val()) == '') {
+        MensagemActoSimples("Gravar Cotação - CONDUTOR", "Informe o Emissor do R.G. do Condutor Principal.");
+    //alert('Na aba CONDUTOR PRINCIPAL\n');
+        return false;
+    }
 
-        if ($.trim($('#txtCnhCondutorPrinicpal').val()) == '') {
-            MensagemActoSimples("Gravar Cotação - CONDUTOR", "Informe o Nº do C.N.H. do Condutor Principal.");
-        //alert('Na aba CONDUTOR PRINCIPAL\n');
-            return false;
-        }
+    if ($.trim($('#txtCnhCondutorPrinicpal').val()) == '') {
+        MensagemActoSimples("Gravar Cotação - CONDUTOR", "Informe o Nº do C.N.H. do Condutor Principal.");
+    //alert('Na aba CONDUTOR PRINCIPAL\n');
+        return false;
+    }
 
-        if ($.trim($('#txtDataHabilitacao').val()) == '') {
-            MensagemActoSimples("Gravar Cotação - CONDUTOR", "Informe a 1ª Data da Habilitação do Condutor Principal.");
-        //alert('Na aba CONDUTOR PRINCIPAL\n');
-            return false;
-        }
+    if ($.trim($('#txtDataHabilitacao').val()) == '') {
+        MensagemActoSimples("Gravar Cotação - CONDUTOR", "Informe a 1ª Data da Habilitação do Condutor Principal.");
+    //alert('Na aba CONDUTOR PRINCIPAL\n');
+        return false;
+    }
 
-        if (ValidaData($("#txtDataHabilitacao").val()) == false) {
-            MensagemActoSimples("Gravar Cotação - CONDUTOR", "1º Data da Habilitação Condultor Principal é Inválida.");
-        }
+    if (ValidaData($("#txtDataHabilitacao").val()) == false) {
+        MensagemActoSimples("Gravar Cotação - CONDUTOR", "1º Data da Habilitação Condultor Principal é Inválida.");
+    }
         //************FIM validar CONDUTOR PRINCIPAL********************* //validar condutor principal
 
-            //************validar COBERTURAS*********************
+        //************validar COBERTURAS*********************
             
         //************FIM validar COBERTURAS*********************
+
+        //************Validar REGRAS DE INCLUSÃO************
+
+    
+        if ($.trim($('#ddlProprietario').val()) == 'SIM') {
+            if (($.trim($('#ddlRelacaoProprietario').val()) != '1') && ($.trim($('#ddlRelacaoProprietario').val()) != '6')) {
+                MensagemActoSimples("Gravar Cotação - PERFIL", "Se cliente é PROPRIETÁRIO \n então a RELAÇÃO COM O PROPRIETÁRIO somente pode ser \nO PRÓPRIO");
+                //alert('Na aba PERFIL\n');
+                return false;
+            }
+        } else
+        {
+            if (($.trim($('#ddlRelacaoProprietario').val()) == '1') || ($.trim($('#ddlRelacaoProprietario').val()) == '6')) {
+                MensagemActoSimples("Gravar Cotação - PERFIL", "Se cliente é NÃO É PROPRIETÁRIO \n então a RELAÇÃO COM O PROPRIETÁRIO NÃO pode ser \nO PRÓPRIO");
+                //alert('Na aba PERFIL\n');
+                return false;
+            }
+        }
+        //************FIM Validar REGRAS DE INCLUSÃO************
+
 
         return true;
 
 
-    }
+    
 }
 
 function onchange_aba_veiculo() {
@@ -667,6 +755,94 @@ function ValidarRenovacao() {
     $('#modal-renovacao').modal('hide');
 }
 
+
+function ValidarAprovarCotacao() {
+
+    if ($("#txtIdFormaPagamento").val() == '3') {
+        //verifica Debito em Conta
+        if ($.trim($('#ddlDadosDC').val()) == '') {
+            MensagemActoSimples("APROVAR COTAÇÃO", "Selecione a opção Dados Débito em Conta.");
+            return false;
+        }
+
+        if ($.trim($('#ddlParanteTitularDC').val()) == '') {
+            MensagemActoSimples("APROVAR COTAÇÃO", "Selecione a opção Parentesco Titular da Conta.");
+            return false;
+        }
+
+        if ($.trim($('#txtTitularContaDC').val()) == '') {
+            MensagemActoSimples("APROVAR COTAÇÃO", "Preencha o Titular da Conta (Nome).");
+            return false;
+        }
+
+        if ($.trim($('#ddlTipoPessoaDC').val()) == '') {
+            MensagemActoSimples("APROVAR COTAÇÃO", "Selecione o Tipo Pessoa.");
+            return false;
+        }
+
+        if ($.trim($('#txtCPFTitularDC').val()) == '') {
+            MensagemActoSimples("APROVAR COTAÇÃO", "Informe o CPF do Titular da Conta.");
+            return false;
+        }
+
+        if (validarCPF($("#txtCPFTitularDC").val()) == false) {
+            MensagemActoSimples("APROVAR COTAÇÃO", "CPF do Titular da Conta Inválido.");
+            return false;
+        }
+
+        if ($.trim($('#ddlBancoDC').val()) == '') {
+            MensagemActoSimples("APROVAR COTAÇÃO", "Informe o Banco do Titular da Conta.");
+            return false;
+        }
+
+        if ($.trim($('#txtNrAgenciaDC').val()) == '') {
+            MensagemActoSimples("APROVAR COTAÇÃO", "Informe o número da Agência da Conta.");
+            return false;
+        }
+
+        if ($.trim($('#txtNrContaDC').val()) == '') {
+            MensagemActoSimples("APROVAR COTAÇÃO", "Informe o número da Conta.");
+            return false;
+        }
+
+        if ($.trim($('#txtNrContaDigDC').val()) == '') {
+            MensagemActoSimples("APROVAR COTAÇÃO", "Informe o Dígito da Conta.");
+            return false;
+        }
+
+
+    }
+    if ($("#txtIdFormaPagamento").val() == '1') {
+        if ($.trim($('#ddlBandeiraCC').val()) == '') {
+            MensagemActoSimples("APROVAR COTAÇÃO", "Escolha a Bandeira do Cartão de Crédito do Pagamento.");
+            return false;
+        }
+        
+        var digitosCC = $('#txtNrCartaoCC').val().replaceAll(".", "");
+        if (($.trim($('#txtNrCartaoCC').val()) == '') || ($.trim(digitosCC).length < 16)) {
+            MensagemActoSimples("APROVAR COTAÇÃO", "Preencha o número do Cartão de Crédito corretamente.");
+            return false;
+        }
+
+        if ($.trim($('#txtCPFCC').val()) == '') {
+            MensagemActoSimples("APROVAR COTAÇÃO", "Informe o CPF do Cartão de Crédito.");
+            return false;
+        }
+
+        if (validarCPF($("#txtCPFCC").val()) == false) {
+            MensagemActoSimples("APROVAR COTAÇÃO", "CPF do Cartão de Crédito Inválido.");
+            return false;
+        }
+
+        if ($.trim($('#txtNomeCC').val()) == '') {
+            MensagemActoSimples("APROVAR COTAÇÃO", "Informe o Nome (Como aparece no cartão).");
+            return false;
+        }
+
+    }
+    return true;
+}
+
 function CancelarRenovacao_onclick() {
     $('#ddlTipoSeguro').val('Seguro Novo');
     $('#modal-renovacao').modal('hide');
@@ -714,6 +890,7 @@ function Trim(strTexto) {
     // Substitúi os espaços vazios no inicio e no fim da "', por vazio.
     return strTexto.replace(/^s+|s+$/g, '');
 }
+
 function dataAtualFormatada(anoFuturo) {
 
     var data = new Date(),
@@ -722,6 +899,15 @@ function dataAtualFormatada(anoFuturo) {
         ano = data.getFullYear() + anoFuturo;
 
     return dia + "/" + mes + "/" + ano;
+}
+function dataAtualFormatadaToDate(anoFuturo) {
+
+    var data = new Date(),
+        dia = data.getDate().toString().padStart(2, '0'),
+        mes = (data.getMonth() + 1).toString().padStart(2, '0'), //+1 pois no getMonth Janeiro começa com zero.
+        ano = data.getFullYear() + anoFuturo;
+
+    return ano + "-" + mes + "-" + dia;
 }
 function Trim(strTexto) {
     // Substitúi os espaços vazios no inicio e no fim da string por vazio.
@@ -813,6 +999,43 @@ swal({
 }, function () {
 });
 }
+
+function MensagemActoSucesso(titulo, texto) {
+    swal({
+        title: titulo,
+        text: texto,
+        type: "success",
+        showCancelButton: false,
+        confirmButtonColor: "#363abf",
+        confirmButtonText: "OK",
+        closeOnConfirm: true
+    }, function () {
+    });
+}
+
+//function MensagemActoDecisaobtnGravar(titulo, texto, textoSIM, textoNAO) {
+//    swal({
+//        title: titulo,
+//        text: texto,
+//        type: "warning",
+//        showCancelButton: true,
+//        confirmButtonColor: "#DD6B55",
+//        confirmButtonText: textoSIM,
+//        cancelButtonText: textoNAO,
+//        closeOnConfirm: true,
+//        closeOnCancel: false
+//    }, function (isConfirm) {
+//            if (isConfirm) {
+//                $("#txtStatusCotacao").val("");
+//                GravarCotacao();
+//            //swal("Deleted!", "Your imaginary file has been deleted.", "success");
+//            } else {
+                
+//            swal("GRAVAÇÃO CANCELADA", "", "");
+//        }
+//    });
+//}
+
 
 function TravaCampos() {
     document.getElementById("ddlTipoSeguro").disabled = true;
@@ -906,4 +1129,88 @@ function formatarMoeda(id) {
 
     elemento.value = valor;
     if (valor == 'NaN') elemento.value = '';
+}
+function MostraAbaCotacao(aba) {
+    //veiculo
+    //perfil
+    //condutor 
+    //cobertura
+    //calculo
+
+    if (aba == "veiculo") {
+        document.getElementById("segurado").className = "tab-pane";
+        document.getElementById("veiculo").className = "tab-pane active";
+        document.getElementById("perfil").className = "tab-pane";
+        document.getElementById("condutor").className = "tab-pane";
+        document.getElementById("cobertura").className = "tab-pane";
+        document.getElementById("calculo").className = "tab-pane";
+
+        document.getElementById("tablinksegurado").className = "nav-link";
+        document.getElementById("tablinkveiculo").className = "nav-link active";
+        document.getElementById("tablinkperfil").className = "nav-link";
+        document.getElementById("tablinkcondutor").className = "nav-link";
+        document.getElementById("tablinkcobertura").className = "nav-link";
+        document.getElementById("tablinkcalculo").className = "nav-link";
+    }
+    if (aba == "perfil") {
+        document.getElementById("segurado").className = "tab-pane";
+        document.getElementById("veiculo").className = "tab-pane";
+        document.getElementById("perfil").className = "tab-pane active";
+        document.getElementById("condutor").className = "tab-pane";
+        document.getElementById("cobertura").className = "tab-pane";
+        document.getElementById("calculo").className = "tab-pane";
+
+        document.getElementById("tablinksegurado").className = "nav-link";
+        document.getElementById("tablinkveiculo").className = "nav-link";
+        document.getElementById("tablinkperfil").className = "nav-link active";
+        document.getElementById("tablinkcondutor").className = "nav-link";
+        document.getElementById("tablinkcobertura").className = "nav-link";
+        document.getElementById("tablinkcalculo").className = "nav-link";
+    }
+    if (aba == "condutor") {
+        document.getElementById("segurado").className = "tab-pane";
+        document.getElementById("veiculo").className = "tab-pane";
+        document.getElementById("perfil").className = "tab-pane";
+        document.getElementById("condutor").className = "tab-pane active";
+        document.getElementById("cobertura").className = "tab-pane";
+        document.getElementById("calculo").className = "tab-pane";
+
+        document.getElementById("tablinksegurado").className = "nav-link";
+        document.getElementById("tablinkveiculo").className = "nav-link";
+        document.getElementById("tablinkperfil").className = "nav-link";
+        document.getElementById("tablinkcondutor").className = "nav-link active";
+        document.getElementById("tablinkcobertura").className = "nav-link";
+        document.getElementById("tablinkcalculo").className = "nav-link";
+    }
+    if (aba == "cobertura") {
+        document.getElementById("segurado").className = "tab-pane";
+        document.getElementById("veiculo").className = "tab-pane";
+        document.getElementById("perfil").className = "tab-pane";
+        document.getElementById("condutor").className = "tab-pane";
+        document.getElementById("cobertura").className = "tab-pane active";
+        document.getElementById("calculo").className = "tab-pane";
+
+        document.getElementById("tablinksegurado").className = "nav-link";
+        document.getElementById("tablinkveiculo").className = "nav-link";
+        document.getElementById("tablinkperfil").className = "nav-link";
+        document.getElementById("tablinkcondutor").className = "nav-link";
+        document.getElementById("tablinkcobertura").className = "nav-link active";
+        document.getElementById("tablinkcalculo").className = "nav-link";
+    }
+    if (aba == "calculo") {
+        document.getElementById("segurado").className = "tab-pane";
+        document.getElementById("veiculo").className = "tab-pane";
+        document.getElementById("perfil").className = "tab-pane";
+        document.getElementById("condutor").className = "tab-pane";
+        document.getElementById("cobertura").className = "tab-pane";
+        document.getElementById("calculo").className = "tab-pane active";
+
+        document.getElementById("tablinksegurado").className = "nav-link";
+        document.getElementById("tablinkveiculo").className = "nav-link";
+        document.getElementById("tablinkperfil").className = "nav-link";
+        document.getElementById("tablinkcondutor").className = "nav-link";
+        document.getElementById("tablinkcobertura").className = "nav-link";
+        document.getElementById("tablinkcalculo").className = "nav-link active";
+    }
+
 }

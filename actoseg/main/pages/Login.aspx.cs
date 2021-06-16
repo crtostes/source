@@ -69,7 +69,7 @@ namespace actoseg.main
             busUsuario objBusUsuario = new busUsuario();
             entUsuario objEntUsuario = new entUsuario();
 
-            objEntUsuario.Email = txtLogin.Text;
+            objEntUsuario.Email = txtLogin.Text.Trim();
             objEntUsuario.Senha = txtSenha.Text;
 
             ActoContexto objContexto = new ActoContexto();

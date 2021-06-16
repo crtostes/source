@@ -24,7 +24,7 @@ namespace Acto.Empresa.Data
 
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.Add(new MySqlParameter("?pid_cliente", pEntEmpresa.id_cliente));
-                cmd.Parameters.Add(new MySqlParameter("?pnr_cnpj", pEntEmpresa.nr_cnpj));
+                cmd.Parameters.Add(new MySqlParameter("?pnr_cnpj", pEntEmpresa.nr_cnpj.Trim()));
                 cmd.Parameters.Add(new MySqlParameter("?pds_nome_empresa", pEntEmpresa.ds_nome_empresa.ToString().ToUpper()));
                 cmd.Parameters.Add(new MySqlParameter("?pds_endereco", pEntEmpresa.ds_endereco));
                 cmd.Parameters.Add(new MySqlParameter("?pds_cidade", pEntEmpresa.ds_cidade));
@@ -61,14 +61,14 @@ namespace Acto.Empresa.Data
                 {
                     while (myReader.Read())
                     {
-                        objEmpresa.id_empresa = Convert.ToInt32(myReader["id_empresa"]);
-                        objEmpresa.id_cliente = Convert.ToInt32(myReader["id_cliente"]);
+                        //objEmpresa.id_empresa = Convert.ToInt32(myReader["id_empresa"]);
+                        //objEmpresa.id_cliente = Convert.ToInt32(myReader["id_cliente"]);
                         objEmpresa.nr_cnpj = Convert.ToString(myReader["nr_cnpj"]);
                         objEmpresa.ds_nome_empresa = Convert.ToString(myReader["ds_nome_empresa"]);
                         objEmpresa.ds_endereco = Convert.ToString(myReader["ds_endereco"]);
                         objEmpresa.ds_cidade = Convert.ToString(myReader["ds_cidade"]);
                         objEmpresa.ds_estado = Convert.ToString(myReader["ds_estado"]);
-                        objEmpresa.dt_atualizacao = Convert.ToDateTime(myReader["dt_cadastro"]);
+                        //objEmpresa.dt_atualizacao = Convert.ToDateTime(myReader["dt_cadastro"]);
                     }
                 }
                 catch (Exception ex)

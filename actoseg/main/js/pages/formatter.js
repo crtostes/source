@@ -20,6 +20,12 @@ $(function () {
 		'persistent': false
 	});
 
+	
+	$('#txtDataPrimeiraHabilitacao').formatter({
+		'pattern': '{{99}}/{{99}}/{{9999}}',
+		'persistent': false
+	});
+
 	//Date dd/mm/yyyy
 	$('#ContentPlaceHolder1_txtDataExpedicao').formatter({
 		'pattern': '{{99}}/{{99}}/{{9999}}',
@@ -31,15 +37,15 @@ $(function () {
 		'persistent': false
 	});
 
-	$('#txtDtVigenciaInicial').formatter({
-		'pattern': '{{99}}/{{99}}/{{9999}}',
-		'persistent': false
-	});
+	//$('#txtDtVigenciaInicial').formatter({
+	//	'pattern': '{{99}}/{{99}}/{{9999}}',
+	//	'persistent': false
+	//});
 
-	$('#txtDtVigenciaFinal').formatter({
-		'pattern': '{{99}}/{{99}}/{{9999}}',
-		'persistent': false
-	});
+	//$('#txtDtVigenciaFinal').formatter({
+	//	'pattern': '{{99}}/{{99}}/{{9999}}',
+	//	'persistent': false
+	//});
 
 	$('#txtDataNascimentoCondutor').formatter({
 		'pattern': '{{99}}/{{99}}/{{9999}}',
@@ -78,7 +84,9 @@ $(function () {
 	  'pattern': '{{9999}}-{{99}}-{{99}}',
 	  'persistent': true
 	});
+
 	
+
 	//Time hh:mm
 	$('#time').formatter({
 	  'pattern': '{{99}}:{{99}}',
@@ -162,6 +170,16 @@ $(function () {
 	  'persistent': true
 	});
 	
+	$('#txtNrCartaoCC').formatter({
+		'pattern': '{{9999}}.{{9999}}.{{9999}}.{{9999}}',
+		'persistent': false
+	});
+
+	$('#txtValidadeCC').formatter({
+		'pattern': '{{99}}/{{99}}',
+		'persistent': false
+	});
+
 	//SSN E.g. 123-45-6789
 	$('#ssn').formatter({
 	  'pattern': '{{999}}-{{99}}-{{9999}}',
@@ -189,7 +207,7 @@ $(function () {
 		'persistent': false
 	});
 	
-	$('#txtCEPFrequencia').formatter({
+	$('#txtCep').formatter({
 		'pattern': '{{99999}}-{{999}}',
 		'persistent': false
 	});
@@ -203,8 +221,28 @@ $(function () {
 		'pattern': '{{99}}.{{999}}.{{999}}/{{9999}}-{{99}}',
 		'persistent': false
 	});
+	$('#txtCNPJ').formatter({
+		'pattern': '{{99}}.{{999}}.{{999}}/{{9999}}-{{99}}',
+		'persistent': false
+	});
 	$('#txtCPFCondutorPrincipal').formatter({
 		'pattern': '{{999}}.{{999}}.{{999}}-{{99}}',
 		'persistent': false
 	});
+	$('#txtCpfNovo').formatter({
+		'pattern': '{{999}}.{{999}}.{{999}}-{{99}}',
+		'persistent': false
+	});
+	$('#txtCPFTitularDC').formatter({
+		'pattern': '{{999}}.{{999}}.{{999}}-{{99}}',
+		'persistent': false
+	});
+
+	$('#txtCPFCC').formatter({
+		'pattern': '{{999}}.{{999}}.{{999}}-{{99}}',
+		'persistent': false
+	});
+
+
+	
 });// End of use strict

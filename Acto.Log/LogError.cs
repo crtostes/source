@@ -10,7 +10,7 @@ namespace Acto.Infra.Log
     {
         public void TrataErro(string pStackTrace)
         {
-            System.IO.StreamWriter sr = new System.IO.StreamWriter("C:\\Temp\\ErrorLogBT.txt");
+            System.IO.StreamWriter sr = new System.IO.StreamWriter("C:\\Temp\\ErrorLogBT.txt", true);
 
             sr.WriteLine(pStackTrace);
             sr.Close();

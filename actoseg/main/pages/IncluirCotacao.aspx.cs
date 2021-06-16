@@ -4,8 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Acto.Indicado.Busines;
-using Acto.Indicado.Entity;
+
 using Acto.Infra.Contexto;
 using Acto.Cliente.Busines;
 using Acto.Cliente.Entity;
@@ -45,6 +44,16 @@ namespace actoseg.main.pages
                 }
             }
 
+            if (!string.IsNullOrEmpty(Request["ClienteCotacaoNova"]))
+            {
+                txtIdClienteCotacaoNova.Text = Request["ClienteCotacaoNova"];
+                busCliente objBus = new busCliente();
+                //Acesso a qualquer cotação
+                if (objBus.ListarClientesIndicados(objContexto.Cliente.id_cliente).Exists(x => x.id_cliente.ToString().Trim() == txtIdClienteCotacaoNova.Text.Trim()) == false)
+                {
+                    Response.Redirect("Login.aspx");
+                }
+            }
         }
 
         [System.Web.Services.WebMethod]
@@ -298,11 +307,38 @@ namespace actoseg.main.pages
         }
 
         [System.Web.Services.WebMethod]
-        public static string wmAtualizarStatusCotacaoAutomovel(string pid_cotacao, string pid_cliente, string pcd_status_cotacao)
+        public static string wmAtualizarStatusCotacaoAutomovel(string pid_cotacao, string pid_cliente, string pcd_status_cotacao, string pid_forma_pagamento, string pds_mensagem, string file)
         {
-            busCotacao objBusCotacao = new busCotacao();          
+            busCotacao objBusCotacao = new busCotacao();
+            string nomearquivo = string.Empty;
 
-            return objBusCotacao.AtualizarStatusCotacao(Convert.ToInt32(pid_cotacao), Convert.ToInt32(pid_cliente), pcd_status_cotacao).ToString();
+            //Grava Arquivo PDF do Enviar Cotação CONCORRENTE
+            if (!string.IsNullOrEmpty(file))
+            { 
+                nomearquivo = Convert.ToInt32(pid_cotacao).ToString("D5CCRNTE") + objBusCotacao.GeraChave();
+                //objBus.AtualizarPDFCotacao(Convert.ToInt32(pid_cotacao), nomearquivo);
+                System.IO.FileStream stream = new System.IO.FileStream(@"C:\actoseg\web\upload\" + nomearquivo + ".pdf", System.IO.FileMode.Create);
+                System.IO.BinaryWriter writer = new System.IO.BinaryWriter(stream);
+                file = file.Replace("data:application/pdf;base64,", "");
+                byte[] bytes = Convert.FromBase64String(file);
+                writer.Write(bytes, 0, bytes.Length);
+                writer.Close();
+            }
+            if ((!string.IsNullOrEmpty(nomearquivo)) || (!string.IsNullOrEmpty(pid_forma_pagamento.ToString().Trim())) || (!string.IsNullOrEmpty(pds_mensagem.ToString().Trim())))
+            {
+                entCotacaoInteracao objentCotacaoInteracao = new entCotacaoInteracao();
+                objentCotacaoInteracao.id_cotacao = Convert.ToInt32(pid_cotacao);
+                objentCotacaoInteracao.id_forma_pagamento = Convert.ToInt32(pid_forma_pagamento);
+                objentCotacaoInteracao.ds_mensagem = pds_mensagem;
+                objentCotacaoInteracao.ds_pdf_cotacao_concorrente = nomearquivo;
+                
+                return objBusCotacao.AtualizarStatusCotacao(Convert.ToInt32(pid_cotacao), Convert.ToInt32(pid_cliente), pcd_status_cotacao, objentCotacaoInteracao).ToString();
+            }
+            else
+            { 
+
+                return objBusCotacao.AtualizarStatusCotacao(Convert.ToInt32(pid_cotacao), Convert.ToInt32(pid_cliente), pcd_status_cotacao).ToString();
+            }
         }
 
         [System.Web.Services.WebMethod]
@@ -428,6 +464,34 @@ namespace actoseg.main.pages
             //return objLstIndicado;
         }
         [System.Web.Services.WebMethod]
+        public static string wmListarChat(int pid_cotacao)
+        {
+            busCotacao objBus = new busCotacao();
+            List<entCotacaoInteracao> objLst = objBus.ListarCotacaoInteracao(pid_cotacao);
+            var oSerializer = new System.Web.Script.Serialization.JavaScriptSerializer();
+            return oSerializer.Serialize(objLst);
+            //return objLstIndicado;
+        }
+        [System.Web.Services.WebMethod]
+        public static string wmIncluiMsgChat(string pid_cotacao, string pds_mensagem)
+        {
+            busCotacao objBusCotacao = new busCotacao();
+            entCotacaoInteracao objent = new entCotacaoInteracao();
+
+            objent.id_cotacao = Convert.ToInt32(pid_cotacao);
+            objent.ds_mensagem = pds_mensagem;
+            objent.id_forma_pagamento = 0;
+            objent.ds_pdf_cotacao_concorrente = "";
+            if (objBusCotacao.IncluirCotacaoInteracao(objent))
+            { 
+                return "OK";
+            }
+            else
+            { 
+                return "OK";
+            }
+        }
+        [System.Web.Services.WebMethod]
         [System.Web.Script.Services.ScriptMethod(ResponseFormat = System.Web.Script.Services.ResponseFormat.Json)]
         public static string SaveData(string file, string pid_cotacao)//string Name, string[] fileData)
         {
@@ -446,17 +510,65 @@ namespace actoseg.main.pages
         }
         
         [System.Web.Services.WebMethod]
-        public static string wmAprovarCotacaoAutomovel(string pid_cotacao, string pid_seguradora, string pflg_aprovacao, string pid_cliente_aprovador, string pid_cliente_cotacao)
+        public static string wmAprovarCotacaoAutomovel(string pid_cotacao, 
+                                                        string pid_seguradora, 
+                                                        string pflg_aprovacao, 
+                                                        string pid_cliente_aprovador, 
+                                                        string pid_cliente_cotacao,
+                                                        string pid_forma_pagamento,
+                                                        string pnr_parcelas,
+                                                        string pds_bandeira_cc,
+                                                        string pds_nr_cartao_cc,
+                                                        string pds_validade_cc,
+                                                        string pds_nome_cliente_cc,
+                                                        string ptp_dados_segurado_dc,
+                                                        string pds_nome_titular_conta,
+                                                        string pds_banco_dc,
+                                                        string ptp_pessoa_dc,
+                                                        string pds_cpf_titular_conta_dc,
+                                                        string pds_parentesco_titular_dc,
+                                                        string pds_nr_agencia_dc,
+                                                        string pds_digito_agencia_dc,
+                                                        string pds_nr_conta_dc,
+                                                        string pds_digito_conta_dc)
         {
             busCotacao objBusCotacao = new busCotacao();
 
-            return objBusCotacao.AprovarCotacaoAutomovel(Convert.ToInt32(pid_cotacao), Convert.ToInt32(pid_seguradora), pflg_aprovacao, Convert.ToInt32(pid_cliente_aprovador), Convert.ToInt32(pid_cliente_cotacao)).ToString();
+            entCotacaoFormaPagamento objCFP = new entCotacaoFormaPagamento();
+
+            objCFP.id_cotacao = Convert.ToInt32(pid_cotacao);
+            objCFP.id_forma_pagamento = Convert.ToInt32(pid_forma_pagamento);
+            objCFP.nr_parcelas = pnr_parcelas;
+            objCFP.ds_bandeira_cc = pds_bandeira_cc;
+            objCFP.ds_nr_cartao_cc = pds_nr_cartao_cc;
+            objCFP.ds_validade_cc = pds_validade_cc;
+            objCFP.ds_nome_cliente_cc = pds_nome_cliente_cc;
+            objCFP.tp_dados_segurado_dc = ptp_dados_segurado_dc;
+            objCFP.ds_nome_titular_conta_dc = pds_nome_titular_conta;
+            objCFP.ds_banco_dc = pds_banco_dc;
+            objCFP.tp_pessoa_dc = ptp_pessoa_dc;
+            objCFP.ds_cpf_titular_conta_dc = pds_cpf_titular_conta_dc.Replace(".","").Replace("-","");
+            objCFP.ds_parentesco_titular_dc = pds_parentesco_titular_dc;
+            objCFP.ds_nr_agencia_dc = pds_nr_agencia_dc;
+            objCFP.ds_digito_agencia_dc = pds_digito_agencia_dc;
+            objCFP.ds_nr_conta_dc = pds_nr_conta_dc;
+            objCFP.ds_digito_conta_dc = pds_digito_conta_dc;
+
+            return objBusCotacao.AprovarCotacaoAutomovel(Convert.ToInt32(pid_cotacao), Convert.ToInt32(pid_seguradora), pflg_aprovacao, Convert.ToInt32(pid_cliente_aprovador), Convert.ToInt32(pid_cliente_cotacao),objCFP).ToString();
         }
 
         public bool TemPermissao(string pcd_funcao) {
             ActoContexto objContexto = (ActoContexto)HttpContext.Current.Session["contexto"];
 
             return objContexto.TemPermissao(pcd_funcao);
+        }
+
+        [System.Web.Services.WebMethod]
+        public static string wmClonarCotacao(string pid_cotacao)
+        {
+            busCotacao objBusCotacao = new busCotacao();
+            return objBusCotacao.ClonarCotacao(Convert.ToInt32(pid_cotacao)).ToString();
+            
         }
     }
 }

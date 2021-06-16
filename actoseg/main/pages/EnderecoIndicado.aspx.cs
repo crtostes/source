@@ -5,8 +5,6 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Acto.Indicado.Busines;
-using Acto.Indicado.Entity;
 using Acto.Infra.Contexto;
 using Acto.Cliente.Busines;
 using Acto.Cliente.Entity;
