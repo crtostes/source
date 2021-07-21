@@ -1341,7 +1341,8 @@
                      "', pds_valor_franquia_50: '" + $("#txtValorFranquia50").val() +
                      "', pds_valor_premio_f50: '" + $("#txtValorPremioF50").val() +
                      "', pds_valor_franquia_100: '" + $("#txtValorFranquia100").val() +
-                     "', pds_valor_premio_f100: '" + $("#txtValorPremioF100").val() +
+					 "', pds_valor_premio_f100: '" + $("#txtValorPremioF100").val() +
+                     "', pds_porcentagem_comissao: '" + $("#txtPorcentagemComissao").val() +
                      "'}",
                  contentType: "application/json; charset=utf-8",
                  dataType: "json",
@@ -2463,12 +2464,12 @@
 						   <div class="row">		
 							<div class="col-lg-12 col-12">
 		                      <div class="box">
-			                    <div class="box-header with-border bg-light">
+			                   <%-- <div class="box-header with-border bg-light">
 			                      <h4 class="box-title">Dados do item da cotação</h4>			
 				                    <ul class="box-controls pull-right">				                      
 				                    </ul>
 									
-			                    </div>
+			                    </div>--%>
 			                    <!-- /.box-header -->
 			                    <form class="form">
 				                    <div class="box-body">
@@ -2484,9 +2485,9 @@
 													<option value="2">Azul</option> 												  									
 													<option value="3">Liberty</option> 												  			
 													<%--<option value="4">Aliro</option> 												  			--%>
-													<option value="4">HDI</option> 												  			
-													<option value="5">Mapfre</option> 												  									
-													<option value="6">Suhai</option> 												  									
+													<option value="5">HDI</option> 												  			
+													<option value="4">Mapfre</option> 												  									
+													<option value="7">Suhai</option> 												  									
 												</select>
 												</div>
 											  </div>
@@ -2506,22 +2507,23 @@
 										<div class="row">
 					                      <div class="col-md-6">
 												<div class="form-group">
-													<label>Valor Franquia 100%</label>
+													<label>Franquia: Normal</label>
 													<input name="txtValorFranquia100" id="txtValorFranquia100" type="text" class="form-control" onkeyup="formatarMoeda('txtValorFranquia100')">
 												</div>
 												</div>
 											<div class="col-md-6">
 												<div class="form-group">
-													<label>Valor Prêmio F. 100%</label>
-													<input name="txtValorPremioF100" id="txtValorPremioF100" type="text" class="form-control" onkeyup="formatarMoeda('txtValorPremioF100')">
+													<label>Franquia: Reduzida 50%</label>
+													<input name="txtValorFranquia50" id="txtValorFranquia50" type="text" class="form-control" onkeyup="formatarMoeda('txtValorFranquia50')">
 												</div>
 											</div>
 					                    </div>
 					                    <div class="row">
 					                      <div class="col-md-6">
 												<div class="form-group">
-													<label>Valor Franquia 50%</label>
-													<input name="txtValorFranquia50" id="txtValorFranquia50" type="text" class="form-control" onkeyup="formatarMoeda('txtValorFranquia50')">
+													<label>Valor Prêmio F. Normal</label>
+													<input name="txtValorPremioF100" id="txtValorPremioF100" type="text" class="form-control" onkeyup="formatarMoeda('txtValorPremioF100')">
+													
 												</div>
 												</div>
 											<div class="col-md-6">
@@ -2531,7 +2533,20 @@
 												</div>
 											</div>
 					                    </div>
-										
+										<div class="row">
+					                      <div class="col-md-6">
+												<div class="form-group">
+													<label>Comissão Seguradora</label>
+													<input name="txtPorcentagemComissao" id="txtPorcentagemComissao" type="text" class="form-control" onkeyup="formatarMoeda('txtPorcentagemComissao')">
+												</div>
+												</div>
+											<div class="col-md-6">
+												<div class="form-group">
+													<label>Gravar Item</label>
+												<button type="button" class="btn btn-bold btn-primary float-right"  onclick="InsereCotacaoItem()">GRAVAR ITEM COTAÇÃO</button> <%--data-dismiss="modal"--%>							
+												</div>
+											</div>
+					                    </div>
 									</div>
 				                    <!-- /.box-body -->
 				                    <%--<div class="box-footer">
@@ -2539,6 +2554,9 @@
 					                      <i class="ti-save-alt"></i> Grave
 					                    </input>
 				                    </div>  --%>
+									
+						
+					  
 			                    </form>
 		                      </div>
 		                      <!-- /.box -->			
@@ -2547,9 +2565,7 @@
                             
                             </div>
 						</div>
-                        <div class="modal-footer modal-footer-uniform">
-						<button type="button" class="btn btn-bold btn-primary float-right"  onclick="InsereCotacaoItem()">GRAVAR ITEM COTAÇÃO</button> <%--data-dismiss="modal"--%>
-					  </div>
+                        
 					  </div>
 					  
 					</div>

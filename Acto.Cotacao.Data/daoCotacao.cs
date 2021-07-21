@@ -680,7 +680,7 @@ namespace Acto.Cotacao.Data
                 cmd.Parameters.Add(new MySqlParameter("?pds_valor_premio_f50", pobjentCotacaoAutomovelItem.ds_valor_premio_f50));
                 cmd.Parameters.Add(new MySqlParameter("?pds_valor_franquia_100", pobjentCotacaoAutomovelItem.ds_valor_franquia_100));
                 cmd.Parameters.Add(new MySqlParameter("?pds_valor_premio_f100", pobjentCotacaoAutomovelItem.ds_valor_premio_f100));
-
+                cmd.Parameters.Add(new MySqlParameter("?pds_porcentagem_comissao", pobjentCotacaoAutomovelItem.ds_porcentagem_comissao));
                 cmd.ExecuteNonQuery();
 
                 retorno = 1;
@@ -817,9 +817,9 @@ namespace Acto.Cotacao.Data
             if (pid_seguradora == 1) { return "images/01_cotacao_porto.jpg"; }
             if (pid_seguradora == 2) { return "images/02_cotacao_azul.jpg"; }
             if (pid_seguradora == 3) { return "images/03_cotacao_liberty.jpg"; }
-            if (pid_seguradora == 4) { return "images/04_cotacao_hdi.jpg"; }
-            if (pid_seguradora == 5) { return "images/05_cotacao_mapfre.jpg"; }
-            if (pid_seguradora == 6) { return "images/06_cotacao_suhai.jpg"; }
+            if (pid_seguradora == 5) { return "images/04_cotacao_hdi.jpg"; }
+            if (pid_seguradora == 4) { return "images/05_cotacao_mapfre.jpg"; }
+            if (pid_seguradora == 7) { return "images/06_cotacao_suhai.jpg"; }
             return "";
         }
         public int AtualizarPDFCotacao(int pid_cotacao, string pds_pdf)

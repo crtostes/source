@@ -98,7 +98,13 @@ namespace actoseg.main
 
         }
 
-
+        [System.Web.Services.WebMethod]
+        public static string RecuperarSenha(string pemail)
+        {
+            busUsuario objBusUsuario = new busUsuario();
+            
+            return objBusUsuario.ConsultarRecuperarSenha(pemail);
+        }
 
     }
 }

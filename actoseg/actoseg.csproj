@@ -9634,6 +9634,7 @@
     <Content Include="main\pages\Cotacao.aspx" />
     <Content Include="main\pages\Default.aspx" />
     <Content Include="main\pages\GestaoCotacao.aspx" />
+    <Content Include="main\pages\Gratificacao.aspx" />
     <Content Include="main\pages\images\01_cotacao_porto.jpg" />
     <Content Include="main\pages\images\02_cotacao_azul.jpg" />
     <Content Include="main\pages\images\03_cotacao_liberty.jpg" />
@@ -9745,6 +9746,13 @@
     </Compile>
     <Compile Include="main\pages\GestaoCotacao.aspx.designer.cs">
       <DependentUpon>GestaoCotacao.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="main\pages\Gratificacao.aspx.cs">
+      <DependentUpon>Gratificacao.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="main\pages\Gratificacao.aspx.designer.cs">
+      <DependentUpon>Gratificacao.aspx</DependentUpon>
     </Compile>
     <Compile Include="main\pages\IncluirCotacao.aspx.cs">
       <DependentUpon>IncluirCotacao.aspx</DependentUpon>
@@ -9882,6 +9890,14 @@
     <ProjectReference Include="..\Acto.Fipe.Entity\Acto.Fipe.Entity.csproj">
       <Project>{25447719-e2c0-4922-bacc-4c15453d1c0a}</Project>
       <Name>Acto.Fipe.Entity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Acto.Gratificacao.Busines\Acto.Gratificacao.Busines.csproj">
+      <Project>{36d8848a-3892-4a50-8952-f87aab827ccb}</Project>
+      <Name>Acto.Gratificacao.Busines</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Acto.Gratificacao.Entity\Acto.Gratificacao.Entity.csproj">
+      <Project>{39f4d072-548c-45b5-bf25-12e96dfe0b2a}</Project>
+      <Name>Acto.Gratificacao.Entity</Name>
     </ProjectReference>
     <ProjectReference Include="..\Acto.Infra.Contexto\Acto.Infra.Contexto.csproj">
       <Project>{baa5ed3e-7a09-4565-824c-8a754febc59c}</Project>

@@ -4,15 +4,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{E078D005-289C-4C90-A9EE-B1836EEE2796}</ProjectGuid>
+    <ProjectGuid>{39F4D072-548C-45B5-BF25-12E96DFE0B2A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Acto.Usuario.Busines</RootNamespace>
-    <AssemblyName>Acto.Usuario.Busines</AssemblyName>
+    <RootNamespace>Acto.Gratificacao.Entity</RootNamespace>
+    <AssemblyName>Acto.Gratificacao.Entity</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -42,30 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="busUsuario.cs" />
+    <Compile Include="entGratificacao.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Acto.Cliente.Data\Acto.Cliente.Data.csproj">
-      <Project>{6a860542-37fa-4050-8a97-aac2624d396b}</Project>
-      <Name>Acto.Cliente.Data</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Acto.Cliente.Entity\Acto.Cliente.Entity.csproj">
-      <Project>{d9412ba8-07cc-4f10-b24a-75a25d8bb24c}</Project>
-      <Name>Acto.Cliente.Entity</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Acto.Infra.Mail\Acto.Infra.Mail.csproj">
-      <Project>{953b4b53-ef09-4b05-8776-12986a1908b7}</Project>
-      <Name>Acto.Infra.Mail</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Acto.Usuario.Data\Acto.Usuario.Data.csproj">
-      <Project>{8aa1d174-89ae-49fd-a243-bcc98d218091}</Project>
-      <Name>Acto.Usuario.Data</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Acto.Usuario.Entity\Acto.Usuario.Entity.csproj">
-      <Project>{9db0eccc-a435-442a-9ffc-1bd189a13b2f}</Project>
-      <Name>Acto.Usuario.Entity</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

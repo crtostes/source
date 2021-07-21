@@ -4,15 +4,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{E078D005-289C-4C90-A9EE-B1836EEE2796}</ProjectGuid>
+    <ProjectGuid>{7EA01B71-9FA8-4B3C-A12E-6CC5FDE2F58C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Acto.Usuario.Busines</RootNamespace>
-    <AssemblyName>Acto.Usuario.Busines</AssemblyName>
+    <RootNamespace>Acto.Gratificacao.Data</RootNamespace>
+    <AssemblyName>Acto.Gratificacao.Data</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -32,6 +31,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Dapper, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapper.2.0.90\lib\net461\Dapper.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data, Version=8.0.20.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -42,30 +45,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="busUsuario.cs" />
+    <Compile Include="daoGratificacao.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Acto.Cliente.Data\Acto.Cliente.Data.csproj">
-      <Project>{6a860542-37fa-4050-8a97-aac2624d396b}</Project>
-      <Name>Acto.Cliente.Data</Name>
+    <ProjectReference Include="..\Acto.Gratificacao.Entity\Acto.Gratificacao.Entity.csproj">
+      <Project>{39f4d072-548c-45b5-bf25-12e96dfe0b2a}</Project>
+      <Name>Acto.Gratificacao.Entity</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Acto.Cliente.Entity\Acto.Cliente.Entity.csproj">
-      <Project>{d9412ba8-07cc-4f10-b24a-75a25d8bb24c}</Project>
-      <Name>Acto.Cliente.Entity</Name>
+    <ProjectReference Include="..\Acto.Infra.Db\Acto.Infra.Db.csproj">
+      <Project>{82efcb8e-1619-4260-b6c7-c8d488ea5aec}</Project>
+      <Name>Acto.Infra.Db</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Acto.Infra.Mail\Acto.Infra.Mail.csproj">
-      <Project>{953b4b53-ef09-4b05-8776-12986a1908b7}</Project>
-      <Name>Acto.Infra.Mail</Name>
+    <ProjectReference Include="..\Acto.Log\Acto.Infra.Log.csproj">
+      <Project>{09b98e52-1348-4bf0-b493-6a8531d8d79a}</Project>
+      <Name>Acto.Infra.Log</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Acto.Usuario.Data\Acto.Usuario.Data.csproj">
-      <Project>{8aa1d174-89ae-49fd-a243-bcc98d218091}</Project>
-      <Name>Acto.Usuario.Data</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Acto.Usuario.Entity\Acto.Usuario.Entity.csproj">
-      <Project>{9db0eccc-a435-442a-9ffc-1bd189a13b2f}</Project>
-      <Name>Acto.Usuario.Entity</Name>
-    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

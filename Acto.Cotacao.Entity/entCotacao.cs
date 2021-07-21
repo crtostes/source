@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Acto.Cotacao.Entity
 {
@@ -156,6 +152,7 @@ namespace Acto.Cotacao.Entity
         public string ds_valor_premio_f50 { get; set; }
         public string ds_valor_franquia_100 { get; set; }
         public string ds_valor_premio_f100 { get; set; }
+        public string ds_porcentagem_comissao { get; set; }
     }
     public class entCotacaoAutomovelItemGrid
     {

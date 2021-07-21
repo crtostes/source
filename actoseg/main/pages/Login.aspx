@@ -124,7 +124,35 @@
                   }
               });
 
-          }
+		 }
+
+		 function EnviarSenha() {
+			 if ($("#txtLogin").val() == '') {
+				 alert("Digite um E-mail válido para recupear a senha.");
+				 return false;
+             }
+             $.ajax({
+                 type: "POST",
+                 url: "Login.aspx/RecuperarSenha",
+                 data: "{pemail: '" + $("#txtLogin").val() + "'}",
+                 contentType: "application/json; charset=utf-8",
+                 dataType: "json",
+                 success: OnSuccessEnviarSenha,
+                 error: function (request, status, error) {
+                     alert(request.responseText.Message);
+                 }
+             });
+
+		 }
+         function OnSuccessEnviarSenha(data, status) {
+             //alert(data.d);
+			 if (data.d == "OK") {
+				 alert("Senha atual enviada para o e-mail indicado, verifique o seu e-mail.");
+			 }
+			 else {
+                 alert(data.d);
+             }
+         }
      </script>
 </head>
 <body class="hold-transition bg-light">
@@ -147,7 +175,7 @@
 									<span class="input-group-text bg-info border-info"><i class="ti-user"></i></span>
 								</div>
 								<%--<input id="txtLogin" type="text" class="form-control" placeholder="E-mail">--%>
-								<asp:TextBox id="txtLogin" type="text" class="form-control" placeholder="E-mail" CssClass="form-control" runat="server"></asp:TextBox>
+								<asp:TextBox id="txtLogin" type="text" class="form-control" placeholder="Digite um E-mail válido" CssClass="form-control" runat="server"></asp:TextBox>
 							</div>
 						</div>
 						<div class="form-group">
@@ -169,7 +197,7 @@
 							<!-- /.col -->
 							<div class="col-6">
 							 <div class="fog-pwd text-right">
-								<a href="javascript:void(0)"><i class="ion ion-locked"></i> Recupere a senha</a><br>
+								<a href="javascript:EnviarSenha();"><i class="ion ion-locked"></i> Recupere a senha</a><br>
 							  </div>
 							</div>
 							<!-- /.col -->

@@ -223,7 +223,7 @@
          
         <li class="treeview">
           <a href="#">
-            <i class="mdi mdi-apps"></i>
+            <i class="mdi mdi-account-plus"></i>
             <span>Cadastros</span>
             <span class="pull-right-container">
               <i class="fa fa-caret-down pull-right"></i>
@@ -238,7 +238,7 @@
         </li>
         <li class="treeview">
           <a href="#">
-            <i class="mdi mdi-presentation"></i> <span>Cotações</span>
+            <i class="mdi mdi-apps"></i> <span>Cotações</span>
             <span class="pull-right-container">
               <i class="fa fa-caret-down pull-right"></i>
             </span>
@@ -249,6 +249,19 @@
                       
           </ul>
         </li>  		
+          <li class="treeview">
+          <a href="#">
+            <i class="mdi mdi-currency-usd"></i> <span>Administração</span>
+            <span class="pull-right-container">
+              <i class="fa fa-caret-down pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+              <li><a href="Gratificacao.aspx"><i class="fa fa-circle-thin"></i>Gratificações</a></li>  
+              
+                      
+          </ul>
+        </li>  	
 		<li class="treeview">
           <a href="#">
             <i class="mdi mdi-chart-pie"></i>
@@ -258,9 +271,12 @@
             </span>
           </a>
           <ul class="treeview-menu">
+            <li><a href="Default.aspx"><i class="fa fa-circle-thin"></i>Clientes</a></li>
             <li><a href="Default.aspx"><i class="fa fa-circle-thin"></i>Cotações</a></li>
-            <li><a href="Default.aspx"><i class="fa fa-circle-thin"></i>Pagamentos</a></li>
             <li><a href="Default.aspx"><i class="fa fa-circle-thin"></i>Apólices</a></li>
+            <li><a href="Default.aspx"><i class="fa fa-circle-thin"></i>Gratificações</a></li>
+            <li><a href="Default.aspx"><i class="fa fa-circle-thin"></i>Renovações</a></li>
+
           </ul>
         </li>
       </ul>

@@ -5,6 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Acto.Usuario.Data;
 using Acto.Usuario.Entity;
+using Acto.Cliente.Data;
+using Acto.Cliente.Entity;
+using Acto.Infra.Mail;
 
 namespace Acto.Usuario.Busines
 {
@@ -54,6 +57,32 @@ namespace Acto.Usuario.Busines
             {
                 //MessageBox.Show("Houve problemas. Erro: \n\n" + ex.Message);
                 return false;
+            }
+
+        }
+        public string ConsultarRecuperarSenha(string pemail)
+        {
+            try
+            {
+                CaixaEmail objMail = new CaixaEmail();
+                daoUsuario objDaoUsuario = new daoUsuario();
+                daoCliente objdaoCliente = new daoCliente();
+                string senha = objDaoUsuario.ConsultarRecuperarSenha(pemail);
+
+                if (senha == "")
+                {
+                    throw new InvalidOperationException("E-mail informado não cadastrado!");
+                };
+
+                entCliente objEntCliente = objdaoCliente.ConsultarClienteEmail(pemail);
+                
+                objMail.EnviaEmailACTOSEG(pemail, objEntCliente.ds_nome,"ACTO ONLINE - RECUPERAÇÃO DE SENHA", RetornaBodyRecuperarSenha(objEntCliente.ds_nome,senha));
+                return "OK";
+            }
+            catch (Exception ex)
+            {
+                //MessageBox.Show("Houve problemas. Erro: \n\n" + ex.Message);
+                return ex.Message;
             }
 
         }
@@ -154,7 +183,80 @@ namespace Acto.Usuario.Busines
             }
             return lstFuncoes;
         }
+        private string RetornaBodyRecuperarSenha(string pnome, string psenha)
+        {
 
+            
+            string testestr = "<!DOCTYPE html> " +
+"<html lang=\"en\" xmlns=\"http://www.w3.org/1999/xhtml\"> " +
+            "<head> " +
+"   <meta charset=\"utf-8\" /> " +
+"   <title></title> " +
+//"   <style type=\"text/css\"> " +
+////"      body { " +
+////"         margin: 20px 20px; " +
+////"         font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; " +
+////"      } " +
+//"   </style> " +
+"   <style> " +
+"       * table, tr, td { " +
+"            border: 1px solid white; " +
+"            background-color: white; " +
+"            font-family: Arial, Helvetica, sans-serif; " +
+"        } " +
+"        td.label { " +
+"            border: 5px solid lightgray; " +
+"            background-color: lightgray; " +
+"            font-family: Arial, Helvetica, sans-serif; " +
+"            font-weight: bold; " +
+"        } " +
+"        td.texto { " +
+"             " +
+"            border: 1px solid lightgray; " +
+"            background-color: white; " +
+"            font-family: Arial, Helvetica, sans-serif; " +
+
+"        } " +
+"        td.cabecalho { " +
+"            color:white; " +
+"            border: 5px solid royalblue; " +
+"            background-color: royalblue; " +
+"            font-family: Arial, Helvetica, sans-serif; " +
+"            font-weight: bold; " +
+"        } " +
+"    </style> " +
+"</head> " +
+"<body> " +
+"   Prezado(a) " + pnome + ", " +
+"   <p> " +
+"   Conforme requisição no site, segue a senha cadastrada no momento:" +
+"   </p> " +
+"  <p> " +
+"    " + psenha + "  " +
+"   </p> " +
+"   <p> " +
+//"      <a href=\"#Url#\">Clique aqui para resolver sua pendência.</a> " +
+"   </p> " +
+"   Atenciosamente,<br /><br /> " +
+"   ACTOSEG CORRETORA - ACTO ONLINE " +
+"</body> " +
+"</html> ";
+
+            //string strRet = testestr + "DADOS CLIENTE:<br/>" +
+            //                "Nome:  " + objCot.ds_nome + " <br/> " + 
+            //                "Email : " + objCot.ds_email + " <br/> " +
+            //                "Telefone : " + objCot.ds_telefone_celular + " <br/> " +
+            //                "Tipo Cotação : " + objCot.ds_tipo_cotacao; 
+
+
+
+
+
+
+
+            return testestr;
+
+        }
 
     }
 }

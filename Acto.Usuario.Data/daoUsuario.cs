@@ -112,7 +112,33 @@ namespace Acto.Usuario.Data
             }
 
         }
+        public string ConsultarRecuperarSenha(string pemail)
+        {
+            InfraDb ActoDb = new InfraDb();
+            MySqlConnection conn = ActoDb.ActoConn();
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand("sp_usuario_recuperar_senha_consultar", conn);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add(new MySqlParameter("?pds_email", pemail));
+                cmd.Parameters.Add(new MySqlParameter("?pds_senha", MySqlDbType.VarChar));
+                cmd.Parameters["?pds_senha"].Direction = ParameterDirection.Output;
+                cmd.ExecuteNonQuery();
 
+                return (string)cmd.Parameters["?pds_senha"].Value;
+            }
+            catch (Exception ex)
+            {
+                //MessageBox.Show("Houve problemas. Erro: \n\n" + ex.Message);
+                return "";
+            }
+            finally
+            {
+                /* se a conexão esta aberta, a fechamos */
+                if (conn.State == ConnectionState.Open) conn.Close();
+            }
+
+        }
         public bool ConsultarUsuarioCPF(entUsuario pEntUsuario)
         {
             InfraDb ActoDb = new InfraDb();

@@ -424,7 +424,8 @@ namespace actoseg.main.pages
                                                             string pds_valor_franquia_50,
                                                             string pds_valor_premio_f50,
                                                             string pds_valor_franquia_100,
-                                                            string pds_valor_premio_f100)                                                            
+                                                            string pds_valor_premio_f100,
+                                                            string pds_porcentagem_comissao)                                                            
         {
 
 
@@ -439,7 +440,7 @@ namespace actoseg.main.pages
             objEntCotacaoAutomovelItem.ds_valor_premio_f50 = pds_valor_premio_f50;
             objEntCotacaoAutomovelItem.ds_valor_franquia_100 = pds_valor_franquia_100;
             objEntCotacaoAutomovelItem.ds_valor_premio_f100 = pds_valor_premio_f100;
-
+            objEntCotacaoAutomovelItem.ds_porcentagem_comissao = pds_porcentagem_comissao;
 
             return objBusCotacao.IncluirCotacaoAutomovelItem(objEntCotacaoAutomovelItem).ToString();
 

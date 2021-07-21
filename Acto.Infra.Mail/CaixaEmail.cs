@@ -116,7 +116,32 @@ namespace Acto.Infra.Mail
             //client.Send(mensagemEmail);
 
         }
-       
+        public void EnviaEmailACTOSEG(string pemail_destino, string pnome_destino, string passunto, string pBody)
+        {
+            SmtpClient client = new SmtpClient();
+
+            var nome = Environment.MachineName;
+
+            client.Host = "smtp.gmail.com";
+            client.Port = 587;
+            client.EnableSsl = true;
+            client.DeliveryMethod = SmtpDeliveryMethod.Network;
+            client.UseDefaultCredentials = true;
+            client.Credentials = new System.Net.NetworkCredential("acto.cotacao@gmail.com", "acto@0001");
+
+            MailMessage mail = new MailMessage();
+            mail.Sender = new System.Net.Mail.MailAddress("acto.cotacao@gmail.com", "ACTOSEG CORRETORA");
+            mail.From = new MailAddress("acto.cotacao@gmail.com", "ACTOSEG CORRETORA");
+            mail.To.Add(new MailAddress(pemail_destino, pnome_destino));
+
+            mail.Subject = passunto;
+            mail.Body = pBody;
+
+            mail.IsBodyHtml = true;
+            mail.Priority = MailPriority.High;
+            client.Send(mail);
+            
+        }
         public void EnvioEmailAsync()
         {
             var client = new SendGrid.SendGridClient(HttpClient, "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");
