@@ -6,7 +6,16 @@
 		function CarregarNovaCotacao(pid_cliente) {
 			window.location.href = "IncluirCotacao.aspx?ClienteCotacaoNova=" + pid_cliente;
         }
+        function EmProcessamento(Habilitado) {
 
+            if (Habilitado) {
+                $('#modal-em-processamento').modal('show');
+            }
+            else {
+                $('#modal-em-processamento').modal('hide');
+            }
+
+        }
     </script>
 
     <script>
@@ -18,6 +27,18 @@
                 title: titulo,
                 text: texto,
                 type: "warning",
+                showCancelButton: false,
+                confirmButtonColor: "#363abf",
+                confirmButtonText: "OK",
+                closeOnConfirm: true
+            }, function () {
+            });
+		}
+        function MensagemActoSucesso(titulo, texto) {
+            swal({
+                title: titulo,
+                text: texto,
+                type: "success",
                 showCancelButton: false,
                 confirmButtonColor: "#363abf",
                 confirmButtonText: "OK",
@@ -207,18 +228,23 @@
     <script>
         function LimpaCampos() {
             $("#txtIdCliente").val("");
-            $("#txtNome").val("");
+			$("#txtNome").val("");
+            $("#txtEmail").val("");
             $("#txtTelefoneCelular").val("");
             $("#txtTelefoneCelular2").val("");
             $("#txtDataNascimento").val("");
             $("#cboGenero").val("");
             $("#cboEstadoCivil").val("");
-            $("#cboEmpresa").val("N");
+			$("#cboEmpresa").val("N");
+            $("#txtCPF").val("");
             $("#txtNumeroRG").val("");
             $("#txtDataExpedicao").val("");
             $("#txtEmissao").val("");
             $("#txtCNH").val("");
-            $("#txtDataPrimeiraHabilitacao").val("");
+			$("#txtDataPrimeiraHabilitacao").val("");
+            $("#txtDataInclusao").val("");
+            $("#txtDataatualizacao").val("");
+			
             $("#cboTipoEndereco").val("");
             $("#txtCep").val("");
             $("#txtEndereco").val("");
@@ -227,8 +253,14 @@
             $("#txtBairro").val("");
             $("#txtCidade").val("");
             $("#cboEstado").val("");
-            $("#cboProfissao").val("");
-            $("#txtComplementoProfissao").val("");
+			$("#cboProfissao").val("");
+            
+            let selText = document.getElementById('cboProfissao').options[document.getElementById('cboProfissao').selectedIndex].text;
+			document.getElementById('cboProfissao').options[document.getElementById('cboProfissao').selectedIndex].remove();
+			selProfissao = "selected='selected'";
+            $('#cboProfissao').append('<option Value=""' + selProfissao + '>' + selText + '</option>');
+
+			$("#txtComplementoProfissao").val("");
             $("#txtNomePai").val("");
             $("#txtNomeMae").val("");
             $("#txtNomeConjuge").val("");
@@ -272,7 +304,8 @@
             document.getElementById("txtNomePai").disabled = trava;
             document.getElementById("txtNomeMae").disabled = trava;
             document.getElementById("txtNomeConjuge").disabled = trava;
-
+            document.getElementById("chkPai").disabled = trava;
+            document.getElementById("chkMae").disabled = trava;
 
         }
         function MostraAba(aba) {
@@ -350,14 +383,14 @@
 					{ "data": "bt_atualizar", className: "text-center" },
                     { "data": "bt_NovaCotacao", className: "text-center"},
                     //{ "data": "ds_email", className: "text-right" },
-                ],
-                "order": [[1, 'asc']]
+                ]
             });
-
+            document.getElementById("btnGravar").hidden = true;
+            document.getElementById("btnNovo").hidden = false;
         }
         function CarregarCliente(pid_cliente) {
             TravaCampos(false);
-            MostraAba("cliente");   
+            
             $.ajax({
                 type: "POST",
                 url: "MeuCadastro.aspx/wmConsultarCliente",
@@ -371,7 +404,10 @@
             });
         }
         function OnSuccessCarregarCliente(data, status) {
-            TravaCampos(false);
+			TravaCampos(false);
+            document.getElementById("btnGravar").hidden = false;
+            document.getElementById("btnNovo").hidden = true;
+            MostraAba("cliente");
             //$('p').html("Sobrenome:" + data.d._sobreNome + " idade:" + data.d._idade + "");
             $("#txtIdCliente").val(data.d.id_cliente);
             $("#txtNome").val(data.d.ds_nome);
@@ -391,7 +427,14 @@
             $("#txtNumeroRG").val(data.d.ds_rg);
             $("#txtEmissao").val(data.d.ds_emissao);
             $("#txtDataExpedicao").val(data.d.dt_emissao_rg);
-            $("#cboEstadoCivil").val(data.d.id_estado_civil);
+			$("#cboEstadoCivil").val(data.d.id_estado_civil);
+            if ($("#cboEstadoCivil").val() == 2) {
+                document.getElementById("txtNomeConjuge").disabled = false;
+            }
+            else {
+                document.getElementById("txtNomeConjuge").disabled = true;
+			}
+
             $("#txtDataInclusao").val(data.d.dt_inclusao);
             $("#txtDataAtualizacao").val(data.d.dt_atualizacao);
 
@@ -421,9 +464,22 @@
             $('#cboProfissao').append('<option Value="' + data.d.ds_profissao + '"' + selProfissao + '>' + selText + '</option>');
 			$("#txtComplementoProfissao").val(data.d.ds_profissao_complemento);
             $("#txtNomePai").val(data.d.ds_nome_pai);
-            $("#txtNomeMae").val(data.d.ds_nome_mae);
+			$("#txtNomeMae").val(data.d.ds_nome_mae);
+
+			if ($("#txtNomePai").val() == "NÃO CONSTA") {
+				document.getElementById("chkPai").checked = true;
+				document.getElementById("txtNomePai").disabled = true;
+            }
+			if ($("#txtNomeMae").val() == "NÃO CONSTA") {
+				document.getElementById("chkMae").checked = true;
+                document.getElementById("txtNomeMae").disabled = true;
+			}
+
             $("#txtNomeConjuge").val(data.d.ds_nome_conjuge);
-            $("#cboEmpresa").val(data.d.tp_tem_empresa);
+			$("#cboEmpresa").val(data.d.tp_tem_empresa);
+			
+			
+
             if (data.d.tp_tem_empresa == "S") {
                     $.ajax({
                         type: "POST",
@@ -439,7 +495,7 @@
 
                 
             }
-
+            
 
         }
         function OnSuccessCarregarEmpresaCliente(data, status) {
@@ -451,9 +507,55 @@
         }
         function Voltar() {
             window.location.href = "Default.aspx";
+		}
+        function Proximo() {
+            MostraAba("endereco");
+		}
+        function Anterior() {
+            MostraAba("cliente");
+		}
+		function VerificaEstadoCivil() {
+			if ($("#cboEstadoCivil").val() == 2)
+			{
+                $("#txtNomeConjuge").val("");
+				document.getElementById("txtNomeConjuge").disabled = false;
+			}
+			else
+			{
+                $("#txtNomeConjuge").val("Não consta");
+                document.getElementById("txtNomeConjuge").disabled = true;
+			}
+				
+		}
+		function VerificachkPai() {
+			if (document.getElementById('chkPai').checked)
+			{
+				$("#txtNomePai").val("NÃO CONSTA");
+                document.getElementById("txtNomePai").disabled = true;
+
+			}
+			else
+			{
+				$("#txtNomePai").val("");
+                document.getElementById("txtNomePai").disabled = false;
+			}
+		}
+		function VerificachkMae() {
+			if (document.getElementById('chkMae').checked)
+			{
+				$("#txtNomeMae").val("NÃO CONSTA");
+                document.getElementById("txtNomeMae").disabled = true;
+
+			}
+			else
+			{
+                $("#txtNomeMae").val("");
+                document.getElementById("txtNomeMae").disabled = false;
+            }
         }
         function VerificaDadosCliente() {
-            
+			$("#frmDadosCliente")[0].reportValidity();	
+
             // Verifica Nome
             if ($("#txtNome").val() == '') {
                 //alert("Informe o Endereço.");
@@ -463,7 +565,7 @@
             }
 
             // Valida Telefone Celular 1
-            if (validaTelefone($("#txtTelefoneCelular").val()) == false) {
+			if (validaTelefone($("#txtTelefoneCelular").val()) == false) {
                 MostraAba("cliente");
                 MensagemActoSimples("Dados Cliente", "Telefone Celular Inválido.");
                 return false;
@@ -495,7 +597,8 @@
                 MensagemActoSimples("Dados Cliente", "Informe o Estado Civil");
                 return false;
             }
-
+			$("#frmDocumentos")[0].reportValidity();
+            
             //Verifica Numero RG
             if ($("#txtNumeroRG").val() == "") {
                 MostraAba("cliente");
@@ -530,6 +633,8 @@
                 MensagemActoSimples("Documentos", "Data da primeira habilitação Inválida.");
                 return false;
             }
+
+			$("#frmDadosEndereco")[0].reportValidity();
 
             //Verifica Tipo Endereço
             if ($("#cboTipoEndereco").val() == '') {
@@ -593,7 +698,7 @@
                 MensagemActoSimples("Endereço", "Informe o Estado.");
                 return false;
             }
-
+            $("#frmComplemento")[0].reportValidity();
             // Verifica Profissão
             if ($("#cboProfissao").val() == '') {
                 MostraAba("endereco");
@@ -623,9 +728,18 @@
             }
 
             // Verifica NomeConjuge
-            if ($("#txtNomeConjuge").val() == '') {
+			if ($("#txtNomeConjuge").val() == '') {
+                //var $myForm = $('#frmComplemento');
+				//$("#txtNomeConjuge")[0].checkValidity();	
+				//$myForm.find(':submit').click();
+                //if ($("#frmComplemento")[0].checkValidity())
+                //    alert('sucess');
+                //else
+                    //Validate Form
+				
+                //$("form")[0].reportValidity()
                 MostraAba("endereco");
-                MensagemActoSimples("Complemento", "Informe o nome da mãe do cliente.");
+                MensagemActoSimples("Complemento", "Informe o nome do(a) Conjuge do cliente.");
                 return false;
             }
 
@@ -723,7 +837,7 @@
 
             if (data.d == "OK") {
                 CarregarGridClientes();
-                MensagemActoSimples("Atualização Cadastral do Cliente", "Executada com Sucesso, faça uma cotação agora!");                
+                MensagemActoSucesso("Atualização Cadastral do Cliente", "Executada com Sucesso, faça uma cotação agora!");
 			}
 			else
 			{
@@ -889,6 +1003,34 @@
 		  
       </ol>
     </section>
+	<!-- Modal EM PROCESSAMENTO... -->
+				<div class="modal center-modal fade" data-backdrop="static" id="modal-em-processamento" tabindex="-2" style='justify-content: center;align-items: center;' data-keyboard="false" >
+				  <div class="modal-dialog" style='justify-content: center;align-items: center;'>
+					<div class="modal-content" style='justify-content: center;align-items: center;'>
+					  <div class="modal-header" style='justify-content: center;align-items: center;'>
+						<h5 class="modal-title">AGUARDE EM PROCESSAMENTO....</h5>
+						
+					  </div>
+					  <div class="modal-body" style='justify-content: center;align-items: center;'>
+
+		                      <div class="">
+			                    <div class="" style='justify-content: center;align-items: center;'>
+									<img src="images/dot-bricks.gif" style='width: 200px; height: 200px;justify-content: center;align-items: center; ' />
+			                    </div>
+			                    <!-- /.box-header -->
+			                   
+		                      </div>
+		                      <!-- /.box -->			
+
+						</div>
+                        <%--<div class="modal-footer modal-footer-uniform">
+						</div>--%>
+					  </div>
+					  
+					</div>
+				  </div>
+				
+       <!-- /.modal -->
      <!-- Modal Empresa -->
 		<div class="modal center-modal fade" id="modal-empresa" tabindex="-1">
 				  <div class="modal-dialog">
@@ -1036,9 +1178,9 @@
             <div class="box-body">
             	<!-- Nav tabs -->
 				<ul class="nav nav-tabs nav-fill" role="tablist">
-					<li class="nav-item"> <a class="nav-link active" data-toggle="tab" id="tablinkcliente" href="#cliente" role="tab"><span class="hidden-sm-up"><i class="ion-person"></i></span> <span class="hidden-xs-down">DADOS PRINCIPAIS</span> </a></li>					
+					<li class="nav-item"> <a class="nav-link active" data-toggle="tab" id="tablinklistaclientes" href="#listaclientes" role="tab"><span class="hidden-sm-up"><i class="ion-person"></i></span> <span class="hidden-xs-down">CLIENTES CADASTRADOS</span> </a></li>					
+					<li class="nav-item"> <a class="nav-link" data-toggle="tab" id="tablinkcliente" href="#cliente" role="tab"><span class="hidden-sm-up"><i class="ion-person"></i></span> <span class="hidden-xs-down">DADOS PRINCIPAIS</span> </a></li>					
                     <li class="nav-item"> <a class="nav-link" data-toggle="tab" id="tablinkendereco" href="#endereco" role="tab"><span class="hidden-sm-up"><i class="ion-person"></i></span> <span class="hidden-xs-down">ENDEREÇO e COMPLEMENTO</span> </a></li>					
-                    <li class="nav-item"> <a class="nav-link" data-toggle="tab" id="tablinklistaclientes" href="#listaclientes" role="tab"><span class="hidden-sm-up"><i class="ion-person"></i></span> <span class="hidden-xs-down">CLIENTES CADASTRADOS</span> </a></li>					
 				</ul>
 
 				<!-- Tab panes -->
@@ -1048,9 +1190,9 @@
 					<div class="row">
 					
 						<div class="col-md-6">
-                            <button type="button" class="btn btn-success" onclick="AtualizarCliente()">Gravar</button>	
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-incluir-indicado">Novo</button>
-                            <button type="button" class="btn btn-danger" onclick="Voltar()">Voltar</button>
+                            <button type="button" id="btnNovo" class="btn btn-primary" data-toggle="modal" data-target="#modal-incluir-indicado">Novo</button>
+                            <button type="button" id="btnGravar" class="btn btn-success" onclick="AtualizarCliente()" hidden>Gravar</button>	
+							<button type="button" class="btn btn-danger" onclick="Voltar()">Voltar</button>
                             
                             <%--<asp:TextBox name="txtIdCliente" id="txtIdCliente" type="hidden" runat="server"></asp:TextBox>
                             <asp:TextBox name="txtIdClienteIndicador" id="txtIdClienteIndicador" type="hidden" runat="server"></asp:TextBox>--%>
@@ -1070,8 +1212,77 @@
 					
 						
 				</div>
+					 <%--Dados LISTA DE CLIENTES--%>
+					<div class="tab-pane active" id="listaclientes" role="tabpanel">
+						<div class="pad">
+                            <%--<section class="content">--%>
+                            <div class="row">		
+							<div class="col-lg-12 col-12">
+		                      <div class="box">
+			                    <div class="box-header with-border bg-light">
+									
+			                      <h4 class="box-title">CLIENTES CADASTRADOS</h4>	
+									<ul class="box-title">
+										 
+				                     <%-- <button type="button" name="btnInsereCotacao" id="btnInsereCotacao" class="btn btn-blue mb-5" onclick="CarregaTelaInsereCotacao()" hidden >Inserir</button>
+										<button type="button" name="btnLimparItensCotacao" id="btnLimparItensCotacao" class="btn btn-blue mb-5" onclick="CarregaTelaLimparItensCotacao()" hidden >Excluir Todos</button>
+										<button type="button" name="btnUploadPDF" id="btnUploadPDF" class="btn btn-blue mb-5" onclick="AbrePopupUploadPDF()" hidden>Sobe PDF</button>
+										<button type="button" name="btnFinalizaCotacao" id="btnFinalizaCotacao" class="btn btn-blue mb-5" onclick="FinalizaCotacao()" hidden>Finalizar Cotação</button>
+										--%> 
+				                    </ul>
+									<ul class="box-controls pull-right"></ul>
+										
+									
+
+				                    <ul class="box-controls pull-right">
+				                      <%--<li><a class="box-btn-close" href="#"></a></li>
+				                      <li><a class="box-btn-slide" href="#"></a></li>	--%>
+				                      <li><a class="box-btn-fullscreen" href="#"></a></li>
+				                    </ul>
+			                    </div>
+			                    <!-- /.box-header -->
+			                    <form class="form">
+				                     <div class="box">
+			 
+										<div class="box-body">		
+            								<div class="table-responsive">
+											  <table id="grdClientes" class="table table-bordered table-striped display nowrap margin-top-10" style="width:100%">
+												<thead>
+													<tr>
+														<th></th>
+														<th>CPF</th>
+														<th>Nome</th>
+														<th>E-MAIL</th>
+														<th>Telefone</th>														
+                                                        <th></th>
+														<th></th>
+                                                        														
+													</tr>
+												</thead>
+											  </table>
+            								</div>
+										</div>
+            <!-- /.box-body -->
+								</div>
+				                   <%-- <!-- /.box-body -->
+				                    <div class="box-footer">
+					                    <button type="submit" class="btn btn-success">
+					                      <i class="ti-save-alt"></i> Grave
+					                    </button>
+				                    </div>  --%>
+			                    </form>
+		                      </div>
+		                      <!-- /.box -->			
+		                    </div> 
+		                
+                            
+                            </div>
+                            <%--</section>--%>
+						</div>
+            <!-- /.box-body -->
+          </div>
 					<%--Dados cliente--%>
-					<div class="tab-pane active" id="cliente" role="tabpanel">
+					<div class="tab-pane" id="cliente" role="tabpanel">
 						<div class="pad">
                             <%--<section class="content">--%>
                             <div class="row">		
@@ -1080,7 +1291,7 @@
 		                      <div class="box">
 			                    
 			                    <!-- /.box-header -->
-			                    <form class="form">
+			                    <form class="form" id="frmDadosCliente">
                                     
                             
 				                    <div class="box-body">
@@ -1090,7 +1301,7 @@
 						                    <div class="form-group">
 
 						                      <label>Nome</label>
-						                        <input id="txtNome" type="text" class="form-control" placeholder="Nome Completo">
+						                        <input id="txtNome" type="text" class="form-control" placeholder="Nome Completo" required>
 						                        
 						                    </div>
 					                      </div>
@@ -1110,7 +1321,7 @@
 					                      <div class="col-md-6">
 						                    <div class="form-group">
 						                      <label>Telefone Celular</label>	
-						                        <input type="text" class="form-control" id="txtTelefoneCelular" placeholder="Digite o Nº Telefone">
+						                        <input type="text" class="form-control" id="txtTelefoneCelular" placeholder="Digite o Nº Telefone" required>
 						                    </div>
 					                      </div>
 					                      <div class="col-md-6">
@@ -1124,13 +1335,13 @@
 					                      <div class="col-md-6">
 						                    <div class="form-group">
 						                     <label>Data de Nascimento</label>
-					                          <input id="txtDataNascimento" class="form-control" type="text" placeholder="DD/MM/AAAA">
+					                          <input id="txtDataNascimento" class="form-control" type="text" placeholder="DD/MM/AAAA" required>
 						                    </div>
 					                      </div>
 					                      <div class="col-md-6">
 						                    <div class="form-group">
 						                      <label>Genêro</label>
-						                        <select  name="cboGenero" id="cboGenero" class="form-control">
+						                        <select  name="cboGenero" id="cboGenero" class="form-control" required>
 							                        <option selected value="">Selecione...</option>
                                                     <option value="1">Masculino</option>
 							                        <option value="2">Feminino</option>							                       
@@ -1142,10 +1353,10 @@
 					                      <div class="col-md-6">
 						                    <div class="form-group">
 						                      <label>Estado Civil</label>		
-					                          <select  name="cboEstadoCivil" id="cboEstadoCivil" class="form-control" required>
+					                          <select  name="cboEstadoCivil" id="cboEstadoCivil" class="form-control" OnChange="VerificaEstadoCivil()" required>
 							                        <option selected value="">Selecione</option>
 							                        <option value="1">Solteiro(a)</option>
-							                        <option value="2">Casado(a)</option>
+							                        <option value="2">Casado(a) / União estável</option>
 							                        <option value="3">Divorciado(a)</option>
 							                        <option value="4">Viúvo(a)</option>
 						                            <option value="5">Outros</option>
@@ -1189,7 +1400,7 @@
 		                      <div class="box">
 			                    
 			                    <!-- /.box-header -->
-			                    <form class="form">
+			                    <form class="form" id="frmDocumentos">
 				                    <div class="box-body">
                                        <h4 class="page-header">Documentos</h4>      
 						                <div class="row">
@@ -1203,7 +1414,7 @@
 					                      <div class="col-md-6">
 						                    <div class="form-group">
 						                      <label>Número do R.G.</label>							
-						                        <input type="text" id="txtNumeroRG" class="form-control" placeholder="Digite o Nº do RG">
+						                        <input type="text" id="txtNumeroRG" class="form-control" placeholder="Digite o Nº do RG" required>
                                                 
 						                    </div>
 					                      </div>
@@ -1212,7 +1423,7 @@
 					                      <div class="col-md-6">
 						                    <div class="form-group">
 						                      <label>Data de Expedição</label>		
-					                          <input class="form-control" id="txtDataExpedicao" type="text" placeholder="DD/MM/AAAA">					  
+					                          <input class="form-control" id="txtDataExpedicao" type="text" placeholder="DD/MM/AAAA" required>					  
                                               
 						                    </div>
 					                      </div>
@@ -1228,14 +1439,14 @@
 					                      <div class="col-md-6">
 						                    <div class="form-group">
 						                      <label>CNH</label>							
-						                        <input id="txtCNH" type="text" class="form-control" placeholder="Digite o Nº do CNH" onkeypress="return somenteNumeros(event)" maxlength="14" >
+						                        <input id="txtCNH" type="text" class="form-control" placeholder="Digite o Nº do CNH" onkeypress="return somenteNumeros(event)" maxlength="14" required>
 						                        
 						                    </div>
 					                      </div>
 					                      <div class="col-md-6">
 						                    <div class="form-group">
 						                      <label>Data 1ª Habilitação</label>							
-						                        <input type="text" id="txtDataPrimeiraHabilitacao" class="form-control" placeholder="DD/MM/AAAA" />
+						                        <input type="text" id="txtDataPrimeiraHabilitacao" class="form-control" placeholder="DD/MM/AAAA" required>
                                                 
 						                    </div>
 					                      </div>
@@ -1251,6 +1462,18 @@
 						                    <div class="form-group">
 						                     <label>Atualização</label>		
 					                          <input class="form-control" type="text" value="" id="txtDataAtualizacao" disabled="disabled" >			
+						                    </div>
+					                      </div>
+					                    </div>
+										<div class="row">
+					                      <div class="col-md-6">
+						                    <div class="form-group">
+						                      
+						                    </div>
+					                      </div>
+					                      <div class="col-md-6">
+						                    <div class="form-group">
+						                     <button type="button" id="btnProximo" class="btn btn-primary" onclick="Proximo()">Próximo</button>
 						                    </div>
 					                      </div>
 					                    </div>
@@ -1285,7 +1508,7 @@
 		                      <div class="box">
 			                    
 			                    <!-- /.box-header -->
-			                    <form class="form">
+			                    <form class="form" id="frmDadosEndereco">
                                     
 				                    <div class="box-body">
                                     <h4 class="page-header">Dados Endereço</h4>
@@ -1309,7 +1532,7 @@
 					                      <div class="col-md-6">
 						                    <div class="form-group">
 						                      <label>CEP</label>
-						                        <input id="txtCep" type="text" class="form-control" placeholder="Digite o Cep">
+						                        <input id="txtCep" type="text" class="form-control" placeholder="Digite o Cep" required>
 						                        
 						                    </div>
 					                      </div>
@@ -1318,13 +1541,13 @@
 					                    <div class="col-md-9">
 						                <div class="form-group">
 						                    <label>Endereço</label>
-						                    <input id="txtEndereco" type="text" class="form-control" placeholder="Digite o Endereço">
+						                    <input id="txtEndereco" type="text" class="form-control" placeholder="Digite o Endereço" required>
 						                    </div>
 					                    </div>
 					                    <div class="col-md-3">
 						                <div class="form-group">
 						                    <label>Numero</label>
-						                    <input id="txtNumeroEndereco" type="text" class="form-control" placeholder="Digite Nº" onkeypress="return somenteNumeros(event)" maxlength="6">
+						                    <input id="txtNumeroEndereco" type="text" class="form-control" placeholder="Digite Nº" onkeypress="return somenteNumeros(event)" maxlength="6" required>
 						                    
 						                </div>
 					                    </div>
@@ -1333,13 +1556,13 @@
 					                    <div class="col-md-6">
 						                <div class="form-group">
 						                    <label>Complemento</label>							
-						                    <input id="txtComplemento" type="text" class="form-control" placeholder="Digite o complemento">
+						                    <input id="txtComplemento" type="text" class="form-control" placeholder="Digite o complemento" required>
 						                </div>
 					                    </div>
 					                    <div class="col-md-6">
 						                <div class="form-group">
 						                    <label>Bairro</label>		
-					                        <input id="txtBairro" class="form-control" type="text"  placeholder="Digite o Bairro">					  
+					                        <input id="txtBairro" class="form-control" type="text"  placeholder="Digite o Bairro" required>					  
 						                    
 						                </div>
 					                    </div>
@@ -1348,14 +1571,14 @@
 					                      <div class="col-md-6">
 						                    <div class="form-group">
 						                      <label>Cidade</label>		
-					                          <input id="txtCidade" class="form-control" type="text"  placeholder="Digite a Cidade">					  
+					                          <input id="txtCidade" class="form-control" type="text"  placeholder="Digite a Cidade" required>					  
 						                        
 						                    </div>
 					                      </div>
 					                      <div class="col-md-6">
 						                    <div class="form-group">
 						                    <label>Estado</label>		
-						                    <select name="cboEstado" id="cboEstado" class="form-control" onchange="onchange_aba_veiculo()" >
+						                    <select name="cboEstado" id="cboEstado" class="form-control" onchange="onchange_aba_veiculo()" required>
 												  <option selected value="">Selecione..</option> 												  
 													<option value="SP">SP</option>
 													<option value="AC">AC</option>
@@ -1390,6 +1613,18 @@
 
                                              
 					                    </div>
+										<div class="row">
+					                      <div class="col-md-6">
+						                    <div class="form-group">
+						                     <button type="button" id="btnAnterior" class="btn btn-primary" onclick="Anterior()">Anterior</button> 
+						                    </div>
+					                      </div>
+					                      <div class="col-md-6">
+						                    <div class="form-group">
+						                     
+						                    </div>
+					                      </div>
+					                    </div>
 				                    </div>
                                     
 				                    <!-- /.box-body -->
@@ -1407,14 +1642,14 @@
 		                      <div class="box">
 			                    
 			                    <!-- /.box-header -->
-			                    <form class="form">
+			                    <form class="form" id="frmComplemento">
 				                    <div class="box-body">
                                         <h4 class="page-header">Complemento</h4>
                                         <div class="row">
 					                      <div class="col-md-9">
 						                    <div class="form-group">
 						                      <label>Profissão</label>		
-						                    <select name="cboProfissao" id="cboProfissao" class="form-control select2" style="width: 100%;">
+						                    <select name="cboProfissao" id="cboProfissao" class="form-control select2" style="width: 100%;" required>
 												  <option value="">Selecione..</option> 												  
 												  <option value="0">Acougueiro</option>
 													<option value="1">Adido&nbsp;Estrangeiro</option>
@@ -2145,7 +2380,7 @@
 						                    <div class="form-group">
 						                      
                                                 <label>Complemento</label>		
-					                           <input id="txtComplementoProfissao" class="form-control" type="text"  placeholder="">
+					                           <input id="txtComplementoProfissao" class="form-control" type="text"  placeholder="" required>
 						                        
 						                    </div>
 
@@ -2155,17 +2390,18 @@
 					                    <div class="row">
 					                      <div class="col-md-12">
 						                    <div class="form-group">
-						                      <label>Nome do Pai</label>		
-					                          <input id="txtNomePai" class="form-control" type="text"  placeholder="">					  
-						                        
+						                      <label>Nome do Pai		|</label> <input type="checkbox" id="chkPai" OnChange="VerificachkPai()"> <label for="chkPai">Não consta</label>		
+					                          <input id="txtNomePai" class="form-control" type="text"  placeholder="" required>					  
 						                    </div>
 						                    </div>
 					                      </div>
                                         <div class="row">
 					                      <div class="col-md-12">
 						                    <div class="form-group">
-						                      <label>Nome do Mãe</label>		
-					                          <input id="txtNomeMae" class="form-control" type="text"  placeholder="">					  
+						                      <label>Nome do Mãe		|</label>
+												<input type="checkbox" id="chkMae" OnChange="VerificachkMae()" >
+												<label for="chkMae">Não consta</label>		
+					                          <input id="txtNomeMae" class="form-control" type="text"  placeholder="" required>					  
 						                        
 						                    </div>
 					                      </div>
@@ -2174,7 +2410,7 @@
 					                      <div class="col-md-12">
 						                    <div class="form-group">
 						                      <label>Nome do Conjuge</label>		
-					                          <input id="txtNomeConjuge" class="form-control" type="text"  placeholder="">					  
+					                          <input id="txtNomeConjuge" class="form-control" type="text"  placeholder="" required>					  
 						                        
 						                    </div>
 						                      
@@ -2207,75 +2443,7 @@
             </div>
             <!-- /.box-body -->
           </div>
-                    <%--Dados LISTA DE CLIENTES--%>
-					<div class="tab-pane" id="listaclientes" role="tabpanel">
-						<div class="pad">
-                            <%--<section class="content">--%>
-                            <div class="row">		
-							<div class="col-lg-12 col-12">
-		                      <div class="box">
-			                    <div class="box-header with-border bg-light">
-									
-			                      <h4 class="box-title">CLIENTES CADASTRADOS</h4>	
-									<ul class="box-title">
-										 
-				                     <%-- <button type="button" name="btnInsereCotacao" id="btnInsereCotacao" class="btn btn-blue mb-5" onclick="CarregaTelaInsereCotacao()" hidden >Inserir</button>
-										<button type="button" name="btnLimparItensCotacao" id="btnLimparItensCotacao" class="btn btn-blue mb-5" onclick="CarregaTelaLimparItensCotacao()" hidden >Excluir Todos</button>
-										<button type="button" name="btnUploadPDF" id="btnUploadPDF" class="btn btn-blue mb-5" onclick="AbrePopupUploadPDF()" hidden>Sobe PDF</button>
-										<button type="button" name="btnFinalizaCotacao" id="btnFinalizaCotacao" class="btn btn-blue mb-5" onclick="FinalizaCotacao()" hidden>Finalizar Cotação</button>
-										--%> 
-				                    </ul>
-									<ul class="box-controls pull-right"></ul>
-										
-									
-
-				                    <ul class="box-controls pull-right">
-				                      <%--<li><a class="box-btn-close" href="#"></a></li>
-				                      <li><a class="box-btn-slide" href="#"></a></li>	--%>
-				                      <li><a class="box-btn-fullscreen" href="#"></a></li>
-				                    </ul>
-			                    </div>
-			                    <!-- /.box-header -->
-			                    <form class="form">
-				                     <div class="box">
-			 
-										<div class="box-body">		
-            								<div class="table-responsive">
-											  <table id="grdClientes" class="table table-bordered table-striped display nowrap margin-top-10" style="width:100%">
-												<thead>
-													<tr>
-														<th></th>
-														<th>CPF</th>
-														<th>Nome</th>
-														<th>E-MAIL</th>
-														<th>Telefone</th>														
-                                                        <th></th>
-														<th></th>
-                                                        														
-													</tr>
-												</thead>
-											  </table>
-            								</div>
-										</div>
-            <!-- /.box-body -->
-								</div>
-				                   <%-- <!-- /.box-body -->
-				                    <div class="box-footer">
-					                    <button type="submit" class="btn btn-success">
-					                      <i class="ti-save-alt"></i> Grave
-					                    </button>
-				                    </div>  --%>
-			                    </form>
-		                      </div>
-		                      <!-- /.box -->			
-		                    </div> 
-		                
-                            
-                            </div>
-                            <%--</section>--%>
-						</div>
-            <!-- /.box-body -->
-          </div>
+                   
           <!-- /.box -->
         </div>
         <!-- /.col -->
