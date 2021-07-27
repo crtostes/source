@@ -230,7 +230,10 @@
                      document.getElementById("btnPDF").disabled = false;
 					 document.getElementById("btnClonar").disabled = false;
 					 document.getElementById("btnClonar").hidden = false;
-                     document.getElementById("btnCancelar").hidden = true;
+					 document.getElementById("btnCancelar").hidden = true;
+					 <% if (TemPermissao("CANCOTCLI")) { %>
+						document.getElementById("btnCancelar").hidden = false;
+                     <% }%>
 					 <% if (TemPermissao("ADMRESCAL")) { %>
                      document.getElementById("btnInsereCotacao").hidden = true;
                      document.getElementById("btnLimparItensCotacao").hidden = true;
@@ -1408,26 +1411,33 @@
          }
          function format(d) {
 
+			 
              // `d` is the original data object for the row
-             return '<table cellpadding="10" cellspacing="0" border="0" style="padding-left:50px; width:100%;">' +
-                 
-                 '<tr>' +
+			 linhasgrid = '<table cellpadding="10" cellspacing="0" border="0" style="padding-left:50px; width:100%;">' +
+
+				 '<tr>' +
 				 '<td style="width:100px">Valor Normal:</td>' +
-                 '<td style="width:100px">' + d.ds_valor_premio_f100 + '</td>' +
-                 '<td style="width:400px">' + d.bt_cotacao_aprova_normal + '</td>' +
+				 '<td style="width:100px">' + d.ds_valor_premio_f100 + '</td>' +
+				 '<td style="width:400px">' + d.bt_cotacao_aprova_normal + '</td>' +
 				 '<td style="width:400px">' + d.fl_aprovada_normal + '</td>' +
-                 '<td style="width:400px">' + d.ds_nome_cliente_aprovada_normal + '</td>' +
-                 '<td style="width:400px">' + d.ds_data_hora_aprovada_normal + '</td>' +
-                 '</tr>' +
-                 '<tr>' +
-                 '<td>Valor Franquia Reduzida:</td>' +
-				 '<td>' + d.ds_valor_premio_f50 + '</td>' +
-                 '<td>' + d.bt_cotacao_aprova_reduzida + '</td>' +
-                 '<td style="width:400px">' + d.fl_aprovada_reduzida + '</td>' +
-                 '<td style="width:400px">' + d.ds_nome_cliente_aprovada_reduzida + '</td>' +
-                 '<td style="width:400px">' + d.ds_data_hora_aprovada_reduzida + '</td>' +
-                 '</tr>' +
-                 '</table>';
+				 '<td style="width:400px">' + d.ds_nome_cliente_aprovada_normal + '</td>' +
+				 '<td style="width:400px">' + d.ds_data_hora_aprovada_normal + '</td>' +
+				 '</tr>';
+
+			 
+             if (d.ds_valor_premio_f50 != "R$ 0") {
+                 linhasgrid = linhasgrid + '<tr>' +
+					 '<td>Valor Franquia Reduzida:</td>' +
+					 '<td>' + d.ds_valor_premio_f50 + '</td>' +
+					 '<td>' + d.bt_cotacao_aprova_reduzida + '</td>' +
+					 '<td style="width:400px">' + d.fl_aprovada_reduzida + '</td>' +
+					 '<td style="width:400px">' + d.ds_nome_cliente_aprovada_reduzida + '</td>' +
+					 '<td style="width:400px">' + d.ds_data_hora_aprovada_reduzida + '</td>' +
+					 '</tr>';
+				}
+             linhasgrid = linhasgrid + '</table>';
+
+			 return linhasgrid;
          }
          function OnSuccessCarregaCotacaoAutomoveisItensGrid(data, status) {
 
@@ -1627,23 +1637,7 @@
 
          function CancelarCotacao() {
              EmProcessamento(true);
-             //if (ValidarCamposCotacao() == false) {
-             //             EmProcessamento(false);
-             //             return false;
-             //         }
-             //alert("Cancelar");
-             //$.ajax({
-             //    type: "POST",
-             //    url: "IncluirCotacao.aspx/wmCancelarCotacao",
-             //    data: "{pid_cotacao: '" + $("#ContentPlaceHolder1_txtIdCotacao").val() +
-             //        "'}",
-             //    contentType: "application/json; charset=utf-8",
-             //    dataType: "json",
-             //    success: OnSuccessClonarCotacao,
-             //    error: function (request, status, error) {
-             //        alert(request.responseText);
-             //    }
-             //});
+             
              $.ajax({
                  type: "POST",
                  url: "IncluirCotacao.aspx/wmAtualizarStatusCotacaoAutomovel",
@@ -2915,7 +2909,7 @@
 				                      <%--<li><a class="box-btn-close" href="#"></a></li>
 				                      <li><a class="box-btn-slide" href="#"></a></li>	--%>
 				                      <%--<li><a class="box-btn-fullscreen" href="#"></a></li>--%>
-									  <li><button type="button" id="btnLocalizarCliente" class="btn btn-primary mb-5" data-toggle="modal" data-target="#modal-localizar-indicado" onclick="CarregarListaIndicados()">LOCALIZAR CLIENTE</button></li>
+									  <%--<li><button type="button" id="btnLocalizarCliente" class="btn btn-primary mb-5" data-toggle="modal" data-target="#modal-localizar-indicado" onclick="CarregarListaIndicados()">LOCALIZAR CLIENTE</button></li>--%>
 				                    </ul>
 									
 			                    </div>

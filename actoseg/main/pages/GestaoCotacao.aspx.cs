@@ -30,6 +30,9 @@ namespace actoseg.main.pages
         [System.Web.Services.WebMethod]
         public static string wmListaCotacoes(int pid_cliente)
         {
+            ActoContexto objContexto = (ActoContexto)HttpContext.Current.Session["contexto"];
+            if (objContexto.TemPermissao("LSTTODCOT")) pid_cliente = 0;
+
             busCotacao objBus = new busCotacao();
             List<entCotacaoAutomovelGrid> objLst = objBus.ListarCotacoes(pid_cliente);
             var oSerializer = new System.Web.Script.Serialization.JavaScriptSerializer();

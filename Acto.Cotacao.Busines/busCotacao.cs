@@ -119,17 +119,19 @@ namespace Acto.Cotacao.Busines
                 if (pobjentCotacaoInteracao == null) pobjentCotacaoInteracao = new entCotacaoInteracao();
                 pobjentCotacaoInteracao.id_cotacao = pid_cotacao;
                 
-                if (pcd_status_cotacao == "CE") pobjentCotacaoInteracao.ds_mensagem = "Cliente ENVIA cotação para processamento. (" + pobjentCotacaoInteracao.ds_mensagem + ")";
+                if (pcd_status_cotacao == "CE") pobjentCotacaoInteracao.ds_mensagem = "Cliente: ENVIA cotação para processamento. (" + pobjentCotacaoInteracao.ds_mensagem + ")";
 
-                if (pcd_status_cotacao == "CA") pobjentCotacaoInteracao.ds_mensagem = "Cliente Cancela a Cotação.";
+                
+                if (pcd_status_cotacao == "CA") pobjentCotacaoInteracao.ds_mensagem = "Cotação Cancelada.";
+
                 if (pcd_status_cotacao == "GR")
                 {
-                    pobjentCotacaoInteracao.ds_mensagem = "Cliente GRAVA cotação.";
+                    pobjentCotacaoInteracao.ds_mensagem = "Cliente: GRAVA cotação.";
                     objDaoCotacao.ExcluirItensCotacao(pid_cotacao);
 
                 }
-                if(pcd_status_cotacao == "CP") pobjentCotacaoInteracao.ds_mensagem = "Actoseg COTAÇÃO PRONTA.";
-                if (pcd_status_cotacao == "EM") pobjentCotacaoInteracao.ds_mensagem = "Actoseg FOI EMITIDA A APÓLICE.";
+                if(pcd_status_cotacao == "CP") pobjentCotacaoInteracao.ds_mensagem = "Actoseg: COTAÇÃO PRONTA.";
+                if (pcd_status_cotacao == "EM") pobjentCotacaoInteracao.ds_mensagem = "Actoseg: FOI EMITIDA A APÓLICE.";
                 if (objDaoCotacao.IncluirCotacaoInteracao(pobjentCotacaoInteracao))
                 {
                     int ret_id_cotacao = objDaoCotacao.AtualizarStatusCotacao(pid_cotacao, pcd_status_cotacao);

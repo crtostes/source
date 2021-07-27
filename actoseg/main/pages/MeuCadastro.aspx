@@ -45,6 +45,40 @@
                 closeOnConfirm: true
             }, function () {
             });
+		}
+        function MensagemActoSucessoGC(titulo, texto, idClienteNovaPropostaAgora ) {
+			//GC - GravaCliente
+            $("#idClienteNovaPropostaAgora").val(idClienteNovaPropostaAgora);
+            
+            swal({
+                title: titulo,
+                text: texto,
+                type: "success",
+                showCancelButton: false,
+                confirmButtonColor: "#363abf",
+                confirmButtonText: "OK",
+                closeOnConfirm: false
+			}, function () {
+                swal({
+                    title: "NOVA COTAÇÃO",
+                    text: "Deseja criar NOVA COTAÇÃO para este cliente?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "SIM",
+                    cancelButtonText: "NÂO",
+                    closeOnConfirm: true,
+                    closeOnCancel: false
+                }, function (isConfirm) {
+					if (isConfirm) {
+                        //alert($("#idClienteNovaPropostaAgora").val());
+                        CarregarNovaCotacao($("#idClienteNovaPropostaAgora").val());
+                    }
+                    else {
+                        swal("Nova cotação NÃO FOI criada!", "", "");
+                    }
+                });
+            });
         }
         function formatarCPFCNPJ(campoTexto) {
             if (campoTexto.value.length <= 11) {
@@ -835,9 +869,16 @@
         function OnSuccessAtualizarCliente(data, status) {
             MostraAba("listaclientes");
 
-            if (data.d == "OK") {
+			if (data.d == "OK") {
+
+				IdClienteNovaCotacao = $("#txtIdCliente").val();
+
                 CarregarGridClientes();
-                MensagemActoSucesso("Atualização Cadastral do Cliente", "Executada com Sucesso, faça uma cotação agora!");
+                MensagemActoSucessoGC("Atualização Cadastral do Cliente", "Executada com Sucesso, faça uma cotação agora!", IdClienteNovaCotacao );
+				//onclick=\"CarregarNovaCotacao('" + Convert.ToString(myReader["id_cliente"]) + "')
+                
+
+
 			}
 			else
 			{
@@ -1198,6 +1239,8 @@
                             <asp:TextBox name="txtIdClienteIndicador" id="txtIdClienteIndicador" type="hidden" runat="server"></asp:TextBox>--%>
                             
                             <input name="txtIdCliente" id="txtIdCliente"  type="hidden">
+							<input name="idClienteNovaPropostaAgora" id="idClienteNovaPropostaAgora"  type="hidden">
+							
                             <%--<input name="txtIdClienteIndicador" id="txtIdClienteIndicador"  type="hidden">--%>
 							<%--<button type="button" name="btnGravar" id="btnGravar" class="btn btn-cyan mb-5" onclick="ValidarStatusEmCotacao()" disabled>Gravar</button>
 							<button type="button" name="btnEnviar" id="btnEnviar" class="btn btn-yellow mb-5" onclick="EnviarCotacao()"  disabled>Enviar</button>

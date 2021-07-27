@@ -181,6 +181,30 @@ namespace Acto.Usuario.Busines
                 objFuncao.ds_funcao = "Consulta Todas Cotações";
                 lstFuncoes.Add(objFuncao);
             }
+            if (pEntUsuario.CPF == "16252708879")
+            {
+                entFuncao objFuncao = new entFuncao();
+                objFuncao.id_funcao = 3;
+                objFuncao.cd_funcao = "LSTTODCOT";
+                objFuncao.ds_funcao = "Lista Todas Cotações";
+                lstFuncoes.Add(objFuncao);
+            }
+            if (pEntUsuario.CPF == "16252708879")
+            {
+                entFuncao objFuncao = new entFuncao();
+                objFuncao.id_funcao = 4;
+                objFuncao.cd_funcao = "LSTTODCLI";
+                objFuncao.ds_funcao = "Lista Todos Clientes";
+                lstFuncoes.Add(objFuncao);
+            }
+            if (pEntUsuario.CPF == "16252708879")
+            {
+                entFuncao objFuncao = new entFuncao();
+                objFuncao.id_funcao = 5;
+                objFuncao.cd_funcao = "CANCOTCLI";
+                objFuncao.ds_funcao = "Cancela Cotacao do Cliente";
+                lstFuncoes.Add(objFuncao);
+            }
             return lstFuncoes;
         }
         private string RetornaBodyRecuperarSenha(string pnome, string psenha)

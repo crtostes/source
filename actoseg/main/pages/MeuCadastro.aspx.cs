@@ -169,7 +169,9 @@ namespace actoseg.main.pages
                 return "Sistema inoperante. Por favor Reiniciar!!!";
             }
             busCliente objBusCliente = new busCliente();
-            List<entCliente> objLstCliente = objBusCliente.ListarClientesIndicados(objContexto.Cliente.id_cliente);
+            int idCliente = objContexto.Cliente.id_cliente;
+            if (objContexto.TemPermissao("LSTTODCLI")) idCliente = 0;
+            List<entCliente> objLstCliente = objBusCliente.ListarClientesIndicados(idCliente);
             var oSerializer = new System.Web.Script.Serialization.JavaScriptSerializer();
             return oSerializer.Serialize(objLstCliente);
             //return objLstIndicado;
